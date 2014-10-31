@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDataSeeding", "TestDataSeeding\TestDataSeeding.csproj", "{ABF18B9D-1FC0-4506-B4F2-13CF085A79AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TdsConsoleApp", "TdsConsoleApp\TdsConsoleApp.csproj", "{BFB4FACE-0BB3-4CFD-A0DF-287E6B27CDA0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{ABF18B9D-1FC0-4506-B4F2-13CF085A79AB} = {ABF18B9D-1FC0-4506-B4F2-13CF085A79AB}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ABF18B9D-1FC0-4506-B4F2-13CF085A79AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABF18B9D-1FC0-4506-B4F2-13CF085A79AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABF18B9D-1FC0-4506-B4F2-13CF085A79AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABF18B9D-1FC0-4506-B4F2-13CF085A79AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFB4FACE-0BB3-4CFD-A0DF-287E6B27CDA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFB4FACE-0BB3-4CFD-A0DF-287E6B27CDA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFB4FACE-0BB3-4CFD-A0DF-287E6B27CDA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFB4FACE-0BB3-4CFD-A0DF-287E6B27CDA0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
