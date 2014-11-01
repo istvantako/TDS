@@ -32,14 +32,20 @@ namespace TdsConsoleApp
             Console.WriteLine(e1.Equals(e4));
             Console.WriteLine();
 
-            EntityType et = new EntityType("Gyumi");
+            EntityStructure et = new EntityStructure("Gyumi");
             et.Attributes.Add("Gyumolcs", "string");
             et.Attributes.Add("Szarmazas", "string");
             et.Attributes.Add("Mennyiseg", "int");
             et.PrimaryKeys.Add("Gyumolcs");
             et.PrimaryKeys.Add("Szarmazas");
-            et.ForeignKeys.Add("Gyumolcs", new Tuple<string, string>("Rendelesek", "GyumiId"));
-            Console.WriteLine(et);
+            et.ForeignKeys.Add("Gyumolcs", new EntityForeignKey("Rendelesek", "GyumiId"));
+
+            EntityStructures ets = new EntityStructures();
+            ets.Add(et);
+            foreach (var et1 in ets)
+            {
+                Console.WriteLine(et1);
+            }
 
             Console.ReadLine();
         }

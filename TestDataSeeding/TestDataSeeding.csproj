@@ -44,7 +44,9 @@
     <Compile Include="Logic\ISqlDataAccess.cs" />
     <Compile Include="Logic\IXmlDataAccess.cs" />
     <Compile Include="Model\Entity.cs" />
-    <Compile Include="Model\EntityType.cs" />
+    <Compile Include="Model\EntityForeignKey.cs" />
+    <Compile Include="Model\EntityStructure.cs" />
+    <Compile Include="Model\EntityStructures.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

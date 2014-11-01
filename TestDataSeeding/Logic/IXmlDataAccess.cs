@@ -19,17 +19,17 @@ namespace TestDataSeeding.Logic
         void SaveEntity(Entity entity);
 
         /// <summary>
-        /// Returns a new entity identified by <paramref name="entityName"/> and <paramref name="entityPrimaryKeyValues"/>.
+        /// Returns a new entity identified by <paramref name="entityName"/> and <paramref name="primaryKeyValues"/>.
         /// </summary>
         /// <param name="entityName">The name of the entity.</param>
-        /// <param name="entityPrimaryKeyValues">A list with the pramary key values that identifies the entity.</param>
-        /// <returns>A new entity identified by <paramref name="entityName"/> and <paramref name="entityPrimaryKeyValues"/>.</returns>
-        Entity GetEntity(string entityName, List<string> entityPrimaryKeyValues);
+        /// <param name="primaryKeyValues">A list with the pramary key values that identifies the entity.</param>
+        /// <returns>A new entity identified by <paramref name="entityName"/> and <paramref name="primaryKeyValues"/>.</returns>
+        Entity GetEntity(string entityName, List<string> primaryKeyValues);
 
         /// <summary>
-        /// Returns a list with the entity types.
+        /// Returns an EntityStructures collection.
         /// </summary>
-        /// <returns>A list with the entity types.</returns>
-        List<EntityType> GetEntityTypes();
+        /// <returns>An EntityStructures collection.</returns>
+        EntityStructures GetEntityStructures();
     }
 }

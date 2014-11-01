@@ -7,17 +7,18 @@ using System.Threading.Tasks;
 namespace TestDataSeeding.Model
 {
     /// <summary>
-    /// EntityType class, holds the structure of an entity (entity name, attribute names, primary key attributes, foreign keys).
+    /// EntityType class, holds the structure of an entity (entity (table) name, attribute names, primary key attributes,
+    /// foreign keys).
     /// </summary>
-    public class EntityType
+    public class EntityStructure
     {
         /// <summary>
-        /// The entity name.
+        /// The entity (table) name.
         /// </summary>
         private readonly string name;
 
         /// <summary>
-        /// Gets the entity name.
+        /// Gets the entity (table) name.
         /// </summary>
         public string Name
         {
@@ -63,14 +64,13 @@ namespace TestDataSeeding.Model
         /// <summary>
         /// The foreign keys.
         /// </summary>
-        private Dictionary<string, Tuple<string, string>> foreignKeys;
+        private Dictionary<string, EntityForeignKey> foreignKeys;
 
         /// <summary>
-        /// Gets the dictionary of the foreign keys (attribute names), the keys are attribute names, the values are 2-tuples,
-        /// where the first item of the 2-tuple is the name of the referenced entity, while the second item is the
-        /// referenced attribute name.
+        /// Gets the dictionary of the foreign keys (attribute names), the keys are attribute names, the values are
+        /// EntityForeignKey objects, holding the referenced entity (table) name and the referenced key (attribute) name.
         /// </summary>
-        public Dictionary<string, Tuple<string, string>> ForeignKeys
+        public Dictionary<string, EntityForeignKey> ForeignKeys
         {
             get
             {
@@ -82,12 +82,32 @@ namespace TestDataSeeding.Model
         /// Constructs a new EntityType with the given <paramref name="name"/>.
         /// </summary>
         /// <param name="name">The name of the entity.</param>
-        public EntityType(string name)
+        public EntityStructure(string name)
         {
             this.name = name;
             this.attributes = new Dictionary<string, string>();
             this.primaryKeys = new List<string>();
-            this.foreignKeys = new Dictionary<string, Tuple<string, string>>();
+            this.foreignKeys = new Dictionary<string, EntityForeignKey>();
+        }
+
+        /// <summary>
+        /// Indicates whether the given <paramref name="attribute"/> is (part of the) primary key.
+        /// </summary>
+        /// <param name="attribute">The attribute name.</param>
+        /// <returns>True, if the attribute is (part of the) primary key, otherwise false.</returns>
+        public bool isPrimaryKey(string attribute)
+        {
+            return primaryKeys.Exists(key => key.Equals(attribute));
+        }
+
+        /// <summary>
+        /// Indicates whether the given <paramref name="attribute"/> is a foreign key.
+        /// </summary>
+        /// <param name="attribute">The attribute name.</param>
+        /// <returns>True, if the attribute is a foreign key, otherwise false.</returns>
+        public bool isForeignKey(string attribute)
+        {
+            return foreignKeys.ContainsKey(attribute);
         }
 
         /// <summary>
@@ -111,8 +131,8 @@ namespace TestDataSeeding.Model
 
                 if (foreignKeys.ContainsKey(attribute.Key))
                 {
-                    stringBuilder.Append("[FK references " + foreignKeys[attribute.Key].Item1 + "(" +
-                        foreignKeys[attribute.Key].Item2 + ")" + "]");
+                    stringBuilder.Append("[FK references " + foreignKeys[attribute.Key].EntityName + "(" +
+                        foreignKeys[attribute.Key].KeyName + ")" + "]");
                 }
 
                 stringBuilder.Append("\n");

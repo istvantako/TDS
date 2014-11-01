@@ -12,12 +12,12 @@ namespace TestDataSeeding.Model
     public class Entity
     {
         /// <summary>
-        /// The entity name.
+        /// The entity (table) name.
         /// </summary>
         private readonly string name;
 
         /// <summary>
-        /// Gets the entity name.
+        /// Gets the entity (table) name.
         /// </summary>
         public string Name
         {
