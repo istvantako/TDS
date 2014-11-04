@@ -48,9 +48,10 @@
     <Compile Include="Model\EntityStructure.cs" />
     <Compile Include="Model\EntityStructures.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlDataAccess\Sql.cs" />
+    <Compile Include="SqlDataAccess\SqlDataAccess.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="SqlDataAccess\" />
     <Folder Include="XmlDataAccess\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

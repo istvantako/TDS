@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestDataSeeding.Model;
+using TestDataSeeding.Logic;
+using TestDataSeeding.SqlDataAccess;
 
 namespace TdsConsoleApp
 {
@@ -11,7 +13,7 @@ namespace TdsConsoleApp
     {
         static void Main(string[] args)
         {
-            Entity e1 = new Entity("Gyumi");
+            /*Entity e1 = new Entity("Gyumi");
             e1.AttributeValues.Add("Gyumolcs", "Alma");
             Console.WriteLine(e1);
 
@@ -47,7 +49,30 @@ namespace TdsConsoleApp
                 Console.WriteLine(et1);
             }
 
-            Console.ReadLine();
+            Console.ReadLine();*/
+
+            string connectionString = "Data Source = JARVIS; Initial Catalog = TestBase; Integrated Security = SSPI";
+
+            EntityStructure et = new EntityStructure("Berlesek");
+            et.Attributes.Add("BerlesID", "int");
+            et.Attributes.Add("NyaraloID", "int");
+            et.Attributes.Add("BerloNev", "int");
+            et.PrimaryKeys.Add("BerlesID");
+            et.PrimaryKeys.Add("BerloNev");
+
+            et.ForeignKeys.Add("NyaraloID", new EntityForeignKey("Nyaralok", "NyaraloID"));
+
+            List<String> keys = new List<String> { "4", "Fulop Emese" };
+
+            ISqlDataAccess acc = new SqlDataAccess();
+            acc.SetConnectionString(connectionString);
+            Entity tty = acc.GetEntity(et, keys);
+            Console.WriteLine(tty);
+
+
+            acc.SaveEntity(tty, et);
+            Console.Read();
+
         }
     }
 }
