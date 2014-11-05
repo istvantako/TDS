@@ -51,6 +51,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlDataAccess\Sql.cs" />
     <Compile Include="SqlDataAccess\SqlDataAccess.cs" />
+    <Compile Include="XmlDataAccess\XmlHandler.cs" />
     <Compile Include="YaxLib\Enums.cs" />
     <Compile Include="YaxLib\EnumWrapper.cs" />
     <Compile Include="YaxLib\ICustomDeserializer.cs" />
@@ -67,9 +68,7 @@
     <Compile Include="YaxLib\YAXParsingErrors.cs" />
     <Compile Include="YaxLib\YAXSerializer.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="XmlDataAccess\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -15,7 +15,7 @@ namespace TestDataSeeding.Model
         /// <summary>
         /// The entity (table) name.
         /// </summary>
-        private readonly string name;
+        private string name;
 
         /// <summary>
         /// Gets the entity (table) name.
@@ -25,6 +25,10 @@ namespace TestDataSeeding.Model
             get
             {
                 return name;
+            }
+            set
+            {
+                name = value;
             }
         }
 
@@ -43,6 +47,10 @@ namespace TestDataSeeding.Model
             {
                 return attributes;
             }
+            set
+            {
+                attributes = value;
+            }
         }
 
         /// <summary>
@@ -58,6 +66,10 @@ namespace TestDataSeeding.Model
             get
             {
                 return primaryKeys;
+            }
+            set
+            {
+                primaryKeys = value;
             }
         }
 
@@ -76,6 +88,21 @@ namespace TestDataSeeding.Model
             {
                 return foreignKeys;
             }
+            set
+            {
+                foreignKeys = value;
+            }
+        }
+
+        /// <summary>
+        /// Constructs a new empty EntityStructure.
+        /// </summary>
+        public EntityStructure()
+        {
+            this.name = null;
+            this.attributes = new Dictionary<string, string>();
+            this.primaryKeys = new List<string>();
+            this.foreignKeys = new Dictionary<string, EntityForeignKey>();
         }
 
         /// <summary>
@@ -116,7 +143,7 @@ namespace TestDataSeeding.Model
         /// <returns>Returns the string representation of this EntityType.</returns>
         public override string ToString()
         {
-            StringBuilder stringBuilder = new StringBuilder("[EntityType: " + name + "]\n");
+            StringBuilder stringBuilder = new StringBuilder("[EntityStructure: " + name + "]\n");
 
             foreach (var attribute in attributes)
             {

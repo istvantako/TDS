@@ -15,16 +15,21 @@ namespace TestDataSeeding.Model
         /// <summary>
         /// The entity (table) name.
         /// </summary>
-        private readonly string name;
+        private string name;
 
         /// <summary>
         /// Gets the entity (table) name.
         /// </summary>
+        [YAXAttributeForClass()]
         public string Name
         {
             get
             {
                 return name;
+            }
+            set
+            {
+                name = value;
             }
         }
 
@@ -37,16 +42,29 @@ namespace TestDataSeeding.Model
         /// Gets the dictionary of the attribute values, the keys are attribute names, the values are the corresponding
         /// attribute values.
         /// </summary>
-        [YAXDictionary(EachPairName = "Atribute", KeyName = "Name", ValueName = "Value",
+        [YAXDictionary(EachPairName = "Attribute", KeyName = "AttributeName", ValueName = "Value",
                    SerializeKeyAs = YAXNodeTypes.Attribute,
                    SerializeValueAs = YAXNodeTypes.Attribute)]
-        [YAXSerializeAs("Atributes")]
+        [YAXSerializeAs("AttributeValues")]
         public Dictionary<string, string> AttributeValues
         {
             get
             {
                 return attributeValues;
             }
+            set
+            {
+                attributeValues = value;
+            }
+        }
+
+        /// <summary>
+        /// Constructs a new empty Entity.
+        /// </summary>
+        public Entity()
+        {
+            this.name = null;
+            this.attributeValues = new Dictionary<string, string>();
         }
 
         /// <summary>
@@ -79,8 +97,29 @@ namespace TestDataSeeding.Model
                 return false;
             }
 
-            // Return true, if the fields match.
-            return (this.name.Equals(entity.name) && this.attributeValues.Equals(entity.attributeValues));
+            // Return true, if the fields match, otherwise false.
+            if (!name.Equals(entity.name))
+            {
+                return false;
+            }
+
+            foreach (var attribute in attributeValues)
+            {
+                if (entity.attributeValues.ContainsKey(attribute.Key))
+                {
+                    var value = entity.attributeValues[attribute.Key];
+                    if (!attribute.Value.Equals(value))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>

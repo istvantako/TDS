@@ -17,20 +17,23 @@ namespace TestDataSeeding.Logic
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <param name="entityStructure">The structure of the entity.</param>
-        void SaveEntity(Entity entity, EntityStructure entityStructure);
+        /// <param name="path">The path where to save the entity.</param>
+        void SaveEntity(Entity entity, EntityStructure entityStructure, string path);
 
         /// <summary>
         /// Returns a new entity identified by the entity name from the <paramref name="entityStructure"/> and <paramref name="primaryKeyValues"/>.
         /// </summary>
         /// <param name="entityStructure">The structure of the entity.</param>
         /// <param name="primaryKeyValues">A list with the pramary key values that identifies the entity.</param>
+        /// <param name="path">The path where the entity is stored.</param>
         /// <returns>A new entity identified by <paramref name="entityStructure"/> and <paramref name="primaryKeyValues"/>.</returns>
-        Entity GetEntity(EntityStructure entityStructure, List<string> primaryKeyValues);
+        Entity GetEntity(EntityStructure entityStructure, List<string> primaryKeyValues, string path);
 
         /// <summary>
-        /// Returns an EntityStructures collection.
+        /// Returns an EntityStructures collection from the specified <paramref name="path"/>.
         /// </summary>
-        /// <returns>An EntityStructures collection.</returns>
-        EntityStructures GetEntityStructures();
+        /// <param name="path">The path where the entity structures are stored.</param>
+        /// <returns>An EntityStructures collection from the specified <paramref name="path"/>.</returns>
+        EntityStructures GetEntityStructures(string path);
     }
 }

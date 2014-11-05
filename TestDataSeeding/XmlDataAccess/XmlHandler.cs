@@ -8,60 +8,107 @@ using TestDataSeeding.Logic;
 using YAXLib;
 using TestDataSeeding.Model;
 using System.Xml.Linq;
+using System.IO;
 
 namespace TestDataSeeding.XmlDataAccess
 {
+    /// <summary>
+    /// A basic implementation of the IXmlDataAccess interface.
+    /// </summary>
     public class XmlHandler : IXmlDataAccess
     {
-
-        public void SaveEntity(Entity entity, EntityStructure entityStructure)
+        public void SaveEntity(Entity entity, EntityStructure entityStructure, string path)
         {
-            var serializer = new YAXSerializer(typeof(Entity));
-            var xmlName = BuildFileName(entity, entityStructure);
-            var wr = new XmlTextWriter(xmlName, null);
-            serializer.Serialize(entity, wr); ;
-            Console.WriteLine(serializer.Serialize(entity));
-            wr.Flush();
+            try
+            {
+                var serializer = new YAXSerializer(typeof(Entity));
+                var xmlFileName = BuildFileName(entity, entityStructure, path);
+                var writer = new XmlTextWriter(xmlFileName, null);
+                serializer.Serialize(entity, writer);
+                // Console.WriteLine(serializer.Serialize(entity));
+                writer.Close();
+            }
+            catch (UnauthorizedAccessException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
         }
 
-        public Entity GetEntity(EntityStructure entityStructure, List<string> primaryKeyValues)
+        public Entity GetEntity(EntityStructure entityStructure, List<string> primaryKeyValues, string path)
         {
-            String xmlFileName = BuildFileName(entityStructure, primaryKeyValues);
-            var deserializer = new YAXSerializer(typeof(Entity));
-            XmlReader reader = XmlReader.Create(xmlFileName);
-            reader.MoveToContent();
-            XDocument xdoc = XDocument.Load(reader);
+            string xmlFileName = BuildFileName(entityStructure, primaryKeyValues, path);
+            var deserializer = new YAXSerializer(typeof(Entity), YAXExceptionHandlingPolicies.ThrowErrorsOnly,
+                YAXExceptionTypes.Warning);
+            object deserializedObject = null;
+            XElement xElement = XElement.Load(xmlFileName);
 
-            //reader.Close();
-            //var entity =deserializer.DeserializeFromFile(xmlFileName);
-            return null;
+            try
+            {
+                deserializedObject = deserializer.Deserialize(xElement.ToString());
+
+                if (deserializer.ParsingErrors.ContainsAnyError)
+                {
+                    Console.WriteLine("Succeeded to deserialize, but these problems also happened:");
+                    Console.WriteLine(deserializer.ParsingErrors.ToString());
+                }
+            }
+            catch (YAXException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+
+            return (deserializedObject as Entity);
         }
 
-
-        public EntityStructures GetEntityStructures()
+        public EntityStructures GetEntityStructures(string path)
         {
             throw new NotImplementedException();
         }
 
-        private String BuildFileName(Entity entity, EntityStructure entityStructure)
+        /// <summary>
+        /// Builds an XML file name with <paramref name="path"/> and based on the name and key values of the entity.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <param name="entityStructure">The entity structure.</param>
+        /// <param name="path">The path where the file is stored.</param>
+        /// <returns>The XML file name with path.</returns>
+        private string BuildFileName(Entity entity, EntityStructure entityStructure, string path)
         {
-            String s = entity.Name;
-            foreach (var i in entityStructure.PrimaryKeys)
+            StringBuilder builder = new StringBuilder(path + "\\" + entity.Name);
+
+            foreach (var keyName in entityStructure.PrimaryKeys)
             {
-                s += "_" + entity.AttributeValues[i];
+                builder.Append("_" + entity.AttributeValues[keyName]);
             }
-            return s + ".xml";
+
+            builder.Append(".xml");
+
+            return builder.ToString();
         }
 
-        private string BuildFileName(EntityStructure entityStructure, List<string> primaryKeyValues)
+        /// <summary>
+        /// Builds an XML file name with <paramref name="path"/> and based on the name and key values of the entity.
+        /// </summary>
+        /// <param name="entityStructure">The given EntityStructure.</param>
+        /// <param name="primaryKeyValues">The given primary key values.</param>
+        /// <param name="path">The path where the file is stored.</param>
+        /// <returns>The XML file name with path.</returns>
+        private string BuildFileName(EntityStructure entityStructure, List<string> primaryKeyValues, string path)
         {
-            String s = entityStructure.Name;
-            foreach (var i in primaryKeyValues)
-            {
-                s += "_" + i;
-            }
-            return s + ".xml";
-        }
+            StringBuilder builder = new StringBuilder(path + "\\" + entityStructure.Name);
 
+            foreach (var keyValue in primaryKeyValues)
+            {
+                builder.Append("_" + keyValue);
+            }
+
+            builder.Append(".xml");
+
+            return builder.ToString();
+        }
     }
 }
