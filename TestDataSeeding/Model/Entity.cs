@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YAXLib;
 
 namespace TestDataSeeding.Model
 {
@@ -36,6 +37,10 @@ namespace TestDataSeeding.Model
         /// Gets the dictionary of the attribute values, the keys are attribute names, the values are the corresponding
         /// attribute values.
         /// </summary>
+        [YAXDictionary(EachPairName = "Atribute", KeyName = "Name", ValueName = "Value",
+                   SerializeKeyAs = YAXNodeTypes.Attribute,
+                   SerializeValueAs = YAXNodeTypes.Attribute)]
+        [YAXSerializeAs("Atributes")]
         public Dictionary<string, string> AttributeValues
         {
             get
