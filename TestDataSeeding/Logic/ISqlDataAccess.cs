@@ -39,5 +39,11 @@ namespace TestDataSeeding.Logic
         /// </summary>
         /// <param name="sqlConnection">The SqlConnection object.</param>
         void SetSqlConnection(SqlConnection sqlConnection);
+
+        /// <summary>
+        /// Returns the SQL status of the last performed action.
+        /// </summary>
+        /// <returns>The SQL status of the last performed action.</returns>
+        SqlStatus getSqlStatus();
     }
 }

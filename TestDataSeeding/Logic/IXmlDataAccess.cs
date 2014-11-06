@@ -35,5 +35,11 @@ namespace TestDataSeeding.Logic
         /// <param name="path">The path where the entity structures are stored.</param>
         /// <returns>An EntityStructures collection from the specified <paramref name="path"/>.</returns>
         EntityStructures GetEntityStructures(string path);
+
+        /// <summary>
+        /// Returns the XML status of the last performed action.
+        /// </summary>
+        /// <returns>The XML status of the last performed action.</returns>
+        XmlStatus getXmlStatus();
     }
 }
