@@ -1,0 +1,45 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TestDataSeeding.Model;
+
+namespace TestDataSeeding.Logic
+{
+    /// <summary>
+    /// Data access object (DAO) for XML files.
+    /// </summary>
+    public interface IXmlDataAccess
+    {
+        /// <summary>
+        /// Saves the <paramref name="entity"/> to an XML file.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <param name="entityStructure">The structure of the entity.</param>
+        /// <param name="path">The path where to save the entity.</param>
+        void SaveEntity(Entity entity, EntityStructure entityStructure, string path);
+
+        /// <summary>
+        /// Returns a new entity identified by the entity name from the <paramref name="entityStructure"/> and <paramref name="primaryKeyValues"/>.
+        /// </summary>
+        /// <param name="entityStructure">The structure of the entity.</param>
+        /// <param name="primaryKeyValues">A list with the pramary key values that identifies the entity.</param>
+        /// <param name="path">The path where the entity is stored.</param>
+        /// <returns>A new entity identified by <paramref name="entityStructure"/> and <paramref name="primaryKeyValues"/>.</returns>
+        Entity GetEntity(EntityStructure entityStructure, List<string> primaryKeyValues, string path);
+
+        /// <summary>
+        /// Returns an EntityStructures collection from the specified <paramref name="path"/>.
+        /// </summary>
+        /// <param name="path">The path where the entity structures are stored.</param>
+        /// <returns>An EntityStructures collection from the specified <paramref name="path"/>.</returns>
+        EntityStructures GetEntityStructures(string path);
+
+        /// <summary>
+        /// Returns the XML status of the last performed action.
+        /// </summary>
+        /// <returns>The XML status of the last performed action.</returns>
+        XmlStatus getXmlStatus();
+    }
+}
