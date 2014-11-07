@@ -1,139 +1,116 @@
 ﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace TestDataSeeding.SqlDataAccess
 {
     public abstract class Sql
     {
-        private static bool Connected;
-        private static bool ConnectionCreated;
-
-        protected static SqlConnection Connection;
-        protected string ConnectionString;
+        private SqlConnection connection;
 
         /// <summary>
-        /// Creates a new Database Connection.
+        /// Opens the database connection.
         /// </summary>
-        private bool CreateConnection()
+        /// <param name="connectionString">An SQL connection string.</param>
+        /// <returns>Returns wether the connection could be opened or not.</returns>
+        protected bool OpenConnectionWithString(string connectionString)
         {
-            if (ConnectionCreated != true)
-            {
-                try
-                {
-                    Connection = new SqlConnection(ConnectionString);
-                    Connection.Open();
-                    ConnectionCreated = true;
-                    Connection.Close();
-                    Connected = false;
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Opens the Connection.
-        /// </summary>
-        private bool OpenConnection()
-        {
-            if (Connected != true)
-            {
-                try
-                {
-                    CreateConnection();
-                    Connection.Open();
-                    Connected = true;
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Closes the Connection.
-        /// </summary>
-        private void CloseConnection()
-        {
-            if (Connected == true)
-            {
-                Connection.Close();
-                Connected = false;
-            }
-        }
-
-        /// <summary>
-        /// Executes a given query, and returns the result in a datareader.
-        /// </summary>
-        /// <param name="query"> The query to be executed </param>
-        /// <param name="errorMessage"> Output error message </param>
-        /// <returns>An SqlDataReader with the result of the query</returns>
-        protected SqlDataReader ExecuteReader(string query, ref string errorMessage)
-        {
+            CloseConnection();
             try
             {
-                OpenConnection();
-                SqlCommand cmd = new SqlCommand(query, Connection);
-                SqlDataReader rdr = cmd.ExecuteReader();
-                return rdr;
+                connection = new SqlConnection(connectionString);
+                connection.Open();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Opens the database connection.
+        /// </summary>
+        /// <param name="sqlConnection">An sqlConnection object.</param>
+        /// <returns>Returns wether the connection could be opened or not.</returns>
+        protected bool OpenConnection(SqlConnection sqlConnection)
+        {
+            CloseConnection();
+            try
+            {
+                connection = sqlConnection;
+                connection.Open();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Closes the database Connection.
+        /// </summary>
+        protected void CloseConnection()
+        {
+            if (connection != null && connection.State == ConnectionState.Open)
+            {
+                connection.Close();
+            }
+        }
+
+        /// <summary>
+        /// Executes a given sql Select query.
+        /// </summary>
+        /// <param name="query"> The query to be executed </param>
+        /// <returns>An SqlDataReader with the result of the query</returns>
+        protected SqlDataReader ExecuteQuery(string query)
+        {
+            Log(query);
+            try
+            {
+                SqlCommand sqlCommand = new SqlCommand(query, connection);
+                SqlDataReader dataReader = sqlCommand.ExecuteReader();
+                return dataReader;
             }
             catch (SqlException e)
             {
-                errorMessage = e.Message;
-                CloseConnection();
+                Log(e.Message);
                 return null;
             }
         }
 
         /// <summary>
-        /// Executes a given insert/update/delete command, and returns an error message. 
-        /// (errormessage is "OK" if no exception occured)
+        /// Executes a given insert/update/delete command.
         /// </summary>
         /// <param name="command">The command to be executed</param>
-        /// <returns>A string with the error message</returns>
-        protected string ExecuteNonQuery(string command)
+        /// <returns>Number of rows affected</returns>
+        protected int ExecuteNonQuery(string command)
         {
-            string error;
+            Log(command);
             try
             {
-                OpenConnection();
-                SqlCommand cmd = new SqlCommand(command, Connection);
-                cmd.ExecuteNonQuery();
-                error = "OK";
+                SqlCommand sqlCommand = new SqlCommand(command, connection);
+                int rowsAffected = sqlCommand.ExecuteNonQuery();
+                return rowsAffected;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                error = ex.Message;
+                Log(e.Message);
+                return -1;
             }
-            finally
-            {
-                CloseConnection();
-            }
-            return error;
         }
 
         /// <summary>
-        /// Closes the data reader given as a parameter, and also closes the connection
+        /// Appends the line to the SQLlog.txt
         /// </summary>
-        /// <param name="datareader">The SqlDataReader to be closed</param>
-        protected void CloseDataReader(SqlDataReader datareader)
+        /// <param name="line">The string to be appended.</param>
+        private void Log(String line)
         {
-            if (datareader != null)
-                datareader.Close();
-            CloseConnection();
+            System.IO.StreamWriter file = new System.IO.StreamWriter("SQLlog.txt", true);
+            file.WriteLine(DateTime.Now + " " + line);
+
+            file.Close();
         }
     }
 }

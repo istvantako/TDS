@@ -110,5 +110,11 @@ namespace TestDataSeeding.XmlDataAccess
 
             return builder.ToString();
         }
+
+
+        public XmlStatus getXmlStatus()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TestDataSeeding.Model;
 using TestDataSeeding.Logic;
 using TestDataSeeding.SqlDataAccess;
-using TestDataSeeding.XmlDataAccess;
+using System.Diagnostics;
 
 namespace TdsConsoleApp
 {
@@ -14,24 +14,34 @@ namespace TdsConsoleApp
     {
         static void Main(string[] args)
         {
-            /*string connectionString = "Data Source = JARVIS; Initial Catalog = TestBase; Integrated Security = SSPI";
+            //===============================================================
+            //Beni
+            string connectionString = "Data Source = JARVIS; Initial Catalog = TestBase; Integrated Security = SSPI";
 
-            EntityStructure et = new EntityStructure("Berlesek");
-            et.Attributes.Add("BerlesID", "int");
-            et.Attributes.Add("NyaraloID", "int");
-            et.Attributes.Add("BerloNev", "int");
-            et.PrimaryKeys.Add("BerlesID");
-            et.PrimaryKeys.Add("BerloNev");
+            EntityStructure structure = new EntityStructure("Termekek");
+            structure.Attributes.Add("KategoriaID", "int");
+            structure.PrimaryKeys.Add("KategoriaID");
 
-            et.ForeignKeys.Add("NyaraloID", new EntityForeignKey("Nyaralok", "NyaraloID"));
+            List<String> keys = new List<String> { "2" };
 
-            List<String> keys = new List<String> { "4", "Fulop Emese" };
+            SqlDataAccess access = new SqlDataAccess(connectionString);
+            if (access.getSqlStatus() == SqlStatus.Success)
+            {
+                Entity entity = access.GetEntity(structure, keys);
+                Console.WriteLine(access.getSqlStatus());
+                Console.WriteLine(entity);
+                access.ConnectionTeardown();
+            }
+            else
+            {
+                Console.WriteLine(access.getSqlStatus());
+            }
 
-            ISqlDataAccess acc = new SqlDataAccess();
-            acc.SetConnectionString(connectionString);
-            Entity tty = acc.GetEntity(et, keys);
-            Console.WriteLine(tty);
-            acc.SaveEntity(tty, et);*/
+            Console.Read();
+
+            //Beni
+            //===================================================================================
+            //Lajos
 
             /*Entity e1 = new Entity("Gyumi");
             e1.AttributeValues.Add("Gyumolcs", "Alma");
@@ -52,7 +62,7 @@ namespace TdsConsoleApp
             Console.WriteLine(e1.Equals(e2));
             Console.WriteLine(e1.Equals(e3));
             Console.WriteLine(e1.Equals(e4));
-            Console.WriteLine();*/
+            Console.WriteLine();
 
             Entity e5 = new Entity("Gyumi");
             e5.AttributeValues.Add("Gyumolcs", "Alma");
@@ -82,7 +92,10 @@ namespace TdsConsoleApp
             Entity e = xmlDataAccess.GetEntity(et, new List<string>() { "Alma", "Romania" }, "E:");
             Console.WriteLine("Deserialized:");
             Console.WriteLine(e);
-            Console.ReadLine();
+            Console.ReadLine();*/
+
+            //Lajos
+            //==============================================================================
         }
     }
 }

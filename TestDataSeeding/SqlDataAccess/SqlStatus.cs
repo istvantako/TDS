@@ -3,7 +3,7 @@
     Success,
     InvalidConnectionString,
     InvalidConnection,
-    TableNameNotFound,
+    TableOrAttributeNameNotFound,
     NoMatchesFound,
     MultipleMatchesFound
 }

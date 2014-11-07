@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TestDataSeeding.Logic;
 using TestDataSeeding.Model;
 
@@ -12,8 +8,12 @@ namespace TestDataSeeding.SqlDataAccess
 {
     public class SqlDataAccess : Sql, ISqlDataAccess
     {
+        private SqlStatus status;
+
         public void SaveEntity(Entity entity, EntityStructure entityStructure)
         {
+            status = SqlStatus.Success;
+
             string query = "UPDATE " + entityStructure.Name + " SET ";
 
             foreach (var entry in entity.AttributeValues)
@@ -23,7 +23,6 @@ namespace TestDataSeeding.SqlDataAccess
                     query += entry.Key + "='" + entry.Value + "',";
                 }
             }
-
             query = query.Remove(query.Length - 1);
             query += " WHERE ";
 
@@ -36,55 +35,119 @@ namespace TestDataSeeding.SqlDataAccess
                 }
             }
 
-            Debug.WriteLine(query);
+            int rowsAffected = ExecuteNonQuery(query);
 
-            Debug.WriteLine(ExecuteNonQuery(query));
+            if (rowsAffected == 0)
+            {
+                query = "INSERT INTO " + entity.Name + " Values (";
+                foreach (var entry in entity.AttributeValues)
+                {
+                    query += "'" + entry.Value + "',";
+                }
+
+                query = query.Remove(query.Length - 1);
+                query += ")";
+            }
         }
 
         public Entity GetEntity(EntityStructure entityStructure, List<string> primaryKeyValues)
         {
-            string error = string.Empty;
+            status = SqlStatus.Success;
+
             string query = "SELECT * FROM " + entityStructure.Name + " WHERE ";
             for (var i = 0; i < entityStructure.PrimaryKeys.Count; i++)
             {
-                query += entityStructure.PrimaryKeys[i] + "='" + primaryKeyValues[i] + "'";
-                if (i < entityStructure.PrimaryKeys.Count - 1)
-                {
-                    query += " and ";
-                }
+                query += entityStructure.PrimaryKeys[i] + "='" + primaryKeyValues[i] + "' and ";
             }
-          
-            SqlDataReader dataReader = ExecuteReader(query, ref error);
+            query = query.Remove(query.Length - 5);
+
+            Entity queriedEntity;
+            SqlDataReader dataReader = ExecuteQuery(query);
+
             if (dataReader != null)
             {
-                Entity queriedEntity = new Entity(entityStructure.Name);
-                
-                while (dataReader.Read())
+                if (dataReader.Read())
                 {
+                    queriedEntity = new Entity(entityStructure.Name);
                     for (var i = 0; i < dataReader.FieldCount; i++)
                     {
                         queriedEntity.AttributeValues.Add(dataReader.GetName(i), dataReader[i].ToString());
                     }
-                }
 
-                CloseDataReader(dataReader);
-                return queriedEntity;
+                    if (dataReader.Read())
+                    {
+                        queriedEntity = null;
+                        status = SqlStatus.MultipleMatchesFound;
+                    }
+                }
+                else
+                {
+                    queriedEntity = null;
+                    status = SqlStatus.NoMatchesFound;
+                }
+                dataReader.Close();
             }
             else
             {
-                CloseDataReader(dataReader);
-                return null;
+                queriedEntity = null;
+                status = SqlStatus.TableOrAttributeNameNotFound;
             }
+
+            return queriedEntity;
         }
 
         public void SetConnectionString(string connectionString)
         {
-            ConnectionString = connectionString;
+            status = SqlStatus.Success;
+            if (!OpenConnectionWithString(connectionString))
+            {
+                status = SqlStatus.InvalidConnectionString;
+            }
         }
 
-        public void SetSqlConnection(System.Data.SqlClient.SqlConnection sqlConnection)
+        public void SetSqlConnection(SqlConnection sqlConnection)
         {
-            Connection = sqlConnection;
+            status = SqlStatus.Success;
+            if (!OpenConnection(sqlConnection))
+            {
+                status = SqlStatus.InvalidConnection;
+            }
+        }
+
+        public SqlStatus getSqlStatus()
+        {
+            return status;
+        }
+
+        /// <summary>
+        /// Constructs a new SqlDataAccess.
+        /// </summary>
+        public SqlDataAccess() { }
+
+        /// <summary>
+        /// Constructs a new SqlDataAccess.
+        /// </summary>
+        /// <param name="connectionString">An SQL connection string.</param>
+        public SqlDataAccess(string connectionString)
+        {
+            SetConnectionString(connectionString);
+        }
+
+        /// <summary>
+        /// Constructs a new SqlDataAccess.
+        /// </summary>
+        /// <param name="sqlConnection">An sqlConnection object.</param>
+        public SqlDataAccess(SqlConnection sqlConnection)
+        {
+            SetSqlConnection(sqlConnection);
+        }
+
+        /// <summary>
+        /// Closes the connection.
+        /// </summary>
+        public void ConnectionTeardown()
+        {
+            base.CloseConnection();
         }
     }
 }
