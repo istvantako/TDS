@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YAXLib;
 
 namespace TestDataSeeding.Model
 {
@@ -14,32 +15,42 @@ namespace TestDataSeeding.Model
         /// <summary>
         /// The referenced entity (table) name.
         /// </summary>
-        private readonly string name;
+        private string name;
 
         /// <summary>
         /// Gets the referenced entity (table) name.
         /// </summary>
+        [YAXSerializeAs("Name")]
         public string EntityName
         {
             get
             {
                 return name;
             }
+            set
+            {
+                name = value;
+            }
         }
 
         /// <summary>
         /// The referenced key name.
         /// </summary>
-        private readonly string key;
+        private string key;
 
         /// <summary>
         /// Gets the referenced key name.
         /// </summary>
+        [YAXSerializeAs("AttributeName")]
         public string KeyName
         {
             get
             {
                 return key;
+            }
+            set
+            {
+                key = value;
             }
         }
 
@@ -52,6 +63,10 @@ namespace TestDataSeeding.Model
         {
             this.name = name;
             this.key = key;
+        }
+        
+        public EntityForeignKey()
+        {
         }
     }
 }

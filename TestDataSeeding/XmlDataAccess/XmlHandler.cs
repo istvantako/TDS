@@ -66,7 +66,56 @@ namespace TestDataSeeding.XmlDataAccess
 
         public EntityStructures GetEntityStructures(string path)
         {
-            throw new NotImplementedException();
+            string[] structureFilePaths;
+            EntityStructures entityStructures = new EntityStructures();
+            try
+            {
+                structureFilePaths = Directory.GetFiles(path, "*.xml");
+                
+                foreach (var filePath in structureFilePaths)
+                {
+                    try
+                    {
+                        entityStructures.Add(GetEntityStructure(filePath));
+                    }
+                    catch (Exception exception){
+                        Console.WriteLine("gond volt a: " + filePath + " betoltesekor");
+                        Console.WriteLine(exception.Message);
+                    }
+                }
+
+            }catch(DirectoryNotFoundException){
+                Console.WriteLine("ures");
+            }
+
+            return entityStructures;
+
+        }
+
+
+        private EntityStructure GetEntityStructure(string XmlPath)
+        {
+            var deserializer = new YAXSerializer(typeof(EntityStructure), YAXExceptionHandlingPolicies.ThrowErrorsOnly,
+                YAXExceptionTypes.Warning);
+            object deserializedObject = null;
+            XElement xElement = XElement.Load(XmlPath);
+
+            try
+            {
+                deserializedObject = deserializer.Deserialize(xElement.ToString());
+
+                if (deserializer.ParsingErrors.ContainsAnyError)
+                {
+                    Console.WriteLine("Succeeded to deserialize, but these problems also happened:");
+                    Console.WriteLine(deserializer.ParsingErrors.ToString());
+                }
+            }
+            catch (YAXException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+
+            return (deserializedObject as EntityStructure);
         }
 
         /// <summary>
@@ -115,6 +164,35 @@ namespace TestDataSeeding.XmlDataAccess
         public XmlStatus getXmlStatus()
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// ideiglenesen bentvan, hogy lehessen kimenteni strukturat ne kelljen kezzel megirni
+        /// </summary>
+        /// <param name="entityStructure"></param>
+        /// <param name="path"></param>
+
+        public void SaveStructure(EntityStructure entityStructure, string path)
+        {
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            try
+            {
+                var serializer = new YAXSerializer(typeof(EntityStructure));
+                var xmlFileName = path+"\\structure.xml";
+                var writer = new XmlTextWriter(xmlFileName, null);
+                serializer.Serialize(entityStructure, writer);
+                Console.WriteLine(serializer.Serialize(entityStructure));
+                writer.Close();
+            }
+            catch (UnauthorizedAccessException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YAXLib;
 
 namespace TestDataSeeding.Model
 {
@@ -41,6 +42,10 @@ namespace TestDataSeeding.Model
         /// Gets the dictionary of the attribute names, the keys are attribute names, the values are the corresponding
         /// attribute types.
         /// </summary>
+        [YAXDictionary(EachPairName = "Attribute", KeyName = "AttributeName", ValueName = "Type",
+                   SerializeKeyAs = YAXNodeTypes.Attribute,
+                   SerializeValueAs = YAXNodeTypes.Attribute)]
+        [YAXSerializeAs("AttributeValues")]
         public Dictionary<string, string> Attributes
         {
             get
@@ -56,11 +61,13 @@ namespace TestDataSeeding.Model
         /// <summary>
         /// The primary keys.
         /// </summary>
-        private List<string> primaryKeys;
+                private List<string> primaryKeys;
 
         /// <summary>
         /// Gets the list of the primary keys.
         /// </summary>
+        [YAXCollection(YAXCollectionSerializationTypes.Serially, SeparateBy = ", ")]
+        [YAXSerializeAs("PrimaryKeys")]
         public List<string> PrimaryKeys
         {
             get
@@ -82,6 +89,10 @@ namespace TestDataSeeding.Model
         /// Gets the dictionary of the foreign keys (attribute names), the keys are attribute names, the values are
         /// EntityForeignKey objects, holding the referenced entity (table) name and the referenced key (attribute) name.
         /// </summary>
+        [YAXDictionary(EachPairName = "ForeignKey", KeyName = "AttributeName", ValueName = "Target",
+                   SerializeKeyAs = YAXNodeTypes.Attribute,
+                   SerializeValueAs = YAXNodeTypes.Attribute)]
+        [YAXSerializeAs("ForeignKeys")]
         public Dictionary<string, EntityForeignKey> ForeignKeys
         {
             get
