@@ -4,16 +4,16 @@ using System.Data.SqlClient;
 
 namespace TestDataSeeding.SqlDataAccess
 {
-    public abstract class Sql
+    internal class SqlQueryExecutor
     {
         private SqlConnection connection;
-
+    
         /// <summary>
         /// Opens the database connection.
         /// </summary>
         /// <param name="connectionString">An SQL connection string.</param>
         /// <returns>Returns wether the connection could be opened or not.</returns>
-        protected bool OpenConnectionWithString(string connectionString)
+        internal bool OpenConnection(string connectionString)
         {
             CloseConnection();
             try
@@ -29,29 +29,9 @@ namespace TestDataSeeding.SqlDataAccess
         }
 
         /// <summary>
-        /// Opens the database connection.
-        /// </summary>
-        /// <param name="sqlConnection">An sqlConnection object.</param>
-        /// <returns>Returns wether the connection could be opened or not.</returns>
-        protected bool OpenConnection(SqlConnection sqlConnection)
-        {
-            CloseConnection();
-            try
-            {
-                connection = sqlConnection;
-                connection.Open();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
         /// Closes the database Connection.
         /// </summary>
-        protected void CloseConnection()
+        internal void CloseConnection()
         {
             if (connection != null && connection.State == ConnectionState.Open)
             {
@@ -64,7 +44,7 @@ namespace TestDataSeeding.SqlDataAccess
         /// </summary>
         /// <param name="query"> The query to be executed </param>
         /// <returns>An SqlDataReader with the result of the query</returns>
-        protected SqlDataReader ExecuteQuery(string query)
+        internal SqlDataReader ExecuteQuery(string query)
         {
             Log(query);
             try
@@ -85,7 +65,7 @@ namespace TestDataSeeding.SqlDataAccess
         /// </summary>
         /// <param name="command">The command to be executed</param>
         /// <returns>Number of rows affected</returns>
-        protected int ExecuteNonQuery(string command)
+        internal int ExecuteNonQuery(string command)
         {
             Log(command);
             try

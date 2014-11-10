@@ -49,9 +49,10 @@
     <Compile Include="Model\EntityStructure.cs" />
     <Compile Include="Model\EntityStructures.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlDataAccess\Sql.cs" />
     <Compile Include="SqlDataAccess\SqlDataAccess.cs" />
-    <Compile Include="SqlDataAccess\SqlStatus.cs" />
+    <Compile Include="SqlDataAccess\SqlDataAccessException.cs" />
+    <Compile Include="SqlDataAccess\SqlQueryBuilder.cs" />
+    <Compile Include="SqlDataAccess\SqlQueryExecutor.cs" />
     <Compile Include="XmlDataAccess\XmlHandler.cs" />
     <Compile Include="XmlDataAccess\XmlStatus.cs" />
     <Compile Include="YaxLib\Enums.cs" />

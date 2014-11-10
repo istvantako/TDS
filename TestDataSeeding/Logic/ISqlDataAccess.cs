@@ -32,18 +32,6 @@ namespace TestDataSeeding.Logic
         /// Sets the connection string.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
-        void SetConnectionString(string connectionString);
-
-        /// <summary>
-        /// Sets the SqlConnection for the database.
-        /// </summary>
-        /// <param name="sqlConnection">The SqlConnection object.</param>
-        void SetSqlConnection(SqlConnection sqlConnection);
-
-        /// <summary>
-        /// Returns the SQL status of the last performed action.
-        /// </summary>
-        /// <returns>The SQL status of the last performed action.</returns>
-        SqlStatus getSqlStatus();
+        void SetConnection(string connectionString);
     }
 }

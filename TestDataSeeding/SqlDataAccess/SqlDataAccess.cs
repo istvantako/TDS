@@ -6,64 +6,40 @@ using TestDataSeeding.Model;
 
 namespace TestDataSeeding.SqlDataAccess
 {
-    public class SqlDataAccess : Sql, ISqlDataAccess
+    public class SqlDataAccess : ISqlDataAccess
     {
-        private SqlStatus status;
+        private SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
+        private SqlQueryExecutor queryExecutor = new SqlQueryExecutor();
 
         public void SaveEntity(Entity entity, EntityStructure entityStructure)
         {
-            status = SqlStatus.Success;
+            string query = queryBuilder.CreateUpdateQuery(entity,entityStructure);
 
-            string query = "UPDATE " + entityStructure.Name + " SET ";
-
-            foreach (var entry in entity.AttributeValues)
-            {
-                if (!entityStructure.isPrimaryKey(entry.Key))
-                {
-                    query += entry.Key + "='" + entry.Value + "',";
-                }
-            }
-            query = query.Remove(query.Length - 1);
-            query += " WHERE ";
-
-            for (var i = 0; i < entityStructure.PrimaryKeys.Count; i++)
-            {
-                query += entityStructure.PrimaryKeys[i] + "='" + entity.AttributeValues[entityStructure.PrimaryKeys[i]] + "'";
-                if (i < entityStructure.PrimaryKeys.Count - 1)
-                {
-                    query += " and ";
-                }
-            }
-
-            int rowsAffected = ExecuteNonQuery(query);
-
+            int rowsAffected = queryExecutor.ExecuteNonQuery(query);
             if (rowsAffected == 0)
             {
-                query = "INSERT INTO " + entity.Name + " Values (";
-                foreach (var entry in entity.AttributeValues)
+                query = queryBuilder.CreateInsertQuery(entity, entityStructure);
+                rowsAffected = queryExecutor.ExecuteNonQuery(query);
+                if (rowsAffected == 0)
                 {
-                    query += "'" + entry.Value + "',";
+                    throw (new SqlDataAccessException("Entity could not be inserted."));
                 }
-
-                query = query.Remove(query.Length - 1);
-                query += ")";
+            }
+            else
+            {
+                if (rowsAffected > 1)
+                {
+                    throw (new SqlDataAccessException("Multiple rows affected."));
+                }
             }
         }
 
         public Entity GetEntity(EntityStructure entityStructure, List<string> primaryKeyValues)
         {
-            status = SqlStatus.Success;
-
-            string query = "SELECT * FROM " + entityStructure.Name + " WHERE ";
-            for (var i = 0; i < entityStructure.PrimaryKeys.Count; i++)
-            {
-                query += entityStructure.PrimaryKeys[i] + "='" + primaryKeyValues[i] + "' and ";
-            }
-            query = query.Remove(query.Length - 5);
+            string query = queryBuilder.CreateSelectQuery(entityStructure,primaryKeyValues);
 
             Entity queriedEntity;
-            SqlDataReader dataReader = ExecuteQuery(query);
-
+            SqlDataReader dataReader = queryExecutor.ExecuteQuery(query);
             if (dataReader != null)
             {
                 if (dataReader.Read())
@@ -76,47 +52,29 @@ namespace TestDataSeeding.SqlDataAccess
 
                     if (dataReader.Read())
                     {
-                        queriedEntity = null;
-                        status = SqlStatus.MultipleMatchesFound;
+                        throw (new SqlDataAccessException("Multiple matches found."));
                     }
                 }
                 else
                 {
-                    queriedEntity = null;
-                    status = SqlStatus.NoMatchesFound;
+                    throw (new SqlDataAccessException("No matches found."));
                 }
                 dataReader.Close();
             }
             else
             {
-                queriedEntity = null;
-                status = SqlStatus.TableOrAttributeNameNotFound;
+                throw (new SqlDataAccessException("Table or attribute name not found."));
             }
 
             return queriedEntity;
         }
 
-        public void SetConnectionString(string connectionString)
+        public void SetConnection(string connectionString)
         {
-            status = SqlStatus.Success;
-            if (!OpenConnectionWithString(connectionString))
+            if (!queryExecutor.OpenConnection(connectionString))
             {
-                status = SqlStatus.InvalidConnectionString;
+                throw (new SqlDataAccessException("Invalid connection."));
             }
-        }
-
-        public void SetSqlConnection(SqlConnection sqlConnection)
-        {
-            status = SqlStatus.Success;
-            if (!OpenConnection(sqlConnection))
-            {
-                status = SqlStatus.InvalidConnection;
-            }
-        }
-
-        public SqlStatus getSqlStatus()
-        {
-            return status;
         }
 
         /// <summary>
@@ -130,16 +88,7 @@ namespace TestDataSeeding.SqlDataAccess
         /// <param name="connectionString">An SQL connection string.</param>
         public SqlDataAccess(string connectionString)
         {
-            SetConnectionString(connectionString);
-        }
-
-        /// <summary>
-        /// Constructs a new SqlDataAccess.
-        /// </summary>
-        /// <param name="sqlConnection">An sqlConnection object.</param>
-        public SqlDataAccess(SqlConnection sqlConnection)
-        {
-            SetSqlConnection(sqlConnection);
+            SetConnection(connectionString);
         }
 
         /// <summary>
@@ -147,7 +96,7 @@ namespace TestDataSeeding.SqlDataAccess
         /// </summary>
         public void ConnectionTeardown()
         {
-            base.CloseConnection();
+            queryExecutor.CloseConnection();
         }
     }
 }
