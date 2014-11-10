@@ -27,11 +27,5 @@ namespace TestDataSeeding.Logic
         /// <param name="primaryKeyValues">A list with the pramary key values that identifies the entity.</param>
         /// <returns>A new entity identified by <paramref name="entityName"/> and <paramref name="primaryKeyValues"/>.</returns>
         Entity GetEntity(EntityStructure entityStructure, List<string> primaryKeyValues);
-
-        /// <summary>
-        /// Sets the connection string.
-        /// </summary>
-        /// <param name="connectionString">The connection string.</param>
-        void SetConnection(string connectionString);
     }
 }

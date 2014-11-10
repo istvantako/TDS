@@ -69,26 +69,16 @@ namespace TestDataSeeding.SqlDataAccess
             return queriedEntity;
         }
 
-        public void SetConnection(string connectionString)
-        {
-            if (!queryExecutor.OpenConnection(connectionString))
-            {
-                throw (new SqlDataAccessException("Invalid connection."));
-            }
-        }
-
-        /// <summary>
-        /// Constructs a new SqlDataAccess.
-        /// </summary>
-        public SqlDataAccess() { }
-
         /// <summary>
         /// Constructs a new SqlDataAccess.
         /// </summary>
         /// <param name="connectionString">An SQL connection string.</param>
-        public SqlDataAccess(string connectionString)
+        public SqlDataAccess()
         {
-            SetConnection(connectionString);
+            if (!queryExecutor.OpenConnection())
+            {
+                throw (new SqlDataAccessException("Invalid connection."));
+            }
         }
 
         /// <summary>

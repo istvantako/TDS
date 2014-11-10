@@ -8,6 +8,7 @@ using TestDataSeeding.Logic;
 using TestDataSeeding.SqlDataAccess;
 using System.Diagnostics;
 using TestDataSeeding.XmlDataAccess;
+using System.Configuration;
 
 namespace TdsConsoleApp
 {
@@ -17,29 +18,21 @@ namespace TdsConsoleApp
         {
             //===============================================================
             //Beni
-            /*string connectionString = "Data Source = JARVIS; Initial Catalog = TestBase; Integrated Security = SSPI";
-
+            /*
             EntityStructure structure = new EntityStructure("Termekek");
-            structure.Attributes.Add("KategoriaID", "int");
-            structure.PrimaryKeys.Add("KategoriaID");
+            structure.Attributes.Add("TermekID", "int");
+            structure.PrimaryKeys.Add("TermekID");
 
             List<String> keys = new List<String> { "2" };
 
-            SqlDataAccess access = new SqlDataAccess(connectionString);
-            if (access.getSqlStatus() == SqlStatus.Success)
-            {
-                Entity entity = access.GetEntity(structure, keys);
-                Console.WriteLine(access.getSqlStatus());
-                Console.WriteLine(entity);
-                access.ConnectionTeardown();
-            }
-            else
-            {
-                Console.WriteLine(access.getSqlStatus());
-            }
+            SqlDataAccess access = new SqlDataAccess();
 
-            Console.Read();*/
+            Entity entity = access.GetEntity(structure, keys);
+            Console.WriteLine(entity);
+            access.ConnectionTeardown();
 
+            Console.Read();
+            */
             //Beni
             //===================================================================================
             //Lajos
@@ -97,7 +90,7 @@ namespace TdsConsoleApp
             */
             //Mark
             //==============================================================================
-
+            /*
             IXmlDataAccess xmlDataAccess = new XmlHandler();
             var structures = xmlDataAccess.GetEntityStructures("D:\\structures");
             var enumerator = structures.GetEnumerator();
@@ -105,9 +98,9 @@ namespace TdsConsoleApp
             {
                 Console.WriteLine(enumerator.Current);
             }
-
-            Console.ReadLine();
             
+            Console.ReadLine();
+            */
         }
     }
 }

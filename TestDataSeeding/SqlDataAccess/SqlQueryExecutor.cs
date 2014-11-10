@@ -1,28 +1,42 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Configuration;
+using System.Diagnostics;
 
 namespace TestDataSeeding.SqlDataAccess
 {
     internal class SqlQueryExecutor
     {
         private SqlConnection connection;
+        private string logPath;
     
         /// <summary>
         /// Opens the database connection.
         /// </summary>
         /// <param name="connectionString">An SQL connection string.</param>
         /// <returns>Returns wether the connection could be opened or not.</returns>
-        internal bool OpenConnection(string connectionString)
+        internal bool OpenConnection()
         {
+            logPath = ConfigurationManager.AppSettings["DatabaseLogPath"] ?? "SQLlog.txt";
+
             CloseConnection();
-            try
+            string connectionString = GetConnectionStringByName("DatabaseConnection");
+
+            if (connectionString != null)
             {
-                connection = new SqlConnection(connectionString);
-                connection.Open();
-                return true;
+                try
+                {
+                    connection = new SqlConnection(connectionString);
+                    connection.Open();
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
             }
-            catch
+            else
             {
                 return false;
             }
@@ -81,13 +95,26 @@ namespace TestDataSeeding.SqlDataAccess
             }
         }
 
+        static string GetConnectionStringByName(string name)
+        {
+            string returnValue = null;
+
+            ConnectionStringSettings settings =
+                ConfigurationManager.ConnectionStrings[name];
+
+            if (settings != null)
+                returnValue = settings.ConnectionString;
+
+            return returnValue;
+        }
+
         /// <summary>
         /// Appends the line to the SQLlog.txt
         /// </summary>
         /// <param name="line">The string to be appended.</param>
         private void Log(String line)
         {
-            System.IO.StreamWriter file = new System.IO.StreamWriter("SQLlog.txt", true);
+            System.IO.StreamWriter file = new System.IO.StreamWriter(logPath, true);
             file.WriteLine(DateTime.Now + " " + line);
 
             file.Close();
