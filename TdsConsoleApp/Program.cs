@@ -41,8 +41,8 @@ namespace TdsConsoleApp
             //Beni
             //===================================================================================
             //Lajos
-
-            /*Entity e1 = new Entity("Gyumi");
+            /*
+            Entity e1 = new Entity("Gyumi");
             e1.AttributeValues.Add("Gyumolcs", "Alma");
             Console.WriteLine(e1);
 
@@ -84,20 +84,21 @@ namespace TdsConsoleApp
                 Console.WriteLine(et1);
             }
 
-            IXmlDataAccess xmlDataAccess = new XmlHandler();
+            XmlHandler xmlDataAccess = new XmlHandler();
             Console.WriteLine("Saving entity ...");
             xmlDataAccess.SaveEntity(e5, et, "D:");
             Console.WriteLine("Saved.");
             Entity e = xmlDataAccess.GetEntity(et, new List<string>() { "Alma", "Romania" }, "D:");
             Console.WriteLine("Deserialized:");
             Console.WriteLine(e);
-            Console.ReadLine();
+            
+            xmlDataAccess.SaveStructure(et, "D://structures", "structure2.xml");
             */
             //Mark
             //==============================================================================
-            /*
-            IXmlDataAccess xmlDataAccess = new XmlHandler();
-            var structures = xmlDataAccess.GetEntityStructures("D:\\structures");
+            
+            //IXmlDataAccess xmlDataAccess = new XmlHandler();
+            /*var structures = xmlDataAccess.GetEntityStructures("D:\\structures");
             var enumerator = structures.GetEnumerator();
             while (enumerator.MoveNext())
             {

@@ -54,6 +54,7 @@
     <Compile Include="SqlDataAccess\SqlDataAccessException.cs" />
     <Compile Include="SqlDataAccess\SqlQueryBuilder.cs" />
     <Compile Include="SqlDataAccess\SqlQueryExecutor.cs" />
+    <Compile Include="XmlDataAccess\XmlDataAccessException.cs" />
     <Compile Include="XmlDataAccess\XmlHandler.cs" />
     <Compile Include="XmlDataAccess\XmlStatus.cs" />
     <Compile Include="YaxLib\Enums.cs" />

@@ -21,47 +21,52 @@ namespace TestDataSeeding.XmlDataAccess
         {
             try
             {
-                var serializer = new YAXSerializer(typeof(Entity));
                 var xmlFileName = BuildFileName(entity, entityStructure, path);
-                var writer = new XmlTextWriter(xmlFileName, null);
-                serializer.Serialize(entity, writer);
-                writer.Close();
+                Serialize<Entity>(entity, xmlFileName);
             }
             catch (UnauthorizedAccessException exception)
             {
-                Console.WriteLine(exception.Message);
+                throw exception;
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception.Message);
+                throw exception;
             }
         }
+
+
 
         public Entity GetEntity(EntityStructure entityStructure, List<string> primaryKeyValues, string path)
         {
             string xmlFileName = BuildFileName(entityStructure, primaryKeyValues, path);
-            var deserializer = new YAXSerializer(typeof(Entity), YAXExceptionHandlingPolicies.ThrowErrorsOnly,
-                YAXExceptionTypes.Warning);
-            object deserializedObject = null;
-            XElement xElement = XElement.Load(xmlFileName);
-
+            Entity deserializedObject = null;
             try
             {
-                deserializedObject = deserializer.Deserialize(xElement.ToString());
-
-                if (deserializer.ParsingErrors.ContainsAnyError)
-                {
-                    Console.WriteLine("Succeeded to deserialize, but these problems also happened:");
-                    Console.WriteLine(deserializer.ParsingErrors.ToString());
-                }
+                deserializedObject= Deserialize<Entity>(xmlFileName);
             }
             catch (YAXException exception)
             {
-                Console.WriteLine(exception.Message);
+                throw exception;
             }
 
             return (deserializedObject as Entity);
         }
+
+        private T Deserialize<T>(string xmlFilePath)
+        {
+            var deserializer = new YAXSerializer(typeof(T), YAXExceptionHandlingPolicies.ThrowErrorsOnly,
+               YAXExceptionTypes.Warning);
+            object deserializedObject = null;
+            XElement xElement = XElement.Load(xmlFilePath);
+            deserializedObject = deserializer.Deserialize(xElement.ToString());
+            if (deserializer.ParsingErrors.ContainsAnyError)
+            {
+                Console.WriteLine("Succeeded to deserialize, but these problems also happened:");
+                Console.WriteLine(deserializer.ParsingErrors.ToString());
+            }
+            return ((T) deserializedObject );
+        }
+
 
         public EntityStructures GetEntityStructures(string path)
         {
@@ -70,21 +75,22 @@ namespace TestDataSeeding.XmlDataAccess
             try
             {
                 structureFilePaths = Directory.GetFiles(path, "*.xml");
-                
+
                 foreach (var filePath in structureFilePaths)
                 {
                     try
                     {
                         entityStructures.Add(GetEntityStructure(filePath));
                     }
-                    catch (Exception exception){
-                        Console.WriteLine("gond volt a: " + filePath + " betoltesekor");
-                        Console.WriteLine(exception.Message);
+                    catch (Exception exception)
+                    {
+                        throw exception;
                     }
                 }
-
-            }catch(DirectoryNotFoundException){
-                Console.WriteLine("ures");
+            }
+            catch (DirectoryNotFoundException exception)
+            {
+                throw exception;
             }
 
             return entityStructures;
@@ -94,27 +100,17 @@ namespace TestDataSeeding.XmlDataAccess
 
         private EntityStructure GetEntityStructure(string XmlPath)
         {
-            var deserializer = new YAXSerializer(typeof(EntityStructure), YAXExceptionHandlingPolicies.ThrowErrorsOnly,
-                YAXExceptionTypes.Warning);
-            object deserializedObject = null;
-            XElement xElement = XElement.Load(XmlPath);
-
+            EntityStructure deserializedObject;
             try
             {
-                deserializedObject = deserializer.Deserialize(xElement.ToString());
-
-                if (deserializer.ParsingErrors.ContainsAnyError)
-                {
-                    Console.WriteLine("Succeeded to deserialize, but these problems also happened:");
-                    Console.WriteLine(deserializer.ParsingErrors.ToString());
-                }
+                deserializedObject = Deserialize<EntityStructure>(XmlPath);
             }
             catch (YAXException exception)
             {
-                Console.WriteLine(exception.Message);
+                throw exception;
             }
 
-            return (deserializedObject as EntityStructure);
+            return (deserializedObject );
         }
 
         /// <summary>
@@ -171,27 +167,31 @@ namespace TestDataSeeding.XmlDataAccess
         /// <param name="entityStructure"></param>
         /// <param name="path"></param>
 
-        public void SaveStructure(EntityStructure entityStructure, string path)
+        public void SaveStructure(EntityStructure entityStructure, string path, string xmlName)
         {
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
             try
             {
-                var serializer = new YAXSerializer(typeof(EntityStructure));
-                var xmlFileName = path+"\\structure.xml";
-                var writer = new XmlTextWriter(xmlFileName, null);
-                serializer.Serialize(entityStructure, writer);
-                Console.WriteLine(serializer.Serialize(entityStructure));
-                writer.Close();
+                Serialize<EntityStructure>(entityStructure, path + "\\" + xmlName);
             }
             catch (UnauthorizedAccessException exception)
             {
-                Console.WriteLine(exception.Message);
+                throw exception;
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception.Message);
+                throw exception;
             }
+        }
+
+        private void Serialize<T>(T entity, String xmlFileName)
+        {
+            var serializer = new YAXSerializer(typeof(T));
+            var writer = new XmlTextWriter(xmlFileName, null);
+            writer.Formatting = Formatting.Indented;
+            serializer.Serialize(entity, writer);
+            writer.Close();
         }
     }
 }
