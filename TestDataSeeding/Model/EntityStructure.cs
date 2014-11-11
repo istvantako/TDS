@@ -61,7 +61,7 @@ namespace TestDataSeeding.Model
         /// <summary>
         /// The primary keys.
         /// </summary>
-                private List<string> primaryKeys;
+        private List<string> primaryKeys;
 
         /// <summary>
         /// Gets the list of the primary keys.

@@ -25,7 +25,6 @@ namespace TestDataSeeding.XmlDataAccess
                 var xmlFileName = BuildFileName(entity, entityStructure, path);
                 var writer = new XmlTextWriter(xmlFileName, null);
                 serializer.Serialize(entity, writer);
-                // Console.WriteLine(serializer.Serialize(entity));
                 writer.Close();
             }
             catch (UnauthorizedAccessException exception)

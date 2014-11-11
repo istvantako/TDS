@@ -16,9 +16,10 @@ namespace TdsConsoleApp
     {
         static void Main(string[] args)
         {
+            run(args);
             //===============================================================
             //Beni
-            EntityStructure structure = new EntityStructure("Termekek");
+            /*EntityStructure structure = new EntityStructure("Termekek");
             structure.Attributes.Add("TermekID", "int");
             structure.PrimaryKeys.Add("TermekID");
 
@@ -36,7 +37,7 @@ namespace TdsConsoleApp
                 Console.WriteLine(e.Message);
             }
             Console.Read();
-            
+            */
             //Beni
             //===================================================================================
             //Lajos
@@ -102,9 +103,43 @@ namespace TdsConsoleApp
             {
                 Console.WriteLine(enumerator.Current);
             }
-            
-            Console.ReadLine();
             */
+            Console.ReadLine();
+            
+        }
+
+        private static void run(string [] args)
+        {
+            if (args.Length == 0)
+            {
+                Console.WriteLine("No arguments");
+                return;
+            }
+            List<string> parameters = new List<string>();
+            string entityName = args[0];
+            for (var i = 1; i < args.Length; i++)
+            {
+                parameters.Add(args[i]);
+            }
+
+            Console.WriteLine("Entity name: " +entityName);
+            Console.WriteLine("Parameters:");
+            foreach (var i in parameters)
+            {
+                Console.Write("'" + i + "'" + ","); 
+            }
+
+            try
+            {
+                //TODO
+                //hivja meg a logika save entity metodusat, vmi.SaveEntity(entityName, parameters)-el
+            }
+            catch (Exception e)
+            {
+               Console.WriteLine(e.Message);
+            }
+
+
         }
     }
 }
