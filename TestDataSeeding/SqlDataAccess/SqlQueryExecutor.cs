@@ -2,43 +2,29 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
-using System.Diagnostics;
+using System.IO;
 
 namespace TestDataSeeding.SqlDataAccess
 {
     internal class SqlQueryExecutor
     {
         private SqlConnection connection;
-        private string logPath;
-    
+        private string logPath = ConfigurationManager.AppSettings["DatabaseLogPath"] ?? "SQLlog.txt";
+        private string connectionString = ConfigurationManager.ConnectionStrings["DatabaseConnection"].ConnectionString;
+
         /// <summary>
         /// Opens the database connection.
         /// </summary>
-        /// <param name="connectionString">An SQL connection string.</param>
-        /// <returns>Returns wether the connection could be opened or not.</returns>
-        internal bool OpenConnection()
+        private void OpenConnection()
         {
-            logPath = ConfigurationManager.AppSettings["DatabaseLogPath"] ?? "SQLlog.txt";
-
-            CloseConnection();
-            string connectionString = GetConnectionStringByName("DatabaseConnection");
-
-            if (connectionString != null)
+            try
             {
-                try
-                {
-                    connection = new SqlConnection(connectionString);
-                    connection.Open();
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
+                connection = new SqlConnection(connectionString);
+                connection.Open();
             }
-            else
+            catch
             {
-                return false;
+                throw;
             }
         }
 
@@ -63,6 +49,7 @@ namespace TestDataSeeding.SqlDataAccess
             Log(query);
             try
             {
+                OpenConnection();
                 SqlCommand sqlCommand = new SqlCommand(query, connection);
                 SqlDataReader dataReader = sqlCommand.ExecuteReader();
                 return dataReader;
@@ -70,7 +57,8 @@ namespace TestDataSeeding.SqlDataAccess
             catch (SqlException e)
             {
                 Log(e.Message);
-                return null;
+                CloseConnection();
+                throw new SqlDataAccessException(e.Message, e);
             }
         }
 
@@ -86,26 +74,15 @@ namespace TestDataSeeding.SqlDataAccess
             {
                 SqlCommand sqlCommand = new SqlCommand(command, connection);
                 int rowsAffected = sqlCommand.ExecuteNonQuery();
+                CloseConnection();
                 return rowsAffected;
             }
-            catch (Exception e)
+            catch (SqlException e)
             {
                 Log(e.Message);
-                return -1;
+                CloseConnection();
+                throw new SqlDataAccessException(e.Message, e);
             }
-        }
-
-        static string GetConnectionStringByName(string name)
-        {
-            string returnValue = null;
-
-            ConnectionStringSettings settings =
-                ConfigurationManager.ConnectionStrings[name];
-
-            if (settings != null)
-                returnValue = settings.ConnectionString;
-
-            return returnValue;
         }
 
         /// <summary>
@@ -114,7 +91,7 @@ namespace TestDataSeeding.SqlDataAccess
         /// <param name="line">The string to be appended.</param>
         private void Log(String line)
         {
-            System.IO.StreamWriter file = new System.IO.StreamWriter(logPath, true);
+            StreamWriter file = new StreamWriter(logPath, true);
             file.WriteLine(DateTime.Now + " " + line);
 
             file.Close();

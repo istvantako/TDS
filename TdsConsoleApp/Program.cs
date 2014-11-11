@@ -18,7 +18,6 @@ namespace TdsConsoleApp
         {
             //===============================================================
             //Beni
-            /*
             EntityStructure structure = new EntityStructure("Termekek");
             structure.Attributes.Add("TermekID", "int");
             structure.PrimaryKeys.Add("TermekID");
@@ -26,13 +25,18 @@ namespace TdsConsoleApp
             List<String> keys = new List<String> { "2" };
 
             SqlDataAccess access = new SqlDataAccess();
-
-            Entity entity = access.GetEntity(structure, keys);
-            Console.WriteLine(entity);
-            access.ConnectionTeardown();
-
+            Entity entity;
+            try
+            {
+                entity = access.GetEntity(structure, keys);
+                Console.WriteLine(entity);
+            }
+            catch(SqlDataAccessException e)
+            {
+                Console.WriteLine(e.Message);
+            }
             Console.Read();
-            */
+            
             //Beni
             //===================================================================================
             //Lajos
