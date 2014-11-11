@@ -3,14 +3,13 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.IO;
+using System.Diagnostics;
 
 namespace TestDataSeeding.SqlDataAccess
 {
     internal class SqlQueryExecutor
     {
         private SqlConnection connection;
-        private string logPath = ConfigurationManager.AppSettings["DatabaseLogPath"] ?? "SQLlog.txt";
-        private string connectionString = ConfigurationManager.ConnectionStrings["DatabaseConnection"].ConnectionString;
 
         /// <summary>
         /// Opens the database connection.
@@ -19,6 +18,7 @@ namespace TestDataSeeding.SqlDataAccess
         {
             try
             {
+                string connectionString = ConfigurationManager.ConnectionStrings["DatabaseConnection"].ConnectionString;
                 connection = new SqlConnection(connectionString);
                 connection.Open();
             }
@@ -54,11 +54,18 @@ namespace TestDataSeeding.SqlDataAccess
                 SqlDataReader dataReader = sqlCommand.ExecuteReader();
                 return dataReader;
             }
-            catch (SqlException e)
+            catch (Exception e)
             {
-                Log(e.Message);
                 CloseConnection();
-                throw new SqlDataAccessException(e.Message, e);
+                if (e is SqlException)
+                {
+                    Log(e.Message);
+                    throw new SqlDataAccessException(e.Message, e);
+                }
+                else
+                {
+                    throw new SqlDataAccessException("Corrupt App config. Invalid connection string.", e);
+                }
             }
         }
 
@@ -72,16 +79,24 @@ namespace TestDataSeeding.SqlDataAccess
             Log(command);
             try
             {
+                OpenConnection();
                 SqlCommand sqlCommand = new SqlCommand(command, connection);
                 int rowsAffected = sqlCommand.ExecuteNonQuery();
                 CloseConnection();
                 return rowsAffected;
             }
-            catch (SqlException e)
+            catch (Exception e)
             {
-                Log(e.Message);
                 CloseConnection();
-                throw new SqlDataAccessException(e.Message, e);
+                if (e is SqlException)
+                {
+                    Log(e.Message);
+                    throw new SqlDataAccessException(e.Message, e);
+                }
+                else
+                {
+                    throw new SqlDataAccessException("Corrupt App config. Invalid connection string.", e);
+                }
             }
         }
 
@@ -91,10 +106,16 @@ namespace TestDataSeeding.SqlDataAccess
         /// <param name="line">The string to be appended.</param>
         private void Log(String line)
         {
-            StreamWriter file = new StreamWriter(logPath, true);
-            file.WriteLine(DateTime.Now + " " + line);
-
-            file.Close();
+            try
+            {
+                StreamWriter file = new StreamWriter(ConfigurationManager.AppSettings["DatabaseLogPath"], true);
+                file.WriteLine(DateTime.Now + " " + line);
+                file.Close();
+            }
+            catch (Exception e)
+            {
+                throw new SqlDataAccessException("Corrupt App config. Invalid database logfile path.", e);
+            }
         }
     }
 }
