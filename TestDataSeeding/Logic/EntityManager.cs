@@ -71,7 +71,7 @@ namespace TestDataSeeding.Logic
                 // QUESTION: where to put the recursive call, in the if statement or in the outer code block?
 
                 // Restore each dependent entity recursively.
-                var dependencies = CreateDependencies(entityFromDb, entityStructure);
+                var dependencies = CreateDependencies(entityFromSerializedStorage, entityStructure);
 
                 foreach (var dependency in dependencies)
                 {
