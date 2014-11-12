@@ -8,35 +8,19 @@ using YAXLib;
 namespace TestDataSeeding.Model
 {
     /// <summary>
-    /// Entity class, holds the values of the attributes defined in the corresponding EntityType.
+    /// Entity class, holds the values of the attributes defined in the corresponding EntityStructure.
     /// </summary>
     public class Entity
     {
-        /// <summary>
-        /// The entity (table) name.
-        /// </summary>
-        private string name;
-
         /// <summary>
         /// Gets the entity (table) name.
         /// </summary>
         [YAXAttributeForClass()]
         public string Name
         {
-            get
-            {
-                return name;
-            }
-            set
-            {
-                name = value;
-            }
+            get;
+            set;
         }
-
-        /// <summary>
-        /// The attribute values.
-        /// </summary>
-        private Dictionary<string, string> attributeValues;
 
         /// <summary>
         /// Gets the dictionary of the attribute values, the keys are attribute names, the values are the corresponding
@@ -48,14 +32,8 @@ namespace TestDataSeeding.Model
         [YAXSerializeAs("AttributeValues")]
         public Dictionary<string, string> AttributeValues
         {
-            get
-            {
-                return attributeValues;
-            }
-            set
-            {
-                attributeValues = value;
-            }
+            get;
+            set;
         }
 
         /// <summary>
@@ -63,18 +41,7 @@ namespace TestDataSeeding.Model
         /// </summary>
         public Entity()
         {
-            this.name = null;
-            this.attributeValues = new Dictionary<string, string>();
-        }
-
-        /// <summary>
-        /// Constructs a new Entity with the given <paramref name="name"/>.
-        /// </summary>
-        /// <param name="name">The name of the entity.</param>
-        public Entity(string name)
-        {
-            this.name = name;
-            this.attributeValues = new Dictionary<string, string>();
+            this.AttributeValues = new Dictionary<string, string>();
         }
 
         /// <summary>
@@ -98,16 +65,16 @@ namespace TestDataSeeding.Model
             }
 
             // Return true, if the fields match, otherwise false.
-            if (!name.Equals(entity.name))
+            if (!Name.Equals(entity.Name))
             {
                 return false;
             }
 
-            foreach (var attribute in attributeValues)
+            foreach (var attribute in AttributeValues)
             {
-                if (entity.attributeValues.ContainsKey(attribute.Key))
+                if (entity.AttributeValues.ContainsKey(attribute.Key))
                 {
-                    var value = entity.attributeValues[attribute.Key];
+                    var value = entity.AttributeValues[attribute.Key];
                     if (!attribute.Value.Equals(value))
                     {
                         return false;
@@ -136,16 +103,16 @@ namespace TestDataSeeding.Model
             }
 
             // Return true, if the fields match, otherwise false.
-            if (!name.Equals(entity.name))
+            if (!Name.Equals(entity.Name))
             {
                 return false;
             }
 
-            foreach (var attribute in attributeValues)
+            foreach (var attribute in AttributeValues)
             {
-                if (entity.attributeValues.ContainsKey(attribute.Key))
+                if (entity.AttributeValues.ContainsKey(attribute.Key))
                 {
-                    var value = entity.attributeValues[attribute.Key];
+                    var value = entity.AttributeValues[attribute.Key];
                     if (!attribute.Value.Equals(value))
                     {
                         return false;
@@ -169,7 +136,7 @@ namespace TestDataSeeding.Model
             unchecked
             {
                 int hash = 269;
-                hash = (hash * 47) + name.GetHashCode();
+                hash = (hash * 47) + Name.GetHashCode();
                 return hash;
             }
         }
@@ -180,9 +147,9 @@ namespace TestDataSeeding.Model
         /// <returns>Returns the string representation of this Entity.</returns>
         public override string ToString()
         {
-            StringBuilder stringBuilder = new StringBuilder("[Entity: " + name + "]\n");
+            StringBuilder stringBuilder = new StringBuilder("[Entity: " + Name + "]\n");
 
-            foreach (var attribute in attributeValues)
+            foreach (var attribute in AttributeValues)
             {
                 stringBuilder.Append("  - " + attribute.Key + " => " + attribute.Value + "\n");
             }

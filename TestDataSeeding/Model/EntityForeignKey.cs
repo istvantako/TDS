@@ -13,30 +13,14 @@ namespace TestDataSeeding.Model
     public class EntityForeignKey
     {
         /// <summary>
-        /// The referenced entity (table) name.
-        /// </summary>
-        private string name;
-
-        /// <summary>
-        /// Gets the referenced entity (table) name.
+        /// Gets or sets the referenced entity (table) name.
         /// </summary>
         [YAXSerializeAs("Name")]
         public string EntityName
         {
-            get
-            {
-                return name;
-            }
-            set
-            {
-                name = value;
-            }
+            get;
+            set;
         }
-
-        /// <summary>
-        /// The referenced key name.
-        /// </summary>
-        private string key;
 
         /// <summary>
         /// Gets the referenced key name.
@@ -44,14 +28,15 @@ namespace TestDataSeeding.Model
         [YAXSerializeAs("AttributeName")]
         public string KeyName
         {
-            get
-            {
-                return key;
-            }
-            set
-            {
-                key = value;
-            }
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Constructs an empty EntityForeignKey object.
+        /// </summary>
+        public EntityForeignKey()
+        {
         }
 
         /// <summary>
@@ -61,12 +46,8 @@ namespace TestDataSeeding.Model
         /// <param name="key">The referenced key name.</param>
         public EntityForeignKey(string name, string key)
         {
-            this.name = name;
-            this.key = key;
-        }
-        
-        public EntityForeignKey()
-        {
+            EntityName = name;
+            KeyName = key;
         }
     }
 }

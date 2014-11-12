@@ -11,7 +11,7 @@ namespace TestDataSeeding.Logic
     /// <summary>
     /// Data access object (DAO) for SQL databases.
     /// </summary>
-    public interface ISqlDataAccess
+    public interface IDbClient
     {
         /// <summary>
         /// Saves the <paramref name="entity"/> to the database.

@@ -3,12 +3,12 @@ using System.Data.SqlClient;
 using TestDataSeeding.Logic;
 using TestDataSeeding.Model;
 
-namespace TestDataSeeding.SqlDataAccess
+namespace TestDataSeeding.DbClient
 {
-    public class SqlDataAccess : ISqlDataAccess
+    public class MsSqlClient : IDbClient
     {
-        private SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
-        private SqlQueryExecutor queryExecutor = new SqlQueryExecutor();
+        private MsSqlQueryBuilder queryBuilder = new MsSqlQueryBuilder();
+        private MsSqlQueryExecutor queryExecutor = new MsSqlQueryExecutor();
 
         public void SaveEntity(Entity entity, EntityStructure entityStructure)
         {
@@ -22,15 +22,15 @@ namespace TestDataSeeding.SqlDataAccess
                     rowsAffected = queryExecutor.ExecuteNonQuery(query);
                     if (rowsAffected == 0)
                     {
-                        throw (new SqlDataAccessException("Entity could not be inserted."));
+                        throw (new DbException("Entity could not be inserted."));
                     }
                 }
                 else if (rowsAffected > 1)
                 {
-                    throw (new SqlDataAccessException("Multiple rows affected."));
+                    throw (new DbException("Multiple rows affected."));
                 }
             }
-            catch (SqlDataAccessException)
+            catch (DbException)
             {
                 throw;
             }
@@ -42,7 +42,8 @@ namespace TestDataSeeding.SqlDataAccess
             try
             {
                 SqlDataReader dataReader = queryExecutor.ExecuteQuery(query);
-                Entity queriedEntity = new Entity(entityStructure.Name);
+                Entity queriedEntity = new Entity();
+                queriedEntity.Name = entityStructure.Name;
 
                 if (dataReader.Read())
                 {
@@ -53,19 +54,19 @@ namespace TestDataSeeding.SqlDataAccess
 
                     if (dataReader.Read())
                     {
-                        throw (new SqlDataAccessException("Multiple matches found."));
+                        throw (new DbException("Multiple matches found."));
                     }
                 }
                 else
                 {
-                    throw (new SqlDataAccessException("No matches found."));
+                    throw (new DbException("No matches found."));
                 }
                 dataReader.Close();
                 queryExecutor.CloseConnection();
 
                 return queriedEntity;
             }
-            catch (SqlDataAccessException)
+            catch (DbException)
             {
                 throw;
             }

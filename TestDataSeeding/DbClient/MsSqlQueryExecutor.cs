@@ -5,9 +5,9 @@ using System.Configuration;
 using System.IO;
 using System.Diagnostics;
 
-namespace TestDataSeeding.SqlDataAccess
+namespace TestDataSeeding.DbClient
 {
-    internal class SqlQueryExecutor
+    internal class MsSqlQueryExecutor
     {
         private SqlConnection connection;
 
@@ -60,11 +60,11 @@ namespace TestDataSeeding.SqlDataAccess
                 if (e is SqlException)
                 {
                     Log(e.Message);
-                    throw new SqlDataAccessException(e.Message, e);
+                    throw new DbException(e.Message, e);
                 }
                 else
                 {
-                    throw new SqlDataAccessException("Corrupt App config. Invalid connection string.", e);
+                    throw new DbException("Corrupt App config. Invalid connection string.", e);
                 }
             }
         }
@@ -91,11 +91,11 @@ namespace TestDataSeeding.SqlDataAccess
                 if (e is SqlException)
                 {
                     Log(e.Message);
-                    throw new SqlDataAccessException(e.Message, e);
+                    throw new DbException(e.Message, e);
                 }
                 else
                 {
-                    throw new SqlDataAccessException("Corrupt App config. Invalid connection string.", e);
+                    throw new DbException("Corrupt App config. Invalid connection string.", e);
                 }
             }
         }
@@ -114,7 +114,7 @@ namespace TestDataSeeding.SqlDataAccess
             }
             catch (Exception e)
             {
-                throw new SqlDataAccessException("Corrupt App config. Invalid database logfile path.", e);
+                throw new DbException("Corrupt App config. Invalid database logfile path.", e);
             }
         }
     }

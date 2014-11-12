@@ -4,16 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{ABF18B9D-1FC0-4506-B4F2-13CF085A79AB}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{7BFB8F86-4C81-4580-AC5A-B4D967243D65}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestDataSeeding</RootNamespace>
-    <AssemblyName>TestDataSeeding</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>TdsClientTesterApp</RootNamespace>
+    <AssemblyName>TdsClientTesterApp</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,7 +33,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -41,39 +41,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client\IEntityManager.cs" />
-    <Compile Include="Client\TdsClient.cs" />
-    <Compile Include="Logic\EntityManager.cs" />
-    <Compile Include="Logic\IDbClient.cs" />
-    <Compile Include="Logic\ISerializedStorageClient.cs" />
-    <Compile Include="Model\Entity.cs" />
-    <Compile Include="Model\EntityForeignKey.cs" />
-    <Compile Include="Model\EntityStructure.cs" />
-    <Compile Include="Model\EntityStructures.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DbClient\MsSqlClient.cs" />
-    <Compile Include="DbClient\DbException.cs" />
-    <Compile Include="DbClient\MsSqlQueryBuilder.cs" />
-    <Compile Include="DbClient\MsSqlQueryExecutor.cs" />
-    <Compile Include="SerializedStorage\SerializedStorageException.cs" />
-    <Compile Include="SerializedStorage\XmlStorageClient.cs" />
-    <Compile Include="YaxLib\Enums.cs" />
-    <Compile Include="YaxLib\EnumWrapper.cs" />
-    <Compile Include="YaxLib\ICustomDeserializer.cs" />
-    <Compile Include="YaxLib\ICustomSerializer.cs" />
-    <Compile Include="YaxLib\KnownTypes.cs" />
-    <Compile Include="YaxLib\MemberWrapper.cs" />
-    <Compile Include="YaxLib\ReflectionUtils.cs" />
-    <Compile Include="YaxLib\StringUtils.cs" />
-    <Compile Include="YaxLib\TypeWrappersPool.cs" />
-    <Compile Include="YaxLib\UdtWrapper.cs" />
-    <Compile Include="YaxLib\XMLUtils.cs" />
-    <Compile Include="YaxLib\YAXAttributes.cs" />
-    <Compile Include="YaxLib\YAXExceptions.cs" />
-    <Compile Include="YaxLib\YAXParsingErrors.cs" />
-    <Compile Include="YaxLib\YAXSerializer.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TestDataSeeding\TestDataSeeding.csproj">
+      <Project>{abf18b9d-1fc0-4506-b4f2-13cf085a79ab}</Project>
+      <Name>TestDataSeeding</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using TestDataSeeding.Model;
 
-namespace TestDataSeeding.SqlDataAccess
+namespace TestDataSeeding.DbClient
 {
-    internal class SqlQueryBuilder
+    internal class MsSqlQueryBuilder
     {
         /// <summary>
         /// Creates the select query to retrieve the given entity.

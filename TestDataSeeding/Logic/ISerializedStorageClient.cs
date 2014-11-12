@@ -8,9 +8,9 @@ using TestDataSeeding.Model;
 namespace TestDataSeeding.Logic
 {
     /// <summary>
-    /// Data access object (DAO) for XML files.
+    /// Interface for serialized object storage client.
     /// </summary>
-    public interface IXmlDataAccess
+    public interface ISerializedStorageClient
     {
         /// <summary>
         /// Saves the <paramref name="entity"/> to an XML file.
@@ -37,9 +37,10 @@ namespace TestDataSeeding.Logic
         EntityStructures GetEntityStructures(string path);
 
         /// <summary>
-        /// Returns the XML status of the last performed action.
+        /// Saves the given <paramref name="entityStructure"/> in the given <paramref name="path"/>.
         /// </summary>
-        /// <returns>The XML status of the last performed action.</returns>
-        XmlStatus getXmlStatus();
+        /// <param name="entityStructure">The given entity structure.</param>
+        /// <param name="path">The storage path where to save the entity structure.</param>
+        void SaveEntityStructure(EntityStructure entityStructure, string path);
     }
 }
