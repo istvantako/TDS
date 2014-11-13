@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using TestDataSeeding.Model;
 
 namespace TestDataSeeding.DbClient
@@ -13,16 +15,25 @@ namespace TestDataSeeding.DbClient
         /// <returns>Returns an SQL SELECT query string.</returns>
         public string CreateSelectQuery(EntityStructure entityStructure, List<string> primaryKeyValues)
         {
-            string query = "SELECT * FROM " + entityStructure.Name + " WHERE ";
-
-            for (var i = 0; i < entityStructure.PrimaryKeys.Count; i++)
+            //SELECT * FROM @Tablename WHERE @KeyAttribute1='@KeyValue1'//
+            StringBuilder builder = new StringBuilder("SELECT * FROM ");
+            builder.Append(entityStructure.Name)
+                   .Append(" WHERE ")
+                   .Append(entityStructure.PrimaryKeys[0])
+                   .Append("='")
+                   .Append(primaryKeyValues[0])
+                   .Append("'");
+            // AND @KeyAttributeX='@KeyValueX'//
+            for (var i = 1; i < entityStructure.PrimaryKeys.Count; i++)
             {
-                query += entityStructure.PrimaryKeys[i] + "='" + primaryKeyValues[i] + "' and ";
+                builder.Append(" AND ")
+                       .Append(entityStructure.PrimaryKeys[i])
+                       .Append("='")
+                       .Append(primaryKeyValues[i])
+                       .Append("'");
             }
 
-            query = query.Remove(query.Length - 5);
-
-            return query;
+            return builder.ToString();
         }
 
         /// <summary>
@@ -33,24 +44,50 @@ namespace TestDataSeeding.DbClient
         /// <returns>Returns an SQL UPDATE query string.</returns>
         public string CreateUpdateQuery(Entity entity, EntityStructure entityStructure)
         {
-            string query = "UPDATE " + entityStructure.Name + " SET ";
-
-            foreach (var entry in entity.AttributeValues)
+            //we get the names of those attributes which are not PrimaryKeys
+            List<string> nonPrimaryKeyAttributes = new List<string>();
+            foreach (var item in entity.AttributeValues)
             {
-                if (!entityStructure.isPrimaryKey(entry.Key))
+                if (!entityStructure.isPrimaryKey(item.Key))
                 {
-                    query += entry.Key + "='" + entry.Value + "',";
+                    nonPrimaryKeyAttributes.Add(item.Key);
                 }
             }
-            query = query.Remove(query.Length - 1);
-            query += " WHERE ";
 
-            for (var i = 0; i < entityStructure.PrimaryKeys.Count; i++)
+            //UPDATE @Tablename SET @Attribute1='@Value1'//
+            StringBuilder builder = new StringBuilder("UPDATE ");
+            builder.Append(entity.Name)
+                   .Append(" SET ")
+                   .Append(nonPrimaryKeyAttributes[0])
+                   .Append("='")
+                   .Append(entity.AttributeValues[nonPrimaryKeyAttributes[0]])
+                   .Append("'");
+            //,@AttributeX='@ValueX'//
+            for (var i = 1; i < nonPrimaryKeyAttributes.Count; i++)
             {
-                query += entityStructure.PrimaryKeys[i] + "='" + entity.AttributeValues[entityStructure.PrimaryKeys[i]] + "' and ";
+                builder.Append(",")
+                       .Append(nonPrimaryKeyAttributes[i])
+                       .Append("='")
+                       .Append(entity.AttributeValues[nonPrimaryKeyAttributes[i]])
+                       .Append("'");
             }
-            query = query.Remove(query.Length - 5);
-            return query;
+            // WHERE @KeyAttribute1='@KeyValue1'//
+            builder.Append(" WHERE ")
+                   .Append(entityStructure.PrimaryKeys[0])
+                   .Append("='")
+                   .Append(entity.AttributeValues[entityStructure.PrimaryKeys[0]])
+                   .Append("'");
+            // AND @KeyAttributeX='@KeyValueX'//
+            for (var i = 1; i < entityStructure.PrimaryKeys.Count; i++)
+            {
+                builder.Append(" AND ")
+                       .Append(entityStructure.PrimaryKeys[i])
+                       .Append("='")
+                       .Append(entity.AttributeValues[entityStructure.PrimaryKeys[i]])
+                       .Append("'");
+            }
+
+            return builder.ToString();
         }
 
         /// <summary>
@@ -61,16 +98,21 @@ namespace TestDataSeeding.DbClient
         /// <returns>Returns an SQL INSERT query string.</returns>
         public string CreateInsertQuery(Entity entity, EntityStructure entityStructure)
         {
-            string query = "INSERT INTO " + entity.Name + " Values (";
-            foreach (var entry in entity.AttributeValues)
+            //INSERT INTO @Tablename VALUES ('@Value1//
+            StringBuilder builder = new StringBuilder("INSERT INTO ");
+            builder.Append(entity.Name)
+                   .Append(" VALUES ('")
+                   .Append(entity.AttributeValues.ElementAt(0).Value);
+            //','@ValueX//
+            for (int i = 1; i < entity.AttributeValues.Count; i++)
             {
-                query += "'" + entry.Value + "',";
+                builder.Append("','")
+                       .Append(entity.AttributeValues.ElementAt(i).Value);
             }
+            //')//
+            builder.Append("')");
 
-            query = query.Remove(query.Length - 1);
-            query += ")";
-
-            return query;
+            return builder.ToString();
         }
     }
 }

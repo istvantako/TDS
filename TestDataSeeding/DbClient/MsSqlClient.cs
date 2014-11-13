@@ -59,7 +59,7 @@ namespace TestDataSeeding.DbClient
                 }
                 else
                 {
-                    //throw (new DbException("No matches found."));
+                    queriedEntity = null;
                 }
                 dataReader.Close();
                 queryExecutor.CloseConnection();

@@ -96,6 +96,11 @@ namespace TestDataSeeding.Logic
             EntityStructure entityStructure = entityStructures.Find(entityName);
             Entity entityFromDb = dbClient.GetEntity(entityStructure, entityPrimaryKeyValues);
 
+            if (entityFromDb == null)
+            {
+                throw new Exception("Entity not found in database.");
+            }
+
             try
             {
                 // Save the current entity.
