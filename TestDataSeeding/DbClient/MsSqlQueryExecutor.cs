@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Configuration;
 using System.IO;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace TestDataSeeding.DbClient
 {
@@ -101,7 +102,85 @@ namespace TestDataSeeding.DbClient
         }
 
         /// <summary>
-        /// Appends the line to the SQLlog.txt
+        /// Executes all or none of the INSERT/UPDATE statements contained in <paramref name="statements"/>
+        /// </summary>
+        /// <param name="statements">The INSERT/UPDATE statements to be executed</param>
+        internal void ExecuteTransaction(List<string> statements)
+        {
+            try
+            {
+                OpenConnection();
+
+                Log("Begin transaction");
+                SqlCommand command = connection.CreateCommand();
+                SqlTransaction transaction;
+
+                // Start a local transaction.
+                transaction = connection.BeginTransaction("TDSTransaction");
+
+                // Must assign both transaction object and connection 
+                // to Command object for a pending local transaction
+                command.Connection = connection;
+                command.Transaction = transaction;
+
+                try
+                {
+                    int rowsAffected;
+                    foreach (var statement in statements)
+                    {
+                        //execute statement
+                        command.CommandText = statement;
+                        Log(statement);
+                        rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected != 1)
+                        {
+                            throw (new DbException("Transaction failure, see log file."));
+                        }
+                    }
+
+                    // Attempt to commit the transaction.
+                    transaction.Commit();
+                    Log("Commit transaction");
+                }
+                catch
+                {
+                    // Attempt to roll back the transaction. 
+                    try
+                    {
+                        Log("Rollback transaction");
+                        transaction.Rollback();
+                        CloseConnection();
+                    }
+                    catch
+                    {
+                        // This catch block will handle any errors that may have occurred
+                        // on the server that would cause the rollback to fail, such as 
+                        // a closed connection.
+                        throw;
+                    }
+                    throw;
+                }
+            }
+            //if the connection could not be opened or transaction fails
+            catch (Exception e)
+            {
+                CloseConnection();
+                if ((e is SqlException) || (e is DbException))
+                {
+                    Log(e.Message);
+                    throw new DbException(e.Message, e);
+                }
+                //if not SqlException or DbException it has to connectionString format, or null Exception
+                else
+                {
+                    throw new DbException("Corrupt App config. Invalid connection string.", e);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Appends the <paramref name="line"/> to the file specified in App.config as "DatabaseLogPath"
         /// </summary>
         /// <param name="line">The string to be appended.</param>
         private void Log(String line)

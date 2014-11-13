@@ -9,6 +9,7 @@ namespace TestDataSeeding.DbClient
     {
         private MsSqlQueryBuilder queryBuilder = new MsSqlQueryBuilder();
         private MsSqlQueryExecutor queryExecutor = new MsSqlQueryExecutor();
+        private List<string> transactionData = new List<string>();
 
         public void SaveEntity(Entity entity, EntityStructure entityStructure)
         {
@@ -67,6 +68,29 @@ namespace TestDataSeeding.DbClient
                 return queriedEntity;
             }
             catch (DbException)
+            {
+                throw;
+            }
+        }
+
+        public void InsertWithTransaction(Entity entity, EntityStructure entityStructure)
+        {
+            transactionData.Add(queryBuilder.CreateInsertQuery(entity, entityStructure));
+        }
+
+        public void UpdateWithTransaction(Entity entity, EntityStructure entityStructure)
+        {
+            transactionData.Add(queryBuilder.CreateUpdateQuery(entity, entityStructure));
+        }
+
+        public void ExecuteTransaction()
+        {
+            try
+            {
+                queryExecutor.ExecuteTransaction(transactionData);
+                transactionData.Clear();
+            }
+            catch
             {
                 throw;
             }

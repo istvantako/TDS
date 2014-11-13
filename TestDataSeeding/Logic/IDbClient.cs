@@ -27,5 +27,25 @@ namespace TestDataSeeding.Logic
         /// <param name="primaryKeyValues">A list with the pramary key values that identifies the entity.</param>
         /// <returns>A new entity identified by <paramref name="entityName"/> and <paramref name="primaryKeyValues"/>.</returns>
         Entity GetEntity(EntityStructure entityStructure, List<string> primaryKeyValues);
+
+        /// <summary>
+        /// Add the <paramref name="entity"/> to be inserted on next ExecuteTransaction() call
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <param name="entityStructure">The structure of the entity.</param>
+        void InsertWithTransaction(Entity entity, EntityStructure entityStructure);
+
+        /// <summary>
+        /// Add the <paramref name="entity"/> to be updated on next ExecuteTransaction() call
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <param name="entityStructure">The structure of the entity.</param>
+        void UpdateWithTransaction(Entity entity, EntityStructure entityStructure);
+
+        /// <summary>
+        /// Restores all the Entities added with Insert-UpdateWithTransaction or none if an operation fails
+        /// On successfull transaction clears entities for a fresh new transaction
+        /// </summary>
+        void ExecuteTransaction();
     }
 }
