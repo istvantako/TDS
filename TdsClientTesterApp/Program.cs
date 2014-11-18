@@ -13,7 +13,7 @@ namespace TdsClientTesterApp
     {
         static void Main(string[] args)
         {
-            //XmlStorageClient xml = new XmlStorageClient();
+            XmlStorageClient xml = new XmlStorageClient();
 
             //EntityStructure esA = new EntityStructure();
             //esA.Name = "TableA";
@@ -42,12 +42,14 @@ namespace TdsClientTesterApp
             //escollection.Add(esB);
             //escollection.Add(esC);
 
-            //foreach (var es in escollection)
-            //{
-            //    Console.WriteLine(es);
-            //    Console.WriteLine();
-            //    xml.SaveEntityStructure(es, "D:\\TDS");
-            //}
+
+            //xml.SaveEntityStructures(escollection, "D:\\TDS");
+
+            var a = xml.GetEntityStructures("D:\\TDS");
+            foreach (var b in a.structures)
+            {
+                Console.WriteLine(b);
+            }
             //// Ez eddig OK!
             
 
@@ -63,11 +65,11 @@ namespace TdsClientTesterApp
              * Es itt kezzel belepiszkalunk az adatbazisba :)
              */
 
-            TdsClient tds = new TdsClient();
-            tds.LoadEntity("TableA", new List<string> { "1" });
-            tds.LoadEntity("TableA", new List<string> { "2" });
-            Console.WriteLine("Visszaallitas sikeres!");
-            // Ez vegkepp meglepo, de mukodik, es elsore!
+            //TdsClient tds = new TdsClient();
+            //tds.LoadEntity("TableA", new List<string> { "1" });
+            //tds.LoadEntity("TableA", new List<string> { "2" });
+            //Console.WriteLine("Visszaallitas sikeres!");
+            //// Ez vegkepp meglepo, de mukodik, es elsore!
 
 
             Console.ReadLine();

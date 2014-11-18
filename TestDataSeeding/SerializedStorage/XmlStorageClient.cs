@@ -54,17 +54,11 @@ namespace TestDataSeeding.SerializedStorage
 
         public EntityStructures GetEntityStructures(string path)
         {
-            string[] structureFilePaths;
-            EntityStructures entityStructures = new EntityStructures();
+            EntityStructures entityStructures = null;
 
             try
             {
-                structureFilePaths = Directory.GetFiles(path + "\\Structures\\", "*.xml");
-
-                foreach (var filePath in structureFilePaths)
-                {
-                    entityStructures.Add(GetEntityStructure(filePath));
-                }
+               entityStructures = GetEntityStructure(path + "\\Structures\\Structure.xml");
             }
             catch (Exception exception)
             {
@@ -74,7 +68,7 @@ namespace TestDataSeeding.SerializedStorage
             return entityStructures;
         }
 
-        public void SaveEntityStructure(EntityStructure entityStructure, string path)
+        public void SaveEntityStructures(EntityStructures entityStructures, string path)
         {
             if (!Directory.Exists(path + "\\Structures"))
             {
@@ -83,7 +77,7 @@ namespace TestDataSeeding.SerializedStorage
 
             try
             {
-                Serialize<EntityStructure>(entityStructure, path + "\\Structures\\" + entityStructure.Name + ".xml");
+                Serialize<EntityStructures>(entityStructures, path + "\\Structures\\"+ "Structure.xml");
             }
             catch (Exception exception)
             {
@@ -96,13 +90,13 @@ namespace TestDataSeeding.SerializedStorage
         /// </summary>
         /// <param name="xmlPath">The file path.</param>
         /// <returns>A deserialized entity structure object from the given <paramref name="path"/>.</returns>
-        private EntityStructure GetEntityStructure(string xmlPath)
+        private EntityStructures GetEntityStructure(string xmlPath)
         {
-            EntityStructure deserializedObject;
+            EntityStructures deserializedObject;
 
             try
             {
-                deserializedObject = Deserialize<EntityStructure>(xmlPath);
+                deserializedObject = Deserialize<EntityStructures>(xmlPath);
             }
             catch (Exception exception)
             {

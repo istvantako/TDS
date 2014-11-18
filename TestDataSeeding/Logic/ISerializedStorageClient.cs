@@ -41,6 +41,6 @@ namespace TestDataSeeding.Logic
         /// </summary>
         /// <param name="entityStructure">The given entity structure.</param>
         /// <param name="path">The storage path where to save the entity structure.</param>
-        void SaveEntityStructure(EntityStructure entityStructure, string path);
+        void SaveEntityStructures(EntityStructures entityStructure, string path);
     }
 }

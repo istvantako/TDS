@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YAXLib;
 
 namespace TestDataSeeding.Model
 {
@@ -15,11 +16,18 @@ namespace TestDataSeeding.Model
         /// <summary>
         /// The list of entity structures.
         /// </summary>
-        private List<EntityStructure> structures;
+        [YAXCollection(YAXCollectionSerializationTypes.Serially, SeparateBy = "\n ")]
+        [YAXSerializeAs("Structures")]
+        public List<EntityStructure> structures
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Constructs a new EntityStructures object.
         /// </summary>
+       
         public EntityStructures()
         {
             structures = new List<EntityStructure>();
