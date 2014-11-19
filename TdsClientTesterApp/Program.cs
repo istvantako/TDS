@@ -46,7 +46,7 @@ namespace TdsClientTesterApp
             //xml.SaveEntityStructures(escollection, "D:\\TDS");
 
             var a = xml.GetEntityStructures("D:\\TDS");
-            foreach (var b in a.structures)
+            foreach (var b in a.Structures)
             {
                 Console.WriteLine(b);
             }

@@ -58,7 +58,7 @@ namespace TestDataSeeding.SerializedStorage
 
             try
             {
-               entityStructures = GetEntityStructure(path + "\\Structures\\Structure.xml");
+                entityStructures = Deserialize<EntityStructures>(path + "\\Structures.xml");
             }
             catch (Exception exception)
             {
@@ -70,40 +70,14 @@ namespace TestDataSeeding.SerializedStorage
 
         public void SaveEntityStructures(EntityStructures entityStructures, string path)
         {
-            if (!Directory.Exists(path + "\\Structures"))
-            {
-                Directory.CreateDirectory(path + "\\Structures");
-            }
-
             try
             {
-                Serialize<EntityStructures>(entityStructures, path + "\\Structures\\"+ "Structure.xml");
+                Serialize<EntityStructures>(entityStructures, path + "\\Structures.xml");
             }
             catch (Exception exception)
             {
                 throw exception;
             }
-        }
-
-        /// <summary>
-        /// Returns a deserialized entity structure object from the given <paramref name="path"/>.
-        /// </summary>
-        /// <param name="xmlPath">The file path.</param>
-        /// <returns>A deserialized entity structure object from the given <paramref name="path"/>.</returns>
-        private EntityStructures GetEntityStructure(string xmlPath)
-        {
-            EntityStructures deserializedObject;
-
-            try
-            {
-                deserializedObject = Deserialize<EntityStructures>(xmlPath);
-            }
-            catch (Exception exception)
-            {
-                throw exception;
-            }
-
-            return deserializedObject;
         }
 
         /// <summary>

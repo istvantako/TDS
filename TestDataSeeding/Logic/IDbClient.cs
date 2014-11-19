@@ -9,19 +9,13 @@ using TestDataSeeding.Model;
 namespace TestDataSeeding.Logic
 {
     /// <summary>
-    /// Data access object (DAO) for SQL databases.
+    /// Database client interface.
     /// </summary>
     public interface IDbClient
     {
         /// <summary>
-        /// Saves the <paramref name="entity"/> to the database.
-        /// </summary>
-        /// <param name="entity">The entity.</param>
-        /// <param name="entityStructure">The structure of the entity.</param>
-        void SaveEntity(Entity entity, EntityStructure entityStructure);
-
-        /// <summary>
-        /// Returns a new entity identified by the entity name from the <paramref name="entityStructure"/> and <paramref name="primaryKeyValues"/>.
+        /// Returns a new entity identified by the entity name from the <paramref name="entityStructure"/> and <paramref name="primaryKeyValues"/>,
+        /// or null, if there is no such entity.
         /// </summary>
         /// <param name="entityStructure">The structure of the entity.</param>
         /// <param name="primaryKeyValues">A list with the pramary key values that identifies the entity.</param>
@@ -29,22 +23,22 @@ namespace TestDataSeeding.Logic
         Entity GetEntity(EntityStructure entityStructure, List<string> primaryKeyValues);
 
         /// <summary>
-        /// Add the <paramref name="entity"/> to be inserted on next ExecuteTransaction() call
+        /// Add the <paramref name="entity"/> to be inserted on next ExecuteTransaction() call.
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <param name="entityStructure">The structure of the entity.</param>
         void InsertWithTransaction(Entity entity, EntityStructure entityStructure);
 
         /// <summary>
-        /// Add the <paramref name="entity"/> to be updated on next ExecuteTransaction() call
+        /// Add the <paramref name="entity"/> to be updated on next ExecuteTransaction() call.
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <param name="entityStructure">The structure of the entity.</param>
         void UpdateWithTransaction(Entity entity, EntityStructure entityStructure);
 
         /// <summary>
-        /// Restores all the Entities added with Insert-UpdateWithTransaction or none if an operation fails
-        /// On successfull transaction clears entities for a fresh new transaction
+        /// Restores all the Entities added with Insert- or UpdateWithTransaction() or none, if an operation fails.
+        /// On successful transaction, clears the transaction data for a fresh new transaction.
         /// </summary>
         void ExecuteTransaction();
     }

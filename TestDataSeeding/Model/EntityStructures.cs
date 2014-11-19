@@ -18,7 +18,7 @@ namespace TestDataSeeding.Model
         /// </summary>
         [YAXCollection(YAXCollectionSerializationTypes.Serially, SeparateBy = "\n ")]
         [YAXSerializeAs("Structures")]
-        public List<EntityStructure> structures
+        public List<EntityStructure> Structures
         {
             get;
             set;
@@ -30,7 +30,7 @@ namespace TestDataSeeding.Model
        
         public EntityStructures()
         {
-            structures = new List<EntityStructure>();
+            Structures = new List<EntityStructure>();
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace TestDataSeeding.Model
         /// <returns>Returns an enumerator that iterates through the EntityStructures.</returns>
         public IEnumerator<EntityStructure> GetEnumerator()
         {
-            return structures.GetEnumerator();
+            return Structures.GetEnumerator();
         }
 
         /// <summary>
@@ -67,9 +67,9 @@ namespace TestDataSeeding.Model
         /// <param name="entityStructure">The EntityStructure object to be added.</param>
         public void Add(EntityStructure entityStructure)
         {
-            if (!structures.Exists(structure => structure.Name == entityStructure.Name))
+            if (!Structures.Exists(structure => structure.Name == entityStructure.Name))
             {
-                structures.Add(entityStructure);
+                Structures.Add(entityStructure);
             }
         }
 
@@ -80,7 +80,7 @@ namespace TestDataSeeding.Model
         /// <returns>Returns the first matchig EntityStructure identified by <paramref name="entityName"/>.</returns>
         public EntityStructure Find(string entityName)
         {
-            return structures.Find(entityStructure => entityStructure.Name == entityName);
+            return Structures.Find(entityStructure => entityStructure.Name == entityName);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace TestDataSeeding.Model
         /// <returns>Returns the first matchig EntityStructure identified by the name of the <paramref name="entity"/>.</returns>
         public EntityStructure Find(Entity entity)
         {
-            return structures.Find(entityStructure => entityStructure.Name == entity.Name);
+            return Structures.Find(entityStructure => entityStructure.Name == entity.Name);
         }
     }
 }

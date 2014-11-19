@@ -49,33 +49,59 @@ namespace TestDataSeeding.Logic
 
         public void LoadEntity(string entityName, List<string> entityPrimaryKeyValues, string path)
         {
+            // Refresh the the entity structures collection, if the active path has changed.
             if (!activeStoragePath.Equals(path))
             {
                 activeStoragePath = path;
                 entityStructures = serializedStorageClient.GetEntityStructures(path);
             }
 
+            try
+            {
+                // Restore the entity and its dependencies.
+                InnerLoadEntity(entityName, entityPrimaryKeyValues, path);
+
+                dbClient.ExecuteTransaction();
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
+        }
+
+        private void InnerLoadEntity(string entityName, List<string> entityPrimaryKeyValues, string path)
+        {
+            // Get the structure of the entity.
             EntityStructure entityStructure = entityStructures.Find(entityName);
 
+            // Get the searched entity from the database and from the serialized storage.
             Entity entityFromDb = dbClient.GetEntity(entityStructure, entityPrimaryKeyValues);
             Entity entityFromSerializedStorage = serializedStorageClient.GetEntity(entityStructure, entityPrimaryKeyValues, path);
 
             try
             {
-                // If the entity from the database is not equal to the serialized entity, restore the serialized entity
-                // to the database.
-                if (!entityFromSerializedStorage.Equals(entityFromDb))
+                // If the entity exists in the database, check if it's equal to the serialized entity.
+                if (entityFromDb != null)
                 {
-                    dbClient.SaveEntity(entityFromSerializedStorage, entityStructure);
+                    // If the entity from the database is not equal to the serialized entity, restore the serialized entity
+                    // in the database.
+                    if (!entityFromSerializedStorage.Equals(entityFromDb))
+                    {
+                        dbClient.UpdateWithTransaction(entityFromSerializedStorage, entityStructure);
+                    }
                 }
-                // QUESTION: where to put the recursive call, in the if statement or in the outer code block?
+                else
+                {
+                    // The entity is missing, insert it into the database.
+                    dbClient.InsertWithTransaction(entityFromSerializedStorage, entityStructure);
+                }
 
-                // Restore each dependent entity recursively.
+                // Create the list of dependencies and restore each dependency recursively.
                 var dependencies = CreateDependencies(entityFromSerializedStorage, entityStructure);
 
                 foreach (var dependency in dependencies)
                 {
-                    LoadEntity(dependency.Key, dependency.Value, path);
+                    InnerLoadEntity(dependency.Key, dependency.Value, path);
                 }
             }
             catch (Exception exception)
@@ -86,12 +112,26 @@ namespace TestDataSeeding.Logic
 
         public void SaveEntity(string entityName, List<string> entityPrimaryKeyValues, string path)
         {
+            // Refresh the the entity structures collection, if the active path has changed.
             if (!activeStoragePath.Equals(path))
             {
                 activeStoragePath = path;
                 entityStructures = serializedStorageClient.GetEntityStructures(path);
             }
 
+            try
+            {
+                // Save the entity and its dependencies.
+                InnerSaveEntity(entityName, entityPrimaryKeyValues, path);
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
+        }
+
+        private void InnerSaveEntity(string entityName, List<string> entityPrimaryKeyValues, string path)
+        {
             // Get the entity with the given name and primary key values from the database and its structure. 
             EntityStructure entityStructure = entityStructures.Find(entityName);
             Entity entityFromDb = dbClient.GetEntity(entityStructure, entityPrimaryKeyValues);
@@ -106,14 +146,14 @@ namespace TestDataSeeding.Logic
                 // Save the current entity.
                 serializedStorageClient.SaveEntity(entityFromDb, entityStructure, path);
 
-                // Save each dependent entity recursively.
+                // Create the list of dependencies and save each dependency recursively.
                 var dependencies = CreateDependencies(entityFromDb, entityStructure);
 
                 foreach (var dependency in dependencies)
                 {
-                    SaveEntity(dependency.Key, dependency.Value, path);
+                    InnerSaveEntity(dependency.Key, dependency.Value, path);
                 }
-                
+
             }
             catch (Exception exception)
             {

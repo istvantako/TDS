@@ -62,6 +62,7 @@ namespace TestDataSeeding.DbClient
                 {
                     queriedEntity = null;
                 }
+
                 dataReader.Close();
                 queryExecutor.CloseConnection();
 

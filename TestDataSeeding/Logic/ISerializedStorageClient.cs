@@ -37,10 +37,10 @@ namespace TestDataSeeding.Logic
         EntityStructures GetEntityStructures(string path);
 
         /// <summary>
-        /// Saves the given <paramref name="entityStructure"/> in the given <paramref name="path"/>.
+        /// Saves the given <paramref name="entityStructures"/> collection in the given <paramref name="path"/>.
         /// </summary>
-        /// <param name="entityStructure">The given entity structure.</param>
-        /// <param name="path">The storage path where to save the entity structure.</param>
-        void SaveEntityStructures(EntityStructures entityStructure, string path);
+        /// <param name="entityStructures">The given EntityStructures collection.</param>
+        /// <param name="path">The storage path where to save the collection.</param>
+        void SaveEntityStructures(EntityStructures entityStructures, string path);
     }
 }

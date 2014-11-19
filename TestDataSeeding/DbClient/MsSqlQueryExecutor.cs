@@ -111,7 +111,7 @@ namespace TestDataSeeding.DbClient
             {
                 OpenConnection();
 
-                Log("Begin transaction");
+                Log("Begin transaction.");
                 SqlCommand command = connection.CreateCommand();
                 SqlTransaction transaction;
 
@@ -140,14 +140,14 @@ namespace TestDataSeeding.DbClient
 
                     // Attempt to commit the transaction.
                     transaction.Commit();
-                    Log("Commit transaction");
+                    Log("Commit transaction.");
                 }
                 catch
                 {
                     // Attempt to roll back the transaction. 
                     try
                     {
-                        Log("Rollback transaction");
+                        Log("Rollback transaction.");
                         transaction.Rollback();
                         CloseConnection();
                     }
