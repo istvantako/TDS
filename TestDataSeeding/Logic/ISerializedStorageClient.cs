@@ -18,7 +18,7 @@ namespace TestDataSeeding.Logic
         /// <param name="entity">The entity.</param>
         /// <param name="entityStructure">The structure of the entity.</param>
         /// <param name="path">The path where to save the entity.</param>
-        void SaveEntity(Entity entity, EntityStructure entityStructure, string path);
+        void SaveEntity(Entity entity, EntityStructure entityStructure, string path, Boolean overwrite);
 
         /// <summary>
         /// Returns a new entity identified by the entity name from the <paramref name="entityStructure"/> and <paramref name="primaryKeyValues"/>.

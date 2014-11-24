@@ -55,6 +55,7 @@
     <Compile Include="DbClient\DbException.cs" />
     <Compile Include="DbClient\MsSqlQueryBuilder.cs" />
     <Compile Include="DbClient\MsSqlQueryExecutor.cs" />
+    <Compile Include="SerializedStorage\EntityAlreadyExistsException.cs" />
     <Compile Include="SerializedStorage\SerializedStorageException.cs" />
     <Compile Include="SerializedStorage\XmlStorageClient.cs" />
     <Compile Include="YaxLib\Enums.cs" />

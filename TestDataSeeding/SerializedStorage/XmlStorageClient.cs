@@ -17,21 +17,62 @@ namespace TestDataSeeding.SerializedStorage
     /// </summary>
     public class XmlStorageClient : ISerializedStorageClient
     {
-        public void SaveEntity(Entity entity, EntityStructure entityStructure, string path)
+        ////Elozo save entity
+        //public void SaveEntity(Entity entity, EntityStructure entityStructure, string path)
+        //{
+        //    if (!Directory.Exists(path + "\\Entities"))
+        //    {
+        //        Directory.CreateDirectory(path + "\\Entities");
+        //    }
+
+        //    var xmlFileName = BuildFileName(entity, entityStructure, path);
+        //    try
+        //    {
+        //        Serialize<Entity>(entity, xmlFileName);
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        throw exception;
+        //    }
+        //}
+
+        public void SaveEntity(Entity entity, EntityStructure entityStructure, string path, Boolean overwrite)
         {
             if (!Directory.Exists(path + "\\Entities"))
             {
                 Directory.CreateDirectory(path + "\\Entities");
             }
 
-            try
+            var xmlFileName = BuildFileName(entity, entityStructure, path);
+            if (overwrite)//ha feluliras van akkor ramentjuk az elozore, ha letezik ha nem.
             {
-                var xmlFileName = BuildFileName(entity, entityStructure, path);
-                Serialize<Entity>(entity, xmlFileName);
+                try
+                {
+                    Serialize<Entity>(entity, xmlFileName);
+                }
+                catch (Exception exception)
+                {
+                    throw exception;
+                }
             }
-            catch (Exception exception)
+            else//ha nem engedelyezett a feluliras akkor megnezzuk hogy van-e mar ilyen nevu file, ha van akkor dobunk egy Exception, kulonben lementjuk.
             {
-                throw exception;
+                if (File.Exists(xmlFileName))
+                {
+                    throw new EntityAlreadyExistsException();
+                }
+                else
+                {
+                    try
+                    {
+                        Serialize<Entity>(entity, xmlFileName);
+                    }
+                    catch (Exception exception)
+                    {
+                        throw exception;
+                    }
+                }
+
             }
         }
 
@@ -58,7 +99,7 @@ namespace TestDataSeeding.SerializedStorage
 
             try
             {
-                entityStructures = Deserialize<EntityStructures>(path + "\\Structures.xml");
+                entityStructures = Deserialize<EntityStructures>(path + "\\Structures\\Structure.xml");
             }
             catch (Exception exception)
             {

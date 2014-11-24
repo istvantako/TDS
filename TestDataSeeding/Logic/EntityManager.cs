@@ -144,7 +144,7 @@ namespace TestDataSeeding.Logic
             try
             {
                 // Save the current entity.
-                serializedStorageClient.SaveEntity(entityFromDb, entityStructure, path);
+                serializedStorageClient.SaveEntity(entityFromDb, entityStructure, path, false);
 
                 // Create the list of dependencies and save each dependency recursively.
                 var dependencies = CreateDependencies(entityFromDb, entityStructure);
