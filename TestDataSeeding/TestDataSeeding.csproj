@@ -43,9 +43,11 @@
   <ItemGroup>
     <Compile Include="Client\IEntityManager.cs" />
     <Compile Include="Client\TdsClient.cs" />
+    <Compile Include="Logic\EntityAlreadySavedException.cs" />
     <Compile Include="Logic\EntityManager.cs" />
     <Compile Include="Logic\IDbClient.cs" />
     <Compile Include="Logic\ISerializedStorageClient.cs" />
+    <Compile Include="Logic\TdsLogicException.cs" />
     <Compile Include="Model\Entity.cs" />
     <Compile Include="Model\EntityForeignKey.cs" />
     <Compile Include="Model\EntityStructure.cs" />
@@ -55,7 +57,6 @@
     <Compile Include="DbClient\DbException.cs" />
     <Compile Include="DbClient\MsSqlQueryBuilder.cs" />
     <Compile Include="DbClient\MsSqlQueryExecutor.cs" />
-    <Compile Include="SerializedStorage\EntityAlreadyExistsException.cs" />
     <Compile Include="SerializedStorage\SerializedStorageException.cs" />
     <Compile Include="SerializedStorage\XmlStorageClient.cs" />
     <Compile Include="YaxLib\Enums.cs" />

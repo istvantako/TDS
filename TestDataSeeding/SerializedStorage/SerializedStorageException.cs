@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace TestDataSeeding.SerializedStorage
 {
+    /// <summary>
+    /// Serialized storage exception class.
+    /// </summary>
     class SerializedStorageException : Exception
     {
         public SerializedStorageException()

@@ -18,7 +18,7 @@ namespace TestDataSeeding.Logic
         /// <param name="entity">The entity.</param>
         /// <param name="entityStructure">The structure of the entity.</param>
         /// <param name="path">The path where to save the entity.</param>
-        void SaveEntity(Entity entity, EntityStructure entityStructure, string path, Boolean overwrite);
+        void SaveEntity(Entity entity, EntityStructure entityStructure, string path);
 
         /// <summary>
         /// Returns a new entity identified by the entity name from the <paramref name="entityStructure"/> and <paramref name="primaryKeyValues"/>.
@@ -28,6 +28,15 @@ namespace TestDataSeeding.Logic
         /// <param name="path">The path where the entity is stored.</param>
         /// <returns>A new entity identified by <paramref name="entityStructure"/> and <paramref name="primaryKeyValues"/>.</returns>
         Entity GetEntity(EntityStructure entityStructure, List<string> primaryKeyValues, string path);
+
+        /// <summary>
+        /// Returns true if the entity at the specified path has already been saved.
+        /// </summary>
+        /// <param name="entityName">The name of the entity.</param>
+        /// <param name="primaryKeyValues">The list of primary key values.</param>
+        /// <param name="path">The specified path.</param>
+        /// <returns></returns>
+        bool IsSaved(string entityName, List<string> primaryKeyValues, string path);
 
         /// <summary>
         /// Returns an EntityStructures collection from the specified <paramref name="path"/>.

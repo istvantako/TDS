@@ -74,6 +74,12 @@ namespace TestDataSeeding.Logic
             // Get the structure of the entity.
             EntityStructure entityStructure = entityStructures.Find(entityName);
 
+            // Check if the number of the provided primary key values matches the number of primary key components.
+            if (entityPrimaryKeyValues.Count != entityStructure.PrimaryKeys.Count)
+            {
+                throw new TdsLogicException("Incorrect number of primary key values.");
+            }
+
             // Get the searched entity from the database and from the serialized storage.
             Entity entityFromDb = dbClient.GetEntity(entityStructure, entityPrimaryKeyValues);
             Entity entityFromSerializedStorage = serializedStorageClient.GetEntity(entityStructure, entityPrimaryKeyValues, path);
@@ -119,6 +125,18 @@ namespace TestDataSeeding.Logic
                 entityStructures = serializedStorageClient.GetEntityStructures(path);
             }
 
+            // Check if the number of the provided primary key values matches the number of primary key components.
+            if (entityPrimaryKeyValues.Count != entityStructures.Find(entityName).PrimaryKeys.Count)
+            {
+                throw new TdsLogicException("Incorrect number of primary key values.");
+            }
+
+            // Check if the entity has already been saved on the specified path.
+            if (serializedStorageClient.IsSaved(entityName, entityPrimaryKeyValues, path))
+            {
+                throw new EntityAlreadySavedException("The entity has already been saved.");
+            }
+
             try
             {
                 // Save the entity and its dependencies.
@@ -134,17 +152,24 @@ namespace TestDataSeeding.Logic
         {
             // Get the entity with the given name and primary key values from the database and its structure. 
             EntityStructure entityStructure = entityStructures.Find(entityName);
+
+            // Check if the number of the provided primary key values matches the number of primary key components.
+            if (entityPrimaryKeyValues.Count != entityStructure.PrimaryKeys.Count)
+            {
+                throw new TdsLogicException("Incorrect number of primary key values.");
+            }
+
             Entity entityFromDb = dbClient.GetEntity(entityStructure, entityPrimaryKeyValues);
 
             if (entityFromDb == null)
             {
-                throw new Exception("Entity not found in database.");
+                throw new TdsLogicException("Entity not found in the database.");
             }
 
             try
             {
                 // Save the current entity.
-                serializedStorageClient.SaveEntity(entityFromDb, entityStructure, path, false);
+                serializedStorageClient.SaveEntity(entityFromDb, entityStructure, path);
 
                 // Create the list of dependencies and save each dependency recursively.
                 var dependencies = CreateDependencies(entityFromDb, entityStructure);

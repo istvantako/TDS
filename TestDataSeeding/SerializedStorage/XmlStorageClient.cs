@@ -17,26 +17,7 @@ namespace TestDataSeeding.SerializedStorage
     /// </summary>
     public class XmlStorageClient : ISerializedStorageClient
     {
-        ////Elozo save entity
-        //public void SaveEntity(Entity entity, EntityStructure entityStructure, string path)
-        //{
-        //    if (!Directory.Exists(path + "\\Entities"))
-        //    {
-        //        Directory.CreateDirectory(path + "\\Entities");
-        //    }
-
-        //    var xmlFileName = BuildFileName(entity, entityStructure, path);
-        //    try
-        //    {
-        //        Serialize<Entity>(entity, xmlFileName);
-        //    }
-        //    catch (Exception exception)
-        //    {
-        //        throw exception;
-        //    }
-        //}
-
-        public void SaveEntity(Entity entity, EntityStructure entityStructure, string path, Boolean overwrite)
+        public void SaveEntity(Entity entity, EntityStructure entityStructure, string path)
         {
             if (!Directory.Exists(path + "\\Entities"))
             {
@@ -44,35 +25,13 @@ namespace TestDataSeeding.SerializedStorage
             }
 
             var xmlFileName = BuildFileName(entity, entityStructure, path);
-            if (overwrite)//ha feluliras van akkor ramentjuk az elozore, ha letezik ha nem.
+            try
             {
-                try
-                {
-                    Serialize<Entity>(entity, xmlFileName);
-                }
-                catch (Exception exception)
-                {
-                    throw exception;
-                }
+                Serialize<Entity>(entity, xmlFileName);
             }
-            else//ha nem engedelyezett a feluliras akkor megnezzuk hogy van-e mar ilyen nevu file, ha van akkor dobunk egy Exception, kulonben lementjuk.
+            catch (Exception exception)
             {
-                if (File.Exists(xmlFileName))
-                {
-                    throw new EntityAlreadyExistsException();
-                }
-                else
-                {
-                    try
-                    {
-                        Serialize<Entity>(entity, xmlFileName);
-                    }
-                    catch (Exception exception)
-                    {
-                        throw exception;
-                    }
-                }
-
+                throw exception;
             }
         }
 
@@ -91,6 +50,13 @@ namespace TestDataSeeding.SerializedStorage
             }
 
             return deserializedObject;
+        }
+
+        public bool IsSaved(string entityName, List<string> primaryKeyValues, string path)
+        {
+            var xmlFileName = BuildFileName(entityName, primaryKeyValues, path);
+
+            return File.Exists(xmlFileName);
         }
 
         public EntityStructures GetEntityStructures(string path)
@@ -154,6 +120,27 @@ namespace TestDataSeeding.SerializedStorage
             StringBuilder builder = new StringBuilder(path + "\\Entities\\" + entityStructure.Name);
 
             for (int i = 0; i < entityStructure.PrimaryKeys.Count; i++)
+            {
+                builder.Append("_" + primaryKeyValues[i]);
+            }
+
+            builder.Append(".xml");
+
+            return builder.ToString();
+        }
+
+        /// <summary>
+        /// Builds an XML file name based on the name and key values of the entity.
+        /// </summary>
+        /// <param name="entityName">The name of the entity.</param>
+        /// <param name="primaryKeyValues">The primary key values.</param>
+        /// <param name="path">The path where the file is stored.</param>
+        /// <returns>The XML file name with path.</returns>
+        private string BuildFileName(string entityName, List<string> primaryKeyValues, string path)
+        {
+            StringBuilder builder = new StringBuilder(path + "\\Entities\\" + entityName);
+
+            for (int i = 0; i < primaryKeyValues.Count; i++)
             {
                 builder.Append("_" + primaryKeyValues[i]);
             }

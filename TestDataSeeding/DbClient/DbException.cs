@@ -2,6 +2,9 @@
 
 namespace TestDataSeeding.DbClient
 {
+    /// <summary>
+    /// Database exception class.
+    /// </summary>
     public class DbException : Exception
     {
         public DbException()
