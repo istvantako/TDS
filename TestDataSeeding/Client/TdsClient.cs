@@ -21,20 +21,9 @@ namespace TestDataSeeding.Client
         /// <summary>
         /// Constructs a new instance of TdsClient.
         /// </summary>
-        public TdsClient()
+        public TdsClient(string defaultStoragePath)
         {
-            entityManager = new EntityManager(ConfigurationManager.AppSettings["TdsStoragePath"]);
-        }
-
-        /// <summary>
-        /// Loads a saved entity, identified by <paramref name="entityName"/> and <paramref name="entityPrimaryKeyValues"/>,
-        /// into the database, from the default storage path given in the AppConfig.
-        /// </summary>
-        /// <param name="entityName">The name of the entity.</param>
-        /// <param name="entityPrimaryKeyValues">A list with the pramary key values that identifies the entity.</param>
-        public void LoadEntity(string entityName, List<string> entityPrimaryKeyValues)
-        {
-            entityManager.LoadEntity(entityName, entityPrimaryKeyValues, ConfigurationManager.AppSettings["TdsStoragePath"]);
+            entityManager = new EntityManager(defaultStoragePath);
         }
 
         /// <summary>
@@ -47,17 +36,6 @@ namespace TestDataSeeding.Client
         public void LoadEntity(string entityName, List<string> entityPrimaryKeyValues, string path)
         {
             entityManager.LoadEntity(entityName, entityPrimaryKeyValues, path);
-        }
-
-        /// <summary>
-        /// Saves an entity, identified by <paramref name="entityName"/> and <paramref name="entityPrimaryKeyValues"/>,
-        /// to the default storage path given in the AppConfig.
-        /// </summary>
-        /// <param name="entityName">The name of the entity.</param>
-        /// <param name="entityPrimaryKeyValues">A list with the pramary key values that identifies the entity.</param>
-        public void SaveEntity(string entityName, List<string> entityPrimaryKeyValues)
-        {
-            entityManager.SaveEntity(entityName, entityPrimaryKeyValues, ConfigurationManager.AppSettings["TdsStoragePath"]);
         }
 
         /// <summary>

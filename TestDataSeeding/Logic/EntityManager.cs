@@ -116,6 +116,10 @@ namespace TestDataSeeding.Logic
             }
         }
 
+        private void InnerLoadAssociativeEntity(Entity entity, EntityStructure entityStructure, string path)
+        {
+        }
+
         public void SaveEntity(string entityName, List<string> entityPrimaryKeyValues, string path)
         {
             // Refresh the the entity structures collection, if the active path has changed.
@@ -183,6 +187,14 @@ namespace TestDataSeeding.Logic
             catch (Exception exception)
             {
                 throw exception;
+            }
+        }
+
+        private void InnerSaveAssociativeEntity(Entity entity, EntityStructure entityStructure, string path)
+        {
+            foreach (var associativeEntity in entityStructure.BelongsToMany)
+            {
+
             }
         }
 

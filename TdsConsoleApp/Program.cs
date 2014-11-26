@@ -59,13 +59,13 @@ namespace TdsConsoleApp
             }
             Console.WriteLine();
 
-            TdsClient tdsClient = new TdsClient();
+            TdsClient tdsClient = new TdsClient(ConfigurationManager.AppSettings["TdsStoragePath"]);
 
             try
             {
                 if (path.Equals(string.Empty))
                 {
-                    tdsClient.SaveEntity(entityName, parameters);
+                    tdsClient.SaveEntity(entityName, parameters, ConfigurationManager.AppSettings["TdsStoragePath"]);
                 }
                 else
                 {

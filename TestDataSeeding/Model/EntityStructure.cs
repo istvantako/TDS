@@ -62,6 +62,17 @@ namespace TestDataSeeding.Model
         }
 
         /// <summary>
+        /// Gets the list of the associative entity names, which contain this entity.
+        /// </summary>
+        [YAXCollection(YAXCollectionSerializationTypes.Serially, SeparateBy = ", ")]
+        [YAXSerializeAs("BelongsToMany")]
+        public List<string> BelongsToMany
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Constructs a new empty EntityStructure.
         /// </summary>
         public EntityStructure()
@@ -69,6 +80,7 @@ namespace TestDataSeeding.Model
             Attributes = new Dictionary<string, string>();
             PrimaryKeys = new List<string>();
             ForeignKeys = new Dictionary<string, EntityForeignKey>();
+            BelongsToMany = new List<string>();
         }
 
         /// <summary>
@@ -81,6 +93,7 @@ namespace TestDataSeeding.Model
             Attributes = new Dictionary<string, string>();
             PrimaryKeys = new List<string>();
             ForeignKeys = new Dictionary<string, EntityForeignKey>();
+            BelongsToMany = new List<string>();
         }
 
         /// <summary>
