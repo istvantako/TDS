@@ -65,7 +65,7 @@ namespace TestDataSeeding.SerializedStorage
 
             try
             {
-                entityStructures = Deserialize<EntityStructures>(path + "\\Structures\\Structure.xml");
+                entityStructures = Deserialize<EntityStructures>(path + "\\Structures.xml");
             }
             catch (Exception exception)
             {

@@ -10,7 +10,7 @@ namespace TestDataSeeding.Logic
     /// <summary>
     /// Interface for serialized object storage client.
     /// </summary>
-    public interface ISerializedStorageClient
+    internal interface ISerializedStorageClient
     {
         /// <summary>
         /// Saves the <paramref name="entity"/> to an XML file.

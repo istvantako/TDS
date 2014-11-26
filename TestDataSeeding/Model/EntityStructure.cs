@@ -29,7 +29,7 @@ namespace TestDataSeeding.Model
         [YAXDictionary(EachPairName = "Attribute", KeyName = "AttributeName", ValueName = "Type",
                    SerializeKeyAs = YAXNodeTypes.Attribute,
                    SerializeValueAs = YAXNodeTypes.Attribute)]
-        [YAXSerializeAs("AttributeValues")]
+        [YAXSerializeAs("Attributes")]
         public Dictionary<string, string> Attributes
         {
             get;

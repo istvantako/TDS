@@ -9,7 +9,7 @@ namespace TestDataSeeding.Logic
     /// <summary>
     /// Test data seeding business logic exception, the entity has already been saved.
     /// </summary>
-    public class EntityAlreadySavedException : TdsLogicException
+    internal class EntityAlreadySavedException : TdsLogicException
     {
         public EntityAlreadySavedException()
         {

@@ -5,7 +5,7 @@ using TestDataSeeding.Model;
 
 namespace TestDataSeeding.DbClient
 {
-    public class MsSqlClient : IDbClient
+    internal class MsSqlClient : IDbClient
     {
         private MsSqlQueryBuilder queryBuilder = new MsSqlQueryBuilder();
         private MsSqlQueryExecutor queryExecutor = new MsSqlQueryExecutor();

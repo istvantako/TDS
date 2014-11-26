@@ -11,7 +11,7 @@ namespace TestDataSeeding.Logic
     /// <summary>
     /// Database client interface.
     /// </summary>
-    public interface IDbClient
+    internal interface IDbClient
     {
         /// <summary>
         /// Returns a new entity identified by the entity name from the <paramref name="entityStructure"/> and <paramref name="primaryKeyValues"/>,

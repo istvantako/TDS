@@ -52,6 +52,7 @@
     <Compile Include="Model\EntityForeignKey.cs" />
     <Compile Include="Model\EntityStructure.cs" />
     <Compile Include="Model\EntityStructures.cs" />
+    <Compile Include="Model\EntityWithKey.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DbClient\MsSqlClient.cs" />
     <Compile Include="DbClient\DbException.cs" />

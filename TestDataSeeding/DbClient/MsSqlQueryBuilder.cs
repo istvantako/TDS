@@ -94,7 +94,7 @@ namespace TestDataSeeding.DbClient
             //,@AttributeX='@ValueX'//
             for (var i = 1; i < nonPrimaryKeyAttributes.Count; i++)
             {
-                builder.Append(",")
+                builder.Append(", ")
                        .Append(nonPrimaryKeyAttributes[i])
                        .Append("='")
                        .Append(entity.AttributeValues[nonPrimaryKeyAttributes[i]])
@@ -135,7 +135,7 @@ namespace TestDataSeeding.DbClient
             //','@ValueX//
             for (int i = 1; i < entity.AttributeValues.Count; i++)
             {
-                builder.Append("','")
+                builder.Append("', '")
                        .Append(entity.AttributeValues.ElementAt(i).Value);
             }
             //')//

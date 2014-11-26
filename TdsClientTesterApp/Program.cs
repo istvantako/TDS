@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,47 +29,56 @@ namespace TdsClientTesterApp
             //EntityStructure esB = new EntityStructure();
             //esB.Name = "TableB";
             //esB.Attributes.Add("TableB_ID", "int");
+            //esB.Attributes.Add("TableD_ID", "int");
             //esB.Attributes.Add("name", "string");
             //esB.PrimaryKeys.Add("TableB_ID");
+            //esB.ForeignKeys.Add("TableD_ID", new EntityForeignKey("TableD", "TableD_ID"));
 
             //EntityStructure esC = new EntityStructure();
             //esC.Name = "TableC";
             //esC.Attributes.Add("TableC_ID", "int");
+            //esC.Attributes.Add("TableD_ID", "int");
             //esC.Attributes.Add("name", "string");
             //esC.PrimaryKeys.Add("TableC_ID");
+            //esC.ForeignKeys.Add("TableD_ID", new EntityForeignKey("TableD", "TableD_ID"));
+
+            //EntityStructure esD = new EntityStructure();
+            //esD.Name = "TableD";
+            //esD.Attributes.Add("TableD_ID", "int");
+            //esD.Attributes.Add("name", "string");
+            //esD.PrimaryKeys.Add("TableD_ID");
 
             //EntityStructures escollection = new EntityStructures();
             //escollection.Add(esA);
             //escollection.Add(esB);
             //escollection.Add(esC);
-
+            //escollection.Add(esD);
 
             //xml.SaveEntityStructures(escollection, "D:\\TDS");
 
-            var a = xml.GetEntityStructures("D:\\TDS");
-            foreach (var b in a.Structures)
-            {
-                Console.WriteLine(b);
-            }
-            //// Ez eddig OK!
-            
+            //var a = xml.GetEntityStructures("D:\\TDS");
+            //foreach (var b in a.Structures)
+            //{
+            //    Console.WriteLine(b);
+            //}
+            //Console.WriteLine("Sikeres mentes!");
 
-            //TdsClient tds = new TdsClient();
-            //tds.SaveEntity("TableA", new List<string> { "1" });
-            //tds.SaveEntity("TableA", new List<string> { "2" });
-            //tds.SaveEntity("TableA", new List<string> { "3" });
+
+            TdsClient tds = new TdsClient(ConfigurationManager.AppSettings["TdsStoragePath"]);
+
+            var entities = new List<EntityWithKey>();
+            var entity = new EntityWithKey("TableA", new List<string> { "1" });
+            entities.Add(entity);
+            entity = new EntityWithKey("TableA", new List<string> { "2" });
+            entities.Add(entity);
+
+            //tds.SaveEntity(entities, "D:\\TDS");
             //Console.WriteLine("Mentes sikeres!");
             //// Meglepo, de mukodik!
-            
 
-            /**
-             * Es itt kezzel belepiszkalunk az adatbazisba :)
-             */
 
-            //TdsClient tds = new TdsClient();
-            //tds.LoadEntity("TableA", new List<string> { "1" });
-            //tds.LoadEntity("TableA", new List<string> { "2" });
-            //Console.WriteLine("Visszaallitas sikeres!");
+            tds.LoadEntity(entities);
+            Console.WriteLine("Visszaallitas sikeres!");
             //// Ez vegkepp meglepo, de mukodik, es elsore!
 
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Configuration;
 using TestDataSeeding.Client;
+using TestDataSeeding.Model;
 
 namespace TdsConsoleApp
 {
@@ -65,11 +66,17 @@ namespace TdsConsoleApp
             {
                 if (path.Equals(string.Empty))
                 {
-                    tdsClient.SaveEntity(entityName, parameters, ConfigurationManager.AppSettings["TdsStoragePath"]);
+                    List<EntityWithKey> entities = new List<EntityWithKey>();
+                    entities.Add(new EntityWithKey(entityName, parameters));
+
+                    tdsClient.SaveEntity(entities);
                 }
                 else
                 {
-                    tdsClient.SaveEntity(entityName, parameters, path);
+                    List<EntityWithKey> entities = new List<EntityWithKey>();
+                    entities.Add(new EntityWithKey(entityName, parameters));
+
+                    tdsClient.SaveEntity(entities, path);
                 }
                 Console.WriteLine("Command executed with success!");
             }

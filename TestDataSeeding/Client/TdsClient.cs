@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestDataSeeding.Logic;
+using TestDataSeeding.Model;
 
 namespace TestDataSeeding.Client
 {
@@ -19,35 +20,37 @@ namespace TestDataSeeding.Client
         private IEntityManager entityManager;
 
         /// <summary>
+        /// The default storage path, used when no path is specified in the requests.
+        /// </summary>
+        private string defaultStoragePath;
+
+        /// <summary>
         /// Constructs a new instance of TdsClient.
         /// </summary>
         public TdsClient(string defaultStoragePath)
         {
+            this.defaultStoragePath = defaultStoragePath;
             entityManager = new EntityManager(defaultStoragePath);
         }
 
-        /// <summary>
-        /// Loads a saved entity, identified by <paramref name="entityName"/> and <paramref name="entityPrimaryKeyValues"/>,
-        /// into the database, from the specified <paramref name="path"/>.
-        /// </summary>
-        /// <param name="entityName">The name of the entity.</param>
-        /// <param name="entityPrimaryKeyValues">A list with the pramary key values that identifies the entity.</param>
-        /// <param name="path">The path where the entity is stored.</param>
-        public void LoadEntity(string entityName, List<string> entityPrimaryKeyValues, string path)
+        public void LoadEntity(List<EntityWithKey> entities, bool overwrite = false)
         {
-            entityManager.LoadEntity(entityName, entityPrimaryKeyValues, path);
+            entityManager.LoadEntity(entities, defaultStoragePath, overwrite);
         }
 
-        /// <summary>
-        /// Saves an entity, identified by <paramref name="entityName"/> and <paramref name="entityPrimaryKeyValues"/>,
-        /// to the specified <paramref name="path"/>.
-        /// </summary>
-        /// <param name="entityName">The name of the entity.</param>
-        /// <param name="entityPrimaryKeyValues">A list with the pramary key values that identifies the entity.</param>
-        /// <param name="path">The path where the entity will be stored.</param>
-        public void SaveEntity(string entityName, List<string> entityPrimaryKeyValues, string path)
+        public void LoadEntity(List<EntityWithKey> entities, string path, bool overwrite = false)
         {
-            entityManager.SaveEntity(entityName, entityPrimaryKeyValues, path);
+            entityManager.LoadEntity(entities, path, overwrite);
+        }
+
+        public void SaveEntity(List<EntityWithKey> entities, bool overwrite = false)
+        {
+            entityManager.SaveEntity(entities, defaultStoragePath, overwrite);
+        }
+
+        public void SaveEntity(List<EntityWithKey> entities, string path, bool overwrite = false)
+        {
+            entityManager.SaveEntity(entities, path, overwrite);
         }
     }
 }
