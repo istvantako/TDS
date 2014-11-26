@@ -37,6 +37,35 @@ namespace TestDataSeeding.DbClient
         }
 
         /// <summary>
+        /// Creates the select query to retrieve the given entities.
+        /// </summary>
+        /// <param name="entityName">The name of associative entity name.</param>
+        /// <param name="keyValues">The dictionary with the given keys and values.</param>
+        /// <returns>Returns an SQL SELECT query string.</returns>
+        public string CreateSelectQuery(string entityName, Dictionary<string, string> keyValues)
+        {
+            //SELECT * FROM @Tablename WHERE @KeyAttribute1='@KeyValue1'//
+            StringBuilder builder = new StringBuilder("SELECT * FROM ");
+            builder.Append(entityName)
+                   .Append(" WHERE ")
+                   .Append(keyValues.ElementAt(0).Key)
+                   .Append("='")
+                   .Append(keyValues.ElementAt(0).Value)
+                   .Append("'");
+            // AND @KeyAttributeX='@KeyValueX'//
+            for (var i = 1; i < keyValues.Count; i++)
+            {
+                builder.Append(" AND ")
+                       .Append(keyValues.ElementAt(i).Key)
+                       .Append("='")
+                       .Append(keyValues.ElementAt(i).Value)
+                       .Append("'");
+            }
+
+            return builder.ToString();
+        }
+
+        /// <summary>
         /// Creates the update query which updates the given entity.
         /// </summary>
         /// <param name="entity">An entity.</param>

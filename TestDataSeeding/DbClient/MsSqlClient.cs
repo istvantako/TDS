@@ -11,32 +11,6 @@ namespace TestDataSeeding.DbClient
         private MsSqlQueryExecutor queryExecutor = new MsSqlQueryExecutor();
         private List<string> transactionData = new List<string>();
 
-        public void SaveEntity(Entity entity, EntityStructure entityStructure)
-        {
-            string query = queryBuilder.CreateUpdateQuery(entity, entityStructure);
-            try
-            {
-                int rowsAffected = queryExecutor.ExecuteNonQuery(query);
-                if (rowsAffected == 0)
-                {
-                    query = queryBuilder.CreateInsertQuery(entity, entityStructure);
-                    rowsAffected = queryExecutor.ExecuteNonQuery(query);
-                    if (rowsAffected == 0)
-                    {
-                        throw (new DbException("Entity could not be inserted."));
-                    }
-                }
-                else if (rowsAffected > 1)
-                {
-                    throw (new DbException("Multiple rows affected."));
-                }
-            }
-            catch (DbException)
-            {
-                throw;
-            }
-        }
-
         public Entity GetEntity(EntityStructure entityStructure, List<string> primaryKeyValues)
         {
             string query = queryBuilder.CreateSelectQuery(entityStructure, primaryKeyValues);
@@ -67,6 +41,37 @@ namespace TestDataSeeding.DbClient
                 queryExecutor.CloseConnection();
 
                 return queriedEntity;
+            }
+            catch (DbException)
+            {
+                throw;
+            }
+        }
+
+        public List<Entity> GetAssociativeEntities(string entityName, Dictionary<string, string> keyValues)
+        {
+            List<Entity> queriedEntities = new List<Entity>();
+            string query = queryBuilder.CreateSelectQuery(entityName, keyValues);
+            try
+            {
+                SqlDataReader dataReader = queryExecutor.ExecuteQuery(query);
+
+                while (dataReader.Read())
+                {
+                    Entity queriedEntity = new Entity();
+                    queriedEntity.Name = entityName;
+
+                    for (var i = 0; i < dataReader.FieldCount; i++)
+                    {
+                        queriedEntity.AttributeValues.Add(dataReader.GetName(i), dataReader[i].ToString());
+                    }
+                    queriedEntities.Add(queriedEntity);
+                }
+
+                dataReader.Close();
+                queryExecutor.CloseConnection();
+
+                return queriedEntities;
             }
             catch (DbException)
             {
