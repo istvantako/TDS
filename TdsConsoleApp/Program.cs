@@ -22,36 +22,78 @@ namespace TdsConsoleApp
             {
                 Console.WriteLine("Too few or no arguments.");
                 Console.WriteLine("Correct calls:");
-                Console.WriteLine("    entityName param1 <param2 ..>");
+                Console.WriteLine("    entityName param1 <param2 ..> [other entities separated with semicolons]");
                 Console.WriteLine("    -path=targetPath entityName param1 <param2 ..>");
                 return;
             }
 
-            List<string> parameters = new List<string>();
+            
 
             string path = string.Empty;
             string entityName = string.Empty;
             int startIndex = 1;
 
-            if (args[0] != null)
+
+            if (args[0].StartsWith("-path="))
             {
-                if (args[0].StartsWith("-path="))
+                path = args[0].Substring(6);
+                entityName = args[1];
+                startIndex = 2;
+            }
+            else
+            {
+                entityName = args[0];
+            }
+
+
+
+            TdsClient tdsClient = new TdsClient(ConfigurationManager.AppSettings["TdsStoragePath"]);
+
+            List<EntityWithKey> entities = new List<EntityWithKey>();
+            List<string> parameters = new List<string>();
+            for (var i = startIndex; i < args.Length; i++)
+            {
+                
+
+                if (entityName.Equals(string.Empty))
                 {
-                    path = args[0].Substring(6);
-                    entityName = args[1];
-                    startIndex = 2;
+                    entityName = args[i];
                 }
                 else
                 {
-                    entityName = args[0];
+
+                    if (args[i].EndsWith(";"))
+                    {
+                        args[i] = args[i].Remove(args[i].Length - 1);
+
+                        if (args[i].Length > 0)
+                        {
+                            parameters.Add(args[i]);
+                        }
+
+                        entities.Add(new EntityWithKey(entityName, parameters));
+
+                        Console.WriteLine("Entity name: " + entityName);
+                        Console.Write("Parameters: ");
+                        foreach (var j in parameters)
+                        {
+                            Console.Write("'" + j + "'" + ",");
+                        }
+                        Console.WriteLine();
+                        entityName = string.Empty;
+                        parameters.Clear();
+                    }
+                    else
+                    {
+                        parameters.Add(args[i]);
+                    }
                 }
+
+                
+
             }
 
-            for (var i = startIndex; i < args.Length; i++)
-            {
-                parameters.Add(args[i]);
-            }
-
+            entities.Add(new EntityWithKey(entityName, parameters));
             Console.WriteLine("Entity name: " + entityName);
             Console.Write("Parameters: ");
             foreach (var i in parameters)
@@ -59,31 +101,24 @@ namespace TdsConsoleApp
                 Console.Write("'" + i + "'" + ",");
             }
             Console.WriteLine();
-
-            TdsClient tdsClient = new TdsClient(ConfigurationManager.AppSettings["TdsStoragePath"]);
-
             try
             {
                 if (path.Equals(string.Empty))
                 {
-                    List<EntityWithKey> entities = new List<EntityWithKey>();
-                    entities.Add(new EntityWithKey(entityName, parameters));
-
                     tdsClient.SaveEntity(entities);
+
                 }
                 else
                 {
-                    List<EntityWithKey> entities = new List<EntityWithKey>();
-                    entities.Add(new EntityWithKey(entityName, parameters));
-
                     tdsClient.SaveEntity(entities, path);
                 }
-                Console.WriteLine("Command executed with success!");
+                Console.WriteLine("The given entities are saved.");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine(e);
             }
+            
         }
 
         static void Main(string[] args)
