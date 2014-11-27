@@ -33,6 +33,7 @@ namespace TdsClientTesterApp
             //esB.Attributes.Add("name", "string");
             //esB.PrimaryKeys.Add("TableB_ID");
             //esB.ForeignKeys.Add("TableD_ID", new EntityForeignKey("TableD", "TableD_ID"));
+            //esB.BelongsToMany.Add("TableF");
 
             //EntityStructure esC = new EntityStructure();
             //esC.Name = "TableC";
@@ -48,11 +49,40 @@ namespace TdsClientTesterApp
             //esD.Attributes.Add("name", "string");
             //esD.PrimaryKeys.Add("TableD_ID");
 
+            //EntityStructure esE = new EntityStructure();
+            //esE.Name = "TableE";
+            //esE.Attributes.Add("TableE_ID", "int");
+            //esE.Attributes.Add("TableG_ID", "int");
+            //esE.Attributes.Add("name", "string");
+            //esE.PrimaryKeys.Add("TableE_ID");
+            //esE.ForeignKeys.Add("TableG_ID", new EntityForeignKey("TableG", "TableG_ID"));
+
+            //EntityStructure esF = new EntityStructure();
+            //esF.Name = "TableF";
+            //esF.Attributes.Add("TableB_ID", "int");
+            //esF.Attributes.Add("TableE_ID", "int");
+            //esF.Attributes.Add("name", "string");
+            //esF.PrimaryKeys.Add("TableB_ID");
+            //esF.PrimaryKeys.Add("TableE_ID");
+            //esF.ForeignKeys.Add("TableB_ID", new EntityForeignKey("TableB", "TableB_ID"));
+            //esF.ForeignKeys.Add("TableE_ID", new EntityForeignKey("TableE", "TableE_ID"));
+
+            //EntityStructure esG = new EntityStructure();
+            //esG.Name = "TableG";
+            //esG.Attributes.Add("TableG_ID", "int");
+            //esG.Attributes.Add("TableB_ID", "int");
+            //esG.Attributes.Add("name", "string");
+            //esG.PrimaryKeys.Add("TableG_ID");
+            //esG.ForeignKeys.Add("TableB_ID", new EntityForeignKey("TableB", "TableB_ID"));
+
             //EntityStructures escollection = new EntityStructures();
             //escollection.Add(esA);
             //escollection.Add(esB);
             //escollection.Add(esC);
             //escollection.Add(esD);
+            //escollection.Add(esE);
+            //escollection.Add(esF);
+            //escollection.Add(esG);
 
             //xml.SaveEntityStructures(escollection, "D:\\TDS");
 
@@ -69,16 +99,16 @@ namespace TdsClientTesterApp
             var entities = new List<EntityWithKey>();
             var entity = new EntityWithKey("TableA", new List<string> { "1" });
             entities.Add(entity);
-            entity = new EntityWithKey("TableA", new List<string> { "2" });
-            entities.Add(entity);
+            //entity = new EntityWithKey("TableA", new List<string> { "2" });
+            //entities.Add(entity);
 
-            //tds.SaveEntity(entities, "D:\\TDS");
-            //Console.WriteLine("Mentes sikeres!");
+            tds.SaveEntity(entities, "D:\\TDS");
+            Console.WriteLine("Mentes sikeres!");
             //// Meglepo, de mukodik!
 
 
-            tds.LoadEntity(entities);
-            Console.WriteLine("Visszaallitas sikeres!");
+            //tds.LoadEntity(entities);
+            //Console.WriteLine("Visszaallitas sikeres!");
             //// Ez vegkepp meglepo, de mukodik, es elsore!
 
 
