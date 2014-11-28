@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Client\IEntityManager.cs" />
     <Compile Include="Client\TdsClient.cs" />
+    <Compile Include="DbClient\MsSqlStructureBuilder.cs" />
     <Compile Include="Logic\EntityAlreadySavedException.cs" />
     <Compile Include="Logic\EntityManager.cs" />
     <Compile Include="Logic\IDbClient.cs" />

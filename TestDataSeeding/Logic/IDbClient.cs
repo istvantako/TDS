@@ -49,5 +49,11 @@ namespace TestDataSeeding.Logic
         /// On successful transaction, clears the transaction data for a fresh new transaction.
         /// </summary>
         void ExecuteTransaction();
+
+        /// <summary>
+        /// Gets the structure of the database and returns it as an EntityStrucure object.
+        /// </summary>
+        /// <returns>The structure of the database as an EntityStructures object.</returns>
+        EntityStructures GetDatabaseStructure();
     }
 }

@@ -9,15 +9,16 @@ namespace TestDataSeeding.DbClient
     {
         private MsSqlQueryBuilder queryBuilder = new MsSqlQueryBuilder();
         private MsSqlQueryExecutor queryExecutor = new MsSqlQueryExecutor();
+        private MsSqlStructureBuilder structureBuilder = new MsSqlStructureBuilder();
         private List<string> transactionData = new List<string>();
 
         public Entity GetEntity(EntityStructure entityStructure, List<string> primaryKeyValues)
         {
+            Entity queriedEntity = new Entity();
             string query = queryBuilder.CreateSelectQuery(entityStructure, primaryKeyValues);
             try
             {
                 SqlDataReader dataReader = queryExecutor.ExecuteQuery(query);
-                Entity queriedEntity = new Entity();
                 queriedEntity.Name = entityStructure.Name;
 
                 if (dataReader.Read())
@@ -39,13 +40,13 @@ namespace TestDataSeeding.DbClient
 
                 dataReader.Close();
                 queryExecutor.CloseConnection();
-
-                return queriedEntity;
             }
             catch (DbException)
             {
                 throw;
             }
+
+            return queriedEntity;
         }
 
         public List<Entity> GetAssociativeEntities(string entityName, Dictionary<string, string> keyValues)
@@ -70,13 +71,13 @@ namespace TestDataSeeding.DbClient
 
                 dataReader.Close();
                 queryExecutor.CloseConnection();
-
-                return queriedEntities;
             }
             catch (DbException)
             {
                 throw;
             }
+
+            return queriedEntities;
         }
 
         public void InsertWithTransaction(Entity entity, EntityStructure entityStructure)
@@ -100,6 +101,48 @@ namespace TestDataSeeding.DbClient
             {
                 throw;
             }
+        }
+
+        public EntityStructures GetDatabaseStructure()
+        {
+            EntityStructures structures = new EntityStructures();
+
+            try
+            {
+                foreach (var tableName in structureBuilder.GetTablesNames())
+                {
+                    EntityStructure structure = new EntityStructure(tableName);
+                    structureBuilder.SetTableAttributes(ref structure);
+                    structureBuilder.SetTablePrimaryKeys(ref structure);
+                    structureBuilder.SetTableForeignKeys(ref structure);
+                    structures.Add(structure);
+                }
+                //if a table has references to more than one table, it is considered a relationship table
+                //we set the BelongsToMany fields in the referenced Tables
+                foreach (var structure in structures)
+                {
+                    //use hashset to escape multiple references to same table
+                    HashSet<string> referrencedTables = new HashSet<string>();
+                    foreach (var foreignKey in structure.ForeignKeys.Values)
+                    {
+                        referrencedTables.Add(foreignKey.EntityName);
+                    }
+
+                    if (referrencedTables.Count > 1)
+                    {
+                        foreach (var table in referrencedTables)
+                        {
+                            structures.Find(table).BelongsToMany.Add(structure.Name);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                throw;
+            }
+
+            return structures;
         }
     }
 }

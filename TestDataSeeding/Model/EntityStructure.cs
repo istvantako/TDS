@@ -144,6 +144,16 @@ namespace TestDataSeeding.Model
                 stringBuilder.Append("\n");
             }
 
+            if (BelongsToMany.Any())
+            {
+                stringBuilder.Append("  + BelongsToMany (");
+                foreach (var item in BelongsToMany)
+                {
+                    stringBuilder.Append(item).Append(" ");
+                }
+                stringBuilder.Append(")\n");
+            }
+
             return stringBuilder.ToString();
         }
     }
