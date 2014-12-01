@@ -7,32 +7,29 @@ using System.Diagnostics;
 using System.Configuration;
 using TestDataSeeding.Client;
 using TestDataSeeding.Model;
+using TestDataSeeding.Logic;
 
 namespace TdsConsoleApp
 {
     class Program
     {
+        private static EntityWithKey entity;
+        private static string path = string.Empty;
+
         /// <summary>
-        /// Executes the save entity command, saves the entity given as a list of arguments.
+        /// Validates and sets the entity and path members based on the arguments.
         /// </summary>
         /// <param name="args">List of arguments.</param>
-        private static void ExecuteSaveCommand(string[] args)
+        /// <returns>Return true if the arguments were valid.</returns>
+        private static bool ProcessInput(string[] args)
         {
             if (args.Length < 2)
             {
-                Console.WriteLine("Too few or no arguments.");
-                Console.WriteLine("Correct calls:");
-                Console.WriteLine("    entityName param1 <param2 ..> [other entities separated with semicolons]");
-                Console.WriteLine("    -path=targetPath entityName param1 <param2 ..>");
-                return;
+                return false;
             }
 
-            
-
-            string path = string.Empty;
-            string entityName = string.Empty;
+            string entityName;
             int startIndex = 1;
-
 
             if (args[0].StartsWith("-path="))
             {
@@ -45,85 +42,100 @@ namespace TdsConsoleApp
                 entityName = args[0];
             }
 
-
-
-            TdsClient tdsClient = new TdsClient(ConfigurationManager.AppSettings["TdsStoragePath"]);
-
-            List<EntityWithKey> entities = new List<EntityWithKey>();
             List<string> parameters = new List<string>();
             for (var i = startIndex; i < args.Length; i++)
             {
-                
-
-                if (entityName.Equals(string.Empty))
-                {
-                    entityName = args[i];
-                }
-                else
-                {
-
-                    if (args[i].EndsWith(";"))
-                    {
-                        args[i] = args[i].Remove(args[i].Length - 1);
-
-                        if (args[i].Length > 0)
-                        {
-                            parameters.Add(args[i]);
-                        }
-
-                        entities.Add(new EntityWithKey(entityName, parameters));
-
-                        Console.WriteLine("Entity name: " + entityName);
-                        Console.Write("Parameters: ");
-                        foreach (var j in parameters)
-                        {
-                            Console.Write("'" + j + "'" + ",");
-                        }
-                        Console.WriteLine();
-                        entityName = string.Empty;
-                        parameters.Clear();
-                    }
-                    else
-                    {
-                        parameters.Add(args[i]);
-                    }
-                }
-
-                
-
+                parameters.Add(args[i]);
             }
 
-            entities.Add(new EntityWithKey(entityName, parameters));
-            Console.WriteLine("Entity name: " + entityName);
-            Console.Write("Parameters: ");
-            foreach (var i in parameters)
+            if (parameters.Any())
             {
-                Console.Write("'" + i + "'" + ",");
+                entity = new EntityWithKey(entityName, parameters);
+                return true;
             }
-            Console.WriteLine();
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Executes the save entity command on the member called entity.
+        /// </summary>
+        private static void ExecuteSaveCommand()
+        {
+            TdsClient tdsClient = new TdsClient(path);
+
+            List<EntityWithKey> entities = new List<EntityWithKey>();
+            entities.Add(entity);
+
             try
             {
-                if (path.Equals(string.Empty))
-                {
-                    tdsClient.SaveEntity(entities);
-
-                }
-                else
-                {
-                    tdsClient.SaveEntity(entities, path);
-                }
-                Console.WriteLine("The given entities are saved.");
+                tdsClient.SaveEntity(entities);
+                Console.WriteLine("The given entity is saved.");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                if (e is EntityAlreadySavedException)
+                {
+                    string answer = string.Empty;
+                    Console.WriteLine("The entity with the given keys has already been saved.");
+                    while ((answer != "Y") && (answer != "N"))
+                    {
+                        Console.WriteLine("Overwrite? (Y/N)");
+                        answer = Console.ReadLine();
+
+                        switch (answer)
+                        {
+                            case "Y":
+                                tdsClient.SaveEntity(entities, true);
+                                Console.WriteLine("The given entity is saved.");
+                                break;
+                            case "N":
+                                Console.WriteLine("Save aborted.");
+                                break;
+                            default:
+                                Console.WriteLine("Unknown answer.");
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine(e);
+                }
             }
-            
         }
 
+        /// <summary>
+        /// Main function, saves entity based on args
+        /// </summary>
         static void Main(string[] args)
         {
-            ExecuteSaveCommand(args);
+            if (ProcessInput(args))
+            {
+                if (path == string.Empty)
+                {
+                    try
+                    {
+                        path = ConfigurationManager.AppSettings["TdsStoragePath"];
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Corrupt App config. Invalid TdsStoragePath.");
+                    }
+                }
+
+                Console.Write("Executing save on entity: " + entity.ToString());
+                ExecuteSaveCommand();
+            }
+            else
+            {
+                Console.WriteLine("Too few or no arguments.");
+                Console.WriteLine("Correct calls:");
+                Console.WriteLine("    entityName param1 <param2 ..>");
+                Console.WriteLine("    -path=targetPath entityName param1 <param2 ..>");
+            }
             Console.ReadLine();
         }
     }

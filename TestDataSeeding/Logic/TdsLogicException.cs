@@ -9,7 +9,7 @@ namespace TestDataSeeding.Logic
     /// <summary>
     /// Main Test Data Seeding business logic exception class.
     /// </summary>
-    internal class TdsLogicException : Exception
+    public class TdsLogicException : Exception
     {
         public TdsLogicException()
         {

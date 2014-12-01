@@ -47,5 +47,22 @@ namespace TestDataSeeding.Model
 
             return true;
         }
+
+        /// <summary>
+        /// Returns the string representation of this Entity.
+        /// </summary>
+        /// <returns>Returns the string representation of this Entity.</returns>
+        public override string ToString()
+        {
+            StringBuilder stringBuilder = new StringBuilder("[" + EntityName + "]\n");
+            stringBuilder.Append("Attributes: \n");
+
+            foreach (var keyValue in PrimaryKeyValues)
+            {
+                stringBuilder.Append("  - '" + keyValue + "'\n");
+            }
+
+            return stringBuilder.ToString();
+        }
     }
 }
