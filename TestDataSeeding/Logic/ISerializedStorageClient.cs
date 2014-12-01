@@ -10,7 +10,7 @@ namespace TestDataSeeding.Logic
     /// <summary>
     /// Interface for serialized object storage client.
     /// </summary>
-    internal interface ISerializedStorageClient
+    internal interface ISerializedStorageClient: IStorage
     {
         /// <summary>
         /// Saves the <paramref name="entity"/> to an XML file.
@@ -37,13 +37,6 @@ namespace TestDataSeeding.Logic
         /// <param name="path">The specified path.</param>
         /// <returns></returns>
         bool IsSaved(string entityName, List<string> primaryKeyValues, string path);
-
-        /// <summary>
-        /// Returns an EntityStructures collection from the specified <paramref name="path"/>.
-        /// </summary>
-        /// <param name="path">The path where the entity structures are stored.</param>
-        /// <returns>An EntityStructures collection from the specified <paramref name="path"/>.</returns>
-        EntityStructures GetEntityStructures(string path);
 
         /// <summary>
         /// Saves the given <paramref name="entityStructures"/> collection in the given <paramref name="path"/>.

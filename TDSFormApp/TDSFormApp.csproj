@@ -4,16 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{ABF18B9D-1FC0-4506-B4F2-13CF085A79AB}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{FF5994C6-A607-41D6-966F-98EA9BE3EFFF}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestDataSeeding</RootNamespace>
-    <AssemblyName>TestDataSeeding</AssemblyName>
+    <RootNamespace>TDSFormApp</RootNamespace>
+    <AssemblyName>TDSFormApp</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,53 +33,50 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client\IEntityManager.cs" />
-    <Compile Include="Client\TdsClient.cs" />
-    <Compile Include="DbClient\MsSqlStructureBuilder.cs" />
-    <Compile Include="Logic\EntityAlreadySavedException.cs" />
-    <Compile Include="Logic\EntityManager.cs" />
-    <Compile Include="Logic\IDbClient.cs" />
-    <Compile Include="Logic\ISerializedStorageClient.cs" />
-    <Compile Include="Logic\IStorage.cs" />
-    <Compile Include="Logic\TdsLogicException.cs" />
-    <Compile Include="Model\Entity.cs" />
-    <Compile Include="Model\EntityForeignKey.cs" />
-    <Compile Include="Model\EntityStructure.cs" />
-    <Compile Include="Model\EntityStructures.cs" />
-    <Compile Include="Model\EntityWithKey.cs" />
+    <Compile Include="SaveEntityForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SaveEntityForm.Designer.cs">
+      <DependentUpon>SaveEntityForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DbClient\MsSqlClient.cs" />
-    <Compile Include="DbClient\DbException.cs" />
-    <Compile Include="DbClient\MsSqlQueryBuilder.cs" />
-    <Compile Include="DbClient\MsSqlQueryExecutor.cs" />
-    <Compile Include="SerializedStorage\SerializedStorageException.cs" />
-    <Compile Include="SerializedStorage\XmlStorageClient.cs" />
-    <Compile Include="YaxLib\Enums.cs" />
-    <Compile Include="YaxLib\EnumWrapper.cs" />
-    <Compile Include="YaxLib\ICustomDeserializer.cs" />
-    <Compile Include="YaxLib\ICustomSerializer.cs" />
-    <Compile Include="YaxLib\KnownTypes.cs" />
-    <Compile Include="YaxLib\MemberWrapper.cs" />
-    <Compile Include="YaxLib\ReflectionUtils.cs" />
-    <Compile Include="YaxLib\StringUtils.cs" />
-    <Compile Include="YaxLib\TypeWrappersPool.cs" />
-    <Compile Include="YaxLib\UdtWrapper.cs" />
-    <Compile Include="YaxLib\XMLUtils.cs" />
-    <Compile Include="YaxLib\YAXAttributes.cs" />
-    <Compile Include="YaxLib\YAXExceptions.cs" />
-    <Compile Include="YaxLib\YAXParsingErrors.cs" />
-    <Compile Include="YaxLib\YAXSerializer.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="SaveEntityForm.resx">
+      <DependentUpon>SaveEntityForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
