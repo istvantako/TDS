@@ -382,5 +382,11 @@ namespace TestDataSeeding.Logic
         {
             return visitedEntities.Count(entityWithKey => entityWithKey.IsEqual(entityName, entityPrimaryKeyValues)) > 0;
         }
+
+        public void GenerateDatabaseStructure(string path)
+        {
+            XmlStorageClient xml = new XmlStorageClient();
+            xml.SaveEntityStructures(dbClient.GetDatabaseStructure(), path);
+        }
     }
 }

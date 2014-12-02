@@ -27,5 +27,11 @@ namespace TestDataSeeding.Client
         /// <param name="path">The path where the entities are stored.</param>
         /// <param name="overwrite">If true, overwrite the already saved entities.</param>
         void SaveEntity(List<EntityWithKey> entities, string path, bool overwrite = false);
+
+        /// <summary>
+        /// Generates a Structure xml file of the database given in the App.config .
+        /// </summary>
+        /// <param name="path">The path where the Structure xml is stored.</param>
+        void GenerateDatabaseStructure(string path);
     }
 }

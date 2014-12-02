@@ -52,5 +52,10 @@ namespace TestDataSeeding.Client
         {
             entityManager.SaveEntity(entities, path, overwrite);
         }
+
+        public void GenerateDatabaseStructure()
+        {
+            entityManager.GenerateDatabaseStructure(defaultStoragePath);
+        }
     }
 }
