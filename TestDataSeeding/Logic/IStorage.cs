@@ -6,7 +6,7 @@ using TestDataSeeding.Model;
 
 namespace TestDataSeeding.Logic
 {
-    internal interface  IStorage
+    public interface  IStorage
     {
         /// <summary>
         /// Returns an EntityStructures collection from the specified <paramref name="path"/>.

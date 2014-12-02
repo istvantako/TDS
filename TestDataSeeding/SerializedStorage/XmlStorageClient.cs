@@ -15,7 +15,7 @@ namespace TestDataSeeding.SerializedStorage
     /// <summary>
     /// An XML based storage implementation of the ISerializedStorageClient.
     /// </summary>
-    internal class XmlStorageClient : ISerializedStorageClient
+    public class XmlStorageClient : ISerializedStorageClient
     {
         public void SaveEntity(Entity entity, EntityStructure entityStructure, string path)
         {
