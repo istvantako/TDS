@@ -16,22 +16,20 @@ namespace TdsClientTesterApp
         {
             TdsClient tds = new TdsClient(ConfigurationManager.AppSettings["TdsStoragePath"]);
 
-            tds.GenerateDatabaseStructure();
+            //tds.GenerateDatabaseStructure();
 
-            //var entities = new List<EntityWithKey>();
-            //var entity = new EntityWithKey("TableA", new List<string> { "1" });
+            var entities = new List<EntityWithKey>();
+            var entity = new EntityWithKey("TableA", new List<string> { "1" });
+            entities.Add(entity);
+            //entity = new EntityWithKey("TableA", new List<string> { "2" });
             //entities.Add(entity);
-            ////entity = new EntityWithKey("TableA", new List<string> { "2" });
-            ////entities.Add(entity);
 
-            //tds.SaveEntity(entities, "D:\\TDS");
+            //tds.SaveEntities(entities, "D:\\TDS");
             //Console.WriteLine("Mentes sikeres!");
-            //// Meglepo, de mukodik!
 
 
-            //tds.LoadEntity(entities);
+            //tds.LoadEntities(entities);
             //Console.WriteLine("Visszaallitas sikeres!");
-            //// Ez vegkepp meglepo, de mukodik, es elsore!
 
 
             Console.ReadLine();

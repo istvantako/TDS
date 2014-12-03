@@ -53,11 +53,32 @@ namespace TestDataSeeding.SerializedStorage
             return deserializedObject;
         }
 
+        public Entity GetEntity(string filename)
+        {
+            Entity deserializedObject = null;
+
+            try
+            {
+                deserializedObject = Deserialize<Entity>(filename);
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
+
+            return deserializedObject;
+        }
+
         public bool IsSaved(string entityName, List<string> primaryKeyValues, string path)
         {
             var xmlFileName = BuildFileName(entityName, primaryKeyValues, path);
 
             return File.Exists(xmlFileName);
+        }
+
+        public string GetEntityFileName(string entityName, List<string> primaryKeyValues, string path)
+        {
+            return BuildFileName(entityName, primaryKeyValues, path);
         }
 
         public EntityStructures GetEntityStructures(string path)

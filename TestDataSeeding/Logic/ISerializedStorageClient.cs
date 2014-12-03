@@ -30,13 +30,29 @@ namespace TestDataSeeding.Logic
         Entity GetEntity(EntityStructure entityStructure, List<string> primaryKeyValues, string path);
 
         /// <summary>
+        /// Returns the entity saved in the given file.
+        /// </summary>
+        /// <param name="filename">The path to the file.</param>
+        /// <returns>The entity saved in the given file.</returns>
+        Entity GetEntity(string filename);
+
+        /// <summary>
         /// Returns true if the entity at the specified path has already been saved.
         /// </summary>
         /// <param name="entityName">The name of the entity.</param>
         /// <param name="primaryKeyValues">The list of primary key values.</param>
         /// <param name="path">The specified path.</param>
-        /// <returns></returns>
+        /// <returns>True if the entity at the specified path has already been saved.</returns>
         bool IsSaved(string entityName, List<string> primaryKeyValues, string path);
+
+        /// <summary>
+        /// Returns the file name of the entity.
+        /// </summary>
+        /// <param name="entityName">The name of the entity.</param>
+        /// <param name="primaryKeyValues">The list of primary key values.</param>
+        /// <param name="path">The specified path.</param>
+        /// <returns>The file name of the entity.</returns>
+        string GetEntityFileName(string entityName, List<string> primaryKeyValues, string path);
 
         /// <summary>
         /// Returns an EntityStructures collection from the specified <paramref name="path"/>.

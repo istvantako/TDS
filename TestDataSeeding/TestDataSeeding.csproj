@@ -52,6 +52,8 @@
     <Compile Include="Logic\ISerializedStorageClient.cs" />
     <Compile Include="Logic\TdsLogicException.cs" />
     <Compile Include="Model\Entity.cs" />
+    <Compile Include="Model\EntityCatalog.cs" />
+    <Compile Include="Model\EntityCatalogItem.cs" />
     <Compile Include="Model\EntityForeignKey.cs" />
     <Compile Include="Model\EntityStructure.cs" />
     <Compile Include="Model\EntityStructures.cs" />
