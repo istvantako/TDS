@@ -48,20 +48,20 @@ namespace TestDataSeeding.Client
             entityManager = new EntityManager();
         }
 
-        public void LoadEntity(EntityWithKey entity, bool overwrite = false)
+        public void LoadEntity(EntityWithKey entity)
         {
             List<EntityWithKey> entities = new List<EntityWithKey>();
             entities.Add(entity);
 
-            entityManager.LoadEntities(entities, defaultStoragePath, overwrite);
+            entityManager.LoadEntities(entities, defaultStoragePath);
         }
 
-        public void LoadEntity(EntityWithKey entity, string path, bool overwrite = false)
+        public void LoadEntity(EntityWithKey entity, string path)
         {
             List<EntityWithKey> entities = new List<EntityWithKey>();
             entities.Add(entity);
 
-            entityManager.LoadEntities(entities, path, overwrite);
+            entityManager.LoadEntities(entities, path);
         }
 
         public void SaveEntity(EntityWithKey entity, bool overwrite = false)
@@ -80,14 +80,14 @@ namespace TestDataSeeding.Client
             entityManager.SaveEntities(entities, path, overwrite);
         }
 
-        public void LoadEntities(List<EntityWithKey> entities, bool overwrite = false)
+        public void LoadEntities(List<EntityWithKey> entities)
         {
-            entityManager.LoadEntities(entities, defaultStoragePath, overwrite);
+            entityManager.LoadEntities(entities, defaultStoragePath);
         }
 
-        public void LoadEntities(List<EntityWithKey> entities, string path, bool overwrite = false)
+        public void LoadEntities(List<EntityWithKey> entities, string path)
         {
-            entityManager.LoadEntities(entities, path, overwrite);
+            entityManager.LoadEntities(entities, path);
         }
 
         public void SaveEntities(List<EntityWithKey> entities, bool overwrite = false)

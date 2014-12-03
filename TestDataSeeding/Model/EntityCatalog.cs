@@ -29,5 +29,12 @@ namespace TestDataSeeding.Model
                 EntityCatalogItems.Add(new EntityCatalogItem(entity, entityStructure, filename));
             }
         }
+
+        public List<string> Find(string entityName, Dictionary<string, string> keyValues)
+        {
+            return EntityCatalogItems.Where(catalogItem => catalogItem.IsMatch(entityName, keyValues))
+                                     .Select(catalogItem => catalogItem.Filename)
+                                     .ToList();
+        }
     }
 }

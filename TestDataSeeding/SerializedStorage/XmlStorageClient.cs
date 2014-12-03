@@ -109,6 +109,38 @@ namespace TestDataSeeding.SerializedStorage
             }
         }
 
+        public EntityCatalog GetCatalog(string path)
+        {
+            EntityCatalog catalog = null;
+
+            try
+            {
+                catalog = Deserialize<EntityCatalog>(path + "\\Catalog.xml");
+            }
+            catch (FileNotFoundException)
+            {
+                catalog = new EntityCatalog();
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
+
+            return catalog;
+        }
+
+        public void SaveCatalog(EntityCatalog catalog, string path)
+        {
+            try
+            {
+                Serialize<EntityCatalog>(catalog, path + "\\Catalog.xml");
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
+        }
+
         /// <summary>
         /// Builds an XML file name for an entity with <paramref name="path"/> and based on the name and key values of the entity.
         /// </summary>

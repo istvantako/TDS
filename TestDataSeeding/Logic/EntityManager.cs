@@ -30,6 +30,8 @@ namespace TestDataSeeding.Logic
         /// </summary>
         private EntityStructures entityStructures;
 
+        private EntityCatalog catalog;
+
         /// <summary>
         /// The visited entities during the recursive save/restore action.
         /// </summary>
@@ -45,16 +47,17 @@ namespace TestDataSeeding.Logic
             visitedEntities = new List<EntityWithKey>();
         }
 
-        public void LoadEntities(List<EntityWithKey> entities, string path, bool overwrite = false)
+        public void LoadEntities(List<EntityWithKey> entities, string path)
         {
             try
             {
                 entityStructures = serializedStorageClient.GetEntityStructures(path);
+                catalog = serializedStorageClient.GetCatalog(path);
 
                 // Restore the entities and its dependencies.
                 foreach (var entity in entities)
                 {
-                    InnerLoadEntity(entity.EntityName, entity.PrimaryKeyValues, path, overwrite);
+                    InnerLoadEntity(entity.EntityName, entity.PrimaryKeyValues, path);
                 }
 
                 dbClient.ExecuteTransaction();
@@ -74,8 +77,7 @@ namespace TestDataSeeding.Logic
         /// <param name="entityName">The name of the given entity.</param>
         /// <param name="entityPrimaryKeyValues">The primary key values of the entity.</param>
         /// <param name="path">The storage path.</param>
-        /// <param name="overwrite">If true, overwrite the already saved entities.</param>
-        private void InnerLoadEntity(string entityName, List<string> entityPrimaryKeyValues, string path, bool overwrite)
+        private void InnerLoadEntity(string entityName, List<string> entityPrimaryKeyValues, string path)
         {
             // Get the structure of the entity.
             EntityStructure entityStructure = entityStructures.Find(entityName);
@@ -94,6 +96,17 @@ namespace TestDataSeeding.Logic
 
             try
             {
+                visitedEntities.Add(new EntityWithKey(entityName, entityPrimaryKeyValues));
+
+                // Create the list of dependencies and restore each dependency recursively.
+                var dependencies = GetDependenciesAndKeys(entityFromSerializedStorage, entityStructure);
+
+                foreach (var dependency in dependencies)
+                {
+                    InnerLoadEntity(dependency.Key, dependency.Value, path);
+                }
+
+                // Restore the current entity.
                 // If the entity exists in the database, check if it's equal to the serialized entity.
                 if (entityFromDb != null)
                 {
@@ -110,17 +123,8 @@ namespace TestDataSeeding.Logic
                     dbClient.InsertWithTransaction(entityFromSerializedStorage, entityStructure);
                 }
 
-                visitedEntities.Add(new EntityWithKey(entityName, entityPrimaryKeyValues));
-
-                LoadAssociativeEntities(entityFromSerializedStorage, entityStructure, path, overwrite);
-
-                // Create the list of dependencies and restore each dependency recursively.
-                var dependencies = GetDependenciesAndKeys(entityFromSerializedStorage, entityStructure);
-
-                foreach (var dependency in dependencies)
-                {
-                    InnerLoadEntity(dependency.Key, dependency.Value, path, overwrite);
-                }
+                // Restore the associative entities if the current entity is part of a many-to-many (associative) entity.
+                LoadAssociativeEntities(entityFromSerializedStorage, entityStructure, path);
             }
             catch (Exception exception)
             {
@@ -134,8 +138,7 @@ namespace TestDataSeeding.Logic
         /// <param name="entity">The given entity.</param>
         /// <param name="entityStructure">The structure of the given entity.</param>
         /// <param name="path">The storage path.</param>
-        /// <param name="overwrite">If true, overwrite the already saved entities.</param>
-        private void LoadAssociativeEntities(Entity entity, EntityStructure entityStructure, string path, bool overwrite)
+        private void LoadAssociativeEntities(Entity entity, EntityStructure entityStructure, string path)
         {
             // Restore each associative entity and their dependencies.
             foreach (var associativeEntityName in entityStructure.BelongsToMany)
@@ -151,12 +154,29 @@ namespace TestDataSeeding.Logic
                 var keysAndValues = entity.AttributeValues.Where(attribute => keys.Contains(attribute.Key))
                                                           .ToDictionary(attribute => attribute.Key, attribute => attribute.Value);
 
-                // !!!Get the associative entities.
-                var associativeEntities = dbClient.GetAssociativeEntities(associativeEntityName, keysAndValues);
+                // Get the associative entities.
+                List<Entity> associativeEntities = new List<Entity>();
+                var associativeEntitiesFileList = catalog.Find(associativeEntityName, keysAndValues);
+                foreach (var filename in associativeEntitiesFileList)
+                {
+                    associativeEntities.Add(serializedStorageClient.GetEntity(filename));
+                }
 
                 // Restore each associative entity and its dependencies.
                 foreach (var associativeEntity in associativeEntities)
                 {
+                    var associativeEntityPrimaryKeyValues =
+                        associativeEntity.AttributeValues.Where(attribute => associativeEntityStructure.IsPrimaryKey(attribute.Key))
+                                                         .Select(attribute => attribute.Value)
+                                                         .ToList();
+
+                    if (IsVisited(associativeEntity.Name, associativeEntityPrimaryKeyValues))
+                    {
+                        continue;
+                    }
+
+                    visitedEntities.Add(new EntityWithKey(associativeEntity.Name, associativeEntityPrimaryKeyValues));
+
                     // Create the list of dependencies and restore each dependency recursively.
                     var dependencies = GetDependenciesAndKeys(associativeEntity, associativeEntityStructure);
 
@@ -164,14 +184,27 @@ namespace TestDataSeeding.Logic
                     {
                         if (!dependency.Key.Equals(entity.Name))
                         {
-                            InnerLoadEntity(dependency.Key, dependency.Value, path, overwrite);
+                            InnerLoadEntity(dependency.Key, dependency.Value, path);
                         }
                     }
 
-                    // !!!Restore the associative entity.
-                    serializedStorageClient.SaveEntity(associativeEntity, associativeEntityStructure, path);
-                    visitedEntities.Add(new EntityWithKey(associativeEntity.Name,
-                        associativeEntity.AttributeValues.Select(attribute => attribute.Value).ToList()));
+                    // Restore the associative entity.
+                    Entity entityFromDb = dbClient.GetEntity(associativeEntityStructure, associativeEntityPrimaryKeyValues);
+
+                    if (entityFromDb != null)
+                    {
+                        // If the entity from the database is not equal to the serialized entity, restore the serialized entity
+                        // in the database.
+                        if (!associativeEntity.Equals(entityFromDb))
+                        {
+                            dbClient.UpdateWithTransaction(associativeEntity, associativeEntityStructure);
+                        }
+                    }
+                    else
+                    {
+                        // The entity is missing, insert it into the database.
+                        dbClient.InsertWithTransaction(associativeEntity, associativeEntityStructure);
+                    }
                 }
             }
         }
@@ -181,12 +214,15 @@ namespace TestDataSeeding.Logic
             try
             {
                 entityStructures = serializedStorageClient.GetEntityStructures(path);
+                catalog = serializedStorageClient.GetCatalog(path);
 
                 // Saves the entities and their dependencies.
                 foreach (var entity in entities)
                 {
                     InnerSaveEntity(entity.EntityName, entity.PrimaryKeyValues, path, overwrite);
                 }
+
+                serializedStorageClient.SaveCatalog(catalog, path);
             }
             catch (Exception exception)
             {
@@ -233,11 +269,10 @@ namespace TestDataSeeding.Logic
 
             try
             {
-                // Save the current entity.
-                serializedStorageClient.SaveEntity(entityFromDb, entityStructure, path);
                 visitedEntities.Add(new EntityWithKey(entityName, entityPrimaryKeyValues));
 
-                SaveAssociativeEntities(entityFromDb, entityStructure, path, overwrite);
+                // Save the current entity.
+                serializedStorageClient.SaveEntity(entityFromDb, entityStructure, path);
 
                 // Create the list of dependencies and save each dependency recursively.
                 var dependencies = GetDependenciesAndKeys(entityFromDb, entityStructure);
@@ -247,6 +282,8 @@ namespace TestDataSeeding.Logic
                     InnerSaveEntity(dependency.Key, dependency.Value, path, overwrite);
                 }
 
+                // Save the associative entities if the current entity is part of a many-to-many (associative) entity.
+                SaveAssociativeEntities(entityFromDb, entityStructure, path, overwrite);
             }
             catch (Exception exception)
             {
@@ -283,6 +320,18 @@ namespace TestDataSeeding.Logic
                 // Save each associative entity and its dependencies.
                 foreach (var associativeEntity in associativeEntities)
                 {
+                    var associativeEntityPrimaryKeyValues =
+                        associativeEntity.AttributeValues.Where(attribute => associativeEntityStructure.IsPrimaryKey(attribute.Key))
+                                                         .Select(attribute => attribute.Value)
+                                                         .ToList();
+
+                    if (IsVisited(associativeEntity.Name, associativeEntityPrimaryKeyValues))
+                    {
+                        continue;
+                    }
+
+                    visitedEntities.Add(new EntityWithKey(associativeEntity.Name, associativeEntityPrimaryKeyValues));
+
                     // Create the list of dependencies and save each dependency recursively.
                     var dependencies = GetDependenciesAndKeys(associativeEntity, associativeEntityStructure);
 
@@ -296,8 +345,8 @@ namespace TestDataSeeding.Logic
 
                     // Save the associative entity.
                     serializedStorageClient.SaveEntity(associativeEntity, associativeEntityStructure, path);
-                    visitedEntities.Add(new EntityWithKey(associativeEntity.Name,
-                        associativeEntity.AttributeValues.Select(attribute => attribute.Value).ToList()));
+                    catalog.Add(associativeEntity, associativeEntityStructure,
+                        serializedStorageClient.GetEntityFileName(associativeEntity.Name, associativeEntityPrimaryKeyValues, path));
                 }
             }
         }

@@ -3,17 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YAXLib;
 
 namespace TestDataSeeding.Model
 {
     internal class EntityCatalogItem
     {
+        [YAXAttributeForClass()]
         public string EntityName
         {
             get;
             set;
         }
 
+        [YAXDictionary(EachPairName = "KeyValuePair", KeyName = "Key", ValueName = "Value",
+                   SerializeKeyAs = YAXNodeTypes.Attribute,
+                   SerializeValueAs = YAXNodeTypes.Attribute)]
+        [YAXSerializeAs("PrimaryKeyValues")]
         public Dictionary<string, string> PrimaryKeyValues
         {
             get;

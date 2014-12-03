@@ -77,7 +77,7 @@ namespace TestDataSeeding.DbClient
             List<string> nonPrimaryKeyAttributes = new List<string>();
             foreach (var item in entity.AttributeValues)
             {
-                if (!entityStructure.isPrimaryKey(item.Key))
+                if (!entityStructure.IsPrimaryKey(item.Key))
                 {
                     nonPrimaryKeyAttributes.Add(item.Key);
                 }

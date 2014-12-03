@@ -17,6 +17,7 @@ namespace TdsClientTesterApp
             TdsClient tds = new TdsClient(ConfigurationManager.AppSettings["TdsStoragePath"]);
 
             //tds.GenerateDatabaseStructure();
+            //tds.GetEntityStructures();
 
             var entities = new List<EntityWithKey>();
             var entity = new EntityWithKey("TableA", new List<string> { "1" });
@@ -28,8 +29,8 @@ namespace TdsClientTesterApp
             //Console.WriteLine("Mentes sikeres!");
 
 
-            //tds.LoadEntities(entities);
-            //Console.WriteLine("Visszaallitas sikeres!");
+            tds.LoadEntities(entities);
+            Console.WriteLine("Visszaallitas sikeres!");
 
 
             Console.ReadLine();

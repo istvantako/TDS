@@ -102,7 +102,7 @@ namespace TestDataSeeding.Model
         /// </summary>
         /// <param name="attribute">The attribute name.</param>
         /// <returns>True, if the attribute is (part of the) primary key, otherwise false.</returns>
-        public bool isPrimaryKey(string attribute)
+        public bool IsPrimaryKey(string attribute)
         {
             return PrimaryKeys.Exists(key => key.Equals(attribute));
         }
@@ -112,7 +112,7 @@ namespace TestDataSeeding.Model
         /// </summary>
         /// <param name="attribute">The attribute name.</param>
         /// <returns>True, if the attribute is a foreign key, otherwise false.</returns>
-        public bool isForeignKey(string attribute)
+        public bool IsForeignKey(string attribute)
         {
             return ForeignKeys.ContainsKey(attribute);
         }

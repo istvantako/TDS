@@ -67,5 +67,9 @@ namespace TestDataSeeding.Logic
         /// <param name="entityStructures">The given EntityStructures collection.</param>
         /// <param name="path">The storage path where to save the collection.</param>
         void SaveEntityStructures(EntityStructures entityStructures, string path);
+
+        EntityCatalog GetCatalog(string path);
+
+        void SaveCatalog(EntityCatalog catalog, string path);
     }
 }
