@@ -16,6 +16,7 @@ namespace TestDataSeeding.Model
         /// <summary>
         /// Gets the entity (table) name.
         /// </summary>
+        [YAXAttributeForClass()]
         public string Name
         {
             get;

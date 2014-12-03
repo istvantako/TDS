@@ -11,7 +11,7 @@ namespace TestDataSeeding.Model
     /// <summary>
     /// Holds a collection of EntityStructure objects.
     /// </summary>
-    public class EntityStructures : IEnumerable<EntityStructure>
+    public class EntityStructures
     {
         /// <summary>
         /// The list of entity structures.
@@ -31,33 +31,6 @@ namespace TestDataSeeding.Model
         public EntityStructures()
         {
             Structures = new List<EntityStructure>();
-        }
-
-        /// <summary>
-        /// Returns an enumerator that iterates through the EntityStructures.
-        /// </summary>
-        /// <returns>Returns an enumerator that iterates through the EntityStructures.</returns>
-        public IEnumerator<EntityStructure> GetEnumerator()
-        {
-            return Structures.GetEnumerator();
-        }
-
-        /// <summary>
-        /// Returns a generic interface enumerator for maintainability. 
-        /// </summary>
-        /// <returns>A generic interface enumerator for maintainability.</returns>
-        IEnumerator<EntityStructure> IEnumerable<EntityStructure>.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
-
-        /// <summary>
-        /// Returns a non-generic interface enumerator for maintainability.
-        /// </summary>
-        /// <returns>A non-generic interface enumerator for maintainability.</returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
         }
 
         /// <summary>

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
+using TestDataSeeding.Client;
 using TestDataSeeding.Logic;
 using TestDataSeeding.Model;
 
 namespace TestDataSeeding.DbClient
 {
-    internal class MsSqlClient : IDbClient
+    internal class MsSqlClient : IDbClient, IDbStructureManager
     {
         private MsSqlQueryBuilder queryBuilder = new MsSqlQueryBuilder();
         private MsSqlQueryExecutor queryExecutor = new MsSqlQueryExecutor();
@@ -119,7 +120,7 @@ namespace TestDataSeeding.DbClient
                 }
                 //if a table has references to more than one table, it is considered a relationship table
                 //we set the BelongsToMany fields in the referenced Tables
-                foreach (var structure in structures)
+                foreach (var structure in structures.Structures)
                 {
                     //use hashset to escape multiple references to same table
                     HashSet<string> referrencedTables = new HashSet<string>();

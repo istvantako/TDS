@@ -18,14 +18,14 @@ namespace TdsClientTesterApp
 
             tds.GenerateDatabaseStructure();
 
-            var entities = new List<EntityWithKey>();
-            var entity = new EntityWithKey("TableA", new List<string> { "1" });
-            entities.Add(entity);
-            //entity = new EntityWithKey("TableA", new List<string> { "2" });
+            //var entities = new List<EntityWithKey>();
+            //var entity = new EntityWithKey("TableA", new List<string> { "1" });
             //entities.Add(entity);
+            ////entity = new EntityWithKey("TableA", new List<string> { "2" });
+            ////entities.Add(entity);
 
-            tds.SaveEntity(entities, "D:\\TDS");
-            Console.WriteLine("Mentes sikeres!");
+            //tds.SaveEntity(entities, "D:\\TDS");
+            //Console.WriteLine("Mentes sikeres!");
             //// Meglepo, de mukodik!
 
 

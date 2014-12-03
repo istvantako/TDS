@@ -31,11 +31,6 @@ namespace TestDataSeeding.Logic
         private EntityStructures entityStructures;
 
         /// <summary>
-        /// The active storage path.
-        /// </summary>
-        private string activeStoragePath;
-
-        /// <summary>
         /// The visited entities during the recursive save/restore action.
         /// </summary>
         private List<EntityWithKey> visitedEntities;
@@ -43,22 +38,19 @@ namespace TestDataSeeding.Logic
         /// <summary>
         /// Constructs a new EntityManager with a MS-SQL Server and XML serialized storage client.
         /// </summary>
-        /// <param name="path">The storage path.</param>
-        public EntityManager(string path)
+        public EntityManager()
         {
             dbClient = new MsSqlClient();
             serializedStorageClient = new XmlStorageClient();
-            entityStructures = serializedStorageClient.GetEntityStructures(path);
-            activeStoragePath = path;
             visitedEntities = new List<EntityWithKey>();
         }
 
-        public void LoadEntity(List<EntityWithKey> entities, string path, bool overwrite = false)
+        public void LoadEntities(List<EntityWithKey> entities, string path, bool overwrite = false)
         {
-            SetActiveStoragePath(path);
-
             try
             {
+                entityStructures = serializedStorageClient.GetEntityStructures(path);
+
                 // Restore the entities and its dependencies.
                 foreach (var entity in entities)
                 {
@@ -184,12 +176,12 @@ namespace TestDataSeeding.Logic
             }
         }
 
-        public void SaveEntity(List<EntityWithKey> entities, string path, bool overwrite = false)
+        public void SaveEntities(List<EntityWithKey> entities, string path, bool overwrite = false)
         {
-            SetActiveStoragePath(path);
-
             try
             {
+                entityStructures = serializedStorageClient.GetEntityStructures(path);
+
                 // Saves the entities and their dependencies.
                 foreach (var entity in entities)
                 {
@@ -347,19 +339,6 @@ namespace TestDataSeeding.Logic
         }
 
         /// <summary>
-        /// Refresh the the entity structures collection, if the active path has changed.
-        /// </summary>
-        /// <param name="path">The given storage path.</param>
-        private void SetActiveStoragePath(string path)
-        {
-            if (!activeStoragePath.Equals(path))
-            {
-                activeStoragePath = path;
-                entityStructures = serializedStorageClient.GetEntityStructures(path);
-            }
-        }
-
-        /// <summary>
         /// Check if the number of the provided primary key values matches the number of primary key components.
         /// </summary>
         /// <param name="entityPrimaryKeyValues">The given primary key values.</param>
@@ -381,12 +360,6 @@ namespace TestDataSeeding.Logic
         private bool IsVisited(string entityName, List<string> entityPrimaryKeyValues)
         {
             return visitedEntities.Count(entityWithKey => entityWithKey.IsEqual(entityName, entityPrimaryKeyValues)) > 0;
-        }
-
-        public void GenerateDatabaseStructure(string path)
-        {
-            XmlStorageClient xml = new XmlStorageClient();
-            xml.SaveEntityStructures(dbClient.GetDatabaseStructure(), path);
         }
     }
 }

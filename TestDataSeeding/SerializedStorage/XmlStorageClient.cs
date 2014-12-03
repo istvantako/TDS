@@ -9,13 +9,14 @@ using System.IO;
 using TestDataSeeding.Model;
 using TestDataSeeding.Logic;
 using YAXLib;
+using TestDataSeeding.Client;
 
 namespace TestDataSeeding.SerializedStorage
 {
     /// <summary>
     /// An XML based storage implementation of the ISerializedStorageClient.
     /// </summary>
-    public class XmlStorageClient : ISerializedStorageClient
+    internal class XmlStorageClient : ISerializedStorageClient, ISerializedStorageStructureManager
     {
         public void SaveEntity(Entity entity, EntityStructure entityStructure, string path)
         {

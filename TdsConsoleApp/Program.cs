@@ -71,7 +71,7 @@ namespace TdsConsoleApp
 
             try
             {
-                tdsClient.SaveEntity(entities);
+                tdsClient.SaveEntities(entities);
                 Console.WriteLine("The given entity is saved.");
             }
             catch (Exception e)
@@ -88,7 +88,7 @@ namespace TdsConsoleApp
                         switch (answer)
                         {
                             case "Y":
-                                tdsClient.SaveEntity(entities, true);
+                                tdsClient.SaveEntities(entities, true);
                                 Console.WriteLine("The given entity is saved.");
                                 break;
                             case "N":
