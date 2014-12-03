@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TestDataSeeding.Logic;
-using TestDataSeeding.SerializedStorage;
+//using TestDataSeeding.SerializedStorage;
 using TestDataSeeding.Model;
 using TestDataSeeding.Client;
 
@@ -17,11 +17,12 @@ namespace TDSFormApp
 {
     public partial class SaveEntityForm : Form
     {
-        private static IStorage xml = new XmlStorageClient();
         private static EntityStructures entityStructures = new EntityStructures();
         private static EntityStructure entityStructure = new EntityStructure();
         private static EntityWithKey entity;
-
+        private static String path = "d:\\TDS\\";
+        private TdsClient tdsClient = new TdsClient(path);
+        
         Label[] pk_label;
         TextBox[] pk_textbox;
 
@@ -32,9 +33,10 @@ namespace TDSFormApp
 
         private void SaveEntityForm_Load(object sender, EventArgs e)
         {
-            entityStructures = xml.GetEntityStructures("d:\\TDS\\");
+            entityStructures = tdsClient.GetEntityStructures();
             //entityCombobox.ViewColumn = 2;        be kene allitani, hogy tobb sor legyen
-            foreach (EntityStructure entity in entityStructures)
+            
+            foreach (EntityStructure entity in entityStructures.Structures)
             {
                 entityCombobox.Items.Add(entity.Name);
             }
@@ -72,13 +74,13 @@ namespace TDSFormApp
                 this.panel1.Controls.Add(pk_textbox[i]);
                 k += 30;
             }
-            //saveButton.Enabled = true;
+            saveButton.Enabled = true;
         }
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            String path = "d:\\TDS\\";
-            TdsClient tdsClient = new TdsClient(path);
+            
+            //tdsClient = new TdsClient(path);
 
             List<EntityWithKey> entities = new List<EntityWithKey>();
             List<string> parameters = new List<string>();
@@ -101,7 +103,7 @@ namespace TDSFormApp
 
             try
             {
-                tdsClient.SaveEntity(entities);
+                tdsClient.SaveEntities(entities);
                 MessageBox.Show("The given entity is saved.");
             }
             catch (Exception ex)
@@ -109,8 +111,13 @@ namespace TDSFormApp
                 if (ex is EntityAlreadySavedException)
                     MessageBox.Show("The entity with the given keys has already been saved.");
                 else
-                    MessageBox.Show(ex.ToString());         //ezt dobja ki
+                    MessageBox.Show(ex.ToString());         
             }
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
