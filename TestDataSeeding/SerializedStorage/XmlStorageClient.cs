@@ -18,7 +18,20 @@ namespace TestDataSeeding.SerializedStorage
     /// </summary>
     internal class XmlStorageClient : ISerializedStorageClient, ISerializedStorageStructureManager
     {
+        public void BeginTransaction()
+        {
+        }
+
+        public void ExecuteTransaction()
+        {
+        }
+
         public void SaveEntity(Entity entity, EntityStructure entityStructure, string path)
+        {
+            InnerSaveEntity(entity, entityStructure, path);
+        }
+
+        private void InnerSaveEntity(Entity entity, EntityStructure entityStructure, string path)
         {
             if (!Directory.Exists(path + "\\Entities"))
             {

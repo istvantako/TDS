@@ -215,6 +215,7 @@ namespace TestDataSeeding.Logic
             {
                 entityStructures = serializedStorageClient.GetEntityStructures(path);
                 catalog = serializedStorageClient.GetCatalog(path);
+                serializedStorageClient.BeginTransaction();
 
                 // Saves the entities and their dependencies.
                 foreach (var entity in entities)
@@ -222,6 +223,7 @@ namespace TestDataSeeding.Logic
                     InnerSaveEntity(entity.EntityName, entity.PrimaryKeyValues, path, overwrite);
                 }
 
+                serializedStorageClient.ExecuteTransaction();
                 serializedStorageClient.SaveCatalog(catalog, path);
             }
             catch (Exception exception)
