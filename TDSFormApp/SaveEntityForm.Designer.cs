@@ -33,6 +33,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.saveButton = new System.Windows.Forms.Button();
             this.exitButton = new System.Windows.Forms.Button();
+            this.overwrite_CheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // panel1
@@ -49,10 +50,11 @@
             // entityCombobox
             // 
             this.entityCombobox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.entityCombobox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.entityCombobox.FormattingEnabled = true;
-            this.entityCombobox.Location = new System.Drawing.Point(217, 30);
+            this.entityCombobox.Location = new System.Drawing.Point(136, 33);
             this.entityCombobox.Name = "entityCombobox";
-            this.entityCombobox.Size = new System.Drawing.Size(121, 21);
+            this.entityCombobox.Size = new System.Drawing.Size(163, 21);
             this.entityCombobox.TabIndex = 4;
             this.entityCombobox.SelectedIndexChanged += new System.EventHandler(this.entityCombobox_SelectedIndexChanged);
             this.entityCombobox.TextChanged += new System.EventHandler(this.entityCombobox_TextChanged);
@@ -61,7 +63,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label1.Location = new System.Drawing.Point(100, 30);
+            this.label1.Location = new System.Drawing.Point(53, 34);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(47, 17);
             this.label1.TabIndex = 3;
@@ -89,11 +91,22 @@
             this.exitButton.UseVisualStyleBackColor = true;
             this.exitButton.Click += new System.EventHandler(this.exitButton_Click);
             // 
+            // overwrite_CheckBox
+            // 
+            this.overwrite_CheckBox.AutoSize = true;
+            this.overwrite_CheckBox.Location = new System.Drawing.Point(285, 403);
+            this.overwrite_CheckBox.Name = "overwrite_CheckBox";
+            this.overwrite_CheckBox.Size = new System.Drawing.Size(71, 17);
+            this.overwrite_CheckBox.TabIndex = 8;
+            this.overwrite_CheckBox.Text = "Overwrite";
+            this.overwrite_CheckBox.UseVisualStyleBackColor = true;
+            // 
             // SaveEntityForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(470, 470);
+            this.Controls.Add(this.overwrite_CheckBox);
             this.Controls.Add(this.exitButton);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.panel1);
@@ -114,6 +127,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.Button exitButton;
+        private System.Windows.Forms.CheckBox overwrite_CheckBox;
     }
 }
 

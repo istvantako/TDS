@@ -13,6 +13,7 @@ using TestDataSeeding.Logic;
 using TestDataSeeding.Model;
 using TestDataSeeding.Client;
 using System.Data;
+using System.Configuration;
 
 namespace TDSFormApp
 {
@@ -21,7 +22,7 @@ namespace TDSFormApp
         private static EntityStructures entityStructures = new EntityStructures();
         private static EntityStructure entityStructure = new EntityStructure();
         private static EntityWithKey entity;
-        private static String path = "d:\\TDS\\";
+        private static String path = ConfigurationSettings.AppSettings["TdsStoragePath"];
         private TdsClient tdsClient = new TdsClient(path);
         private bool[] changed;
         Label[] pk_label;
@@ -125,7 +126,7 @@ namespace TDSFormApp
 
             try
             {
-                tdsClient.SaveEntities(entities);
+                tdsClient.SaveEntities(entities, overwrite_CheckBox.Checked);
                 MessageBox.Show("The given entity is saved.");
             }
             catch (Exception ex)
@@ -139,6 +140,7 @@ namespace TDSFormApp
                     {
                         tdsClient.SaveEntities(entities, true);
                         MessageBox.Show("The given entity is saved.");
+                        
                     }
                     else
                     {
@@ -172,7 +174,7 @@ namespace TDSFormApp
 
         private void entityCombobox_TextChanged(object sender, EventArgs e)             
         {
-            entityCombobox.Items.Clear();
+           /* entityCombobox.Items.Clear();
            // string str = entityCombobox.Text;
             string str = "Table";                                                   //nincs kesz
             foreach (EntityStructure entity in entityStructures.Structures)
@@ -184,7 +186,7 @@ namespace TDSFormApp
                     Console.WriteLine("string: " + str);
                     Console.WriteLine("entity name: " + entity.Name);
                 }
-            }
+            }*/
             //fillCombobox(entityCombobox.Text);
         }
     }
