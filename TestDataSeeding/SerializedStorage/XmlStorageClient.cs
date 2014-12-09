@@ -18,14 +18,52 @@ namespace TestDataSeeding.SerializedStorage
     /// </summary>
     internal class XmlStorageClient : ISerializedStorageClient, ISerializedStorageStructureManager
     {
+
+
+        private Dictionary<Entity, string> entitiesToSave = new Dictionary<Entity, string>();
+        
+        public void BeginTransaction()
+        {
+            entitiesToSave.Clear();
+        }
+
+        public void ExecuteTransaction()
+        {
+            List<string> savedEntities = new List<string>();
+            foreach(KeyValuePair<Entity, string> entry in entitiesToSave){
+                try
+                {
+                    InnerSaveEntity(entry.Key, entry.Value);
+                    savedEntities.Add(entry.Value);
+                }
+                catch (Exception e)
+                {
+                    DeleteFromDisk(savedEntities);
+                    throw e;
+                }
+            }
+            entitiesToSave.Clear();
+        }
+
+        private static void DeleteFromDisk(List<string> savedEntities)
+        {
+            foreach (var entityName in savedEntities)
+            {
+                File.Delete(entityName);
+            }
+        }
+
         public void SaveEntity(Entity entity, EntityStructure entityStructure, string path)
         {
             if (!Directory.Exists(path + "\\Entities"))
             {
                 Directory.CreateDirectory(path + "\\Entities");
             }
+            entitiesToSave.Add(entity, BuildFileName(entity, entityStructure, path));
+        }
 
-            var xmlFileName = BuildFileName(entity, entityStructure, path);
+        private void InnerSaveEntity(Entity entity, string xmlFileName)
+        {
             try
             {
                 Serialize<Entity>(entity, xmlFileName);

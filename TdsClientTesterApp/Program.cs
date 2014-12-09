@@ -25,12 +25,12 @@ namespace TdsClientTesterApp
             //entity = new EntityWithKey("TableA", new List<string> { "2" });
             //entities.Add(entity);
 
-            //tds.SaveEntities(entities, "D:\\TDS");
-            //Console.WriteLine("Mentes sikeres!");
+            tds.SaveEntities(entities, "D:\\TDS");
+            Console.WriteLine("Mentes sikeres!");
 
 
-            tds.LoadEntities(entities);
-            Console.WriteLine("Visszaallitas sikeres!");
+            //tds.LoadEntities(entities);
+            //Console.WriteLine("Visszaallitas sikeres!");
 
 
             Console.ReadLine();

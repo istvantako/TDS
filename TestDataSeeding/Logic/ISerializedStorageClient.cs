@@ -12,6 +12,10 @@ namespace TestDataSeeding.Logic
     /// </summary>
     internal interface ISerializedStorageClient
     {
+        void BeginTransaction();
+
+        void ExecuteTransaction();
+
         /// <summary>
         /// Saves the <paramref name="entity"/> to an XML file.
         /// </summary>
