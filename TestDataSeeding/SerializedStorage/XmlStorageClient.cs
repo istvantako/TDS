@@ -29,10 +29,28 @@ namespace TestDataSeeding.SerializedStorage
 
         public void ExecuteTransaction()
         {
+            List<string> savedEntities = new List<string>();
             foreach(KeyValuePair<Entity, string> entry in entitiesToSave){
-                InnerSaveEntity(entry.Key, entry.Value);
+                try
+                {
+                    InnerSaveEntity(entry.Key, entry.Value);
+                    savedEntities.Add(entry.Value);
+                }
+                catch (Exception e)
+                {
+                    DeleteFromDisk(savedEntities);
+                    throw e;
+                }
             }
             entitiesToSave.Clear();
+        }
+
+        private static void DeleteFromDisk(List<string> savedEntities)
+        {
+            foreach (var entityName in savedEntities)
+            {
+                File.Delete(entityName);
+            }
         }
 
         public void SaveEntity(Entity entity, EntityStructure entityStructure, string path)
