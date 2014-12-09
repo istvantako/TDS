@@ -124,9 +124,12 @@ namespace TestDataSeeding.DbClient
                 {
                     //use hashset to escape multiple references to same table
                     HashSet<string> referrencedTables = new HashSet<string>();
-                    foreach (var foreignKey in structure.ForeignKeys.Values)
+                    foreach (var foreignKey in structure.ForeignKeys)
                     {
-                        referrencedTables.Add(foreignKey.EntityName);
+                        if (structure.IsPrimaryKey(foreignKey.Key))
+                        {
+                            referrencedTables.Add(foreignKey.Value.EntityName);
+                        }
                     }
 
                     if (referrencedTables.Count > 1)
