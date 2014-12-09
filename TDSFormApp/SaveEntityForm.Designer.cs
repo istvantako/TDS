@@ -57,7 +57,6 @@
             this.entityCombobox.Size = new System.Drawing.Size(163, 21);
             this.entityCombobox.TabIndex = 4;
             this.entityCombobox.SelectedIndexChanged += new System.EventHandler(this.entityCombobox_SelectedIndexChanged);
-            this.entityCombobox.TextChanged += new System.EventHandler(this.entityCombobox_TextChanged);
             // 
             // label1
             // 

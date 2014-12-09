@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TestDataSeeding.Logic;
-//using TestDataSeeding.SerializedStorage;
 using TestDataSeeding.Model;
 using TestDataSeeding.Client;
 using System.Data;
@@ -36,7 +35,6 @@ namespace TDSFormApp
         private void SaveEntityForm_Load(object sender, EventArgs e)
         {
             entityStructures = tdsClient.GetEntityStructures();
-            //entityCombobox.ViewColumn = 2;        be kene allitani, hogy tobb sor legyen
             
             foreach (EntityStructure entity in entityStructures.Structures)
             {
@@ -56,7 +54,6 @@ namespace TDSFormApp
             pk_textbox = new TextBox[n];
             changed = new bool[n];
 
-            //initialization
             for (int i = 0; i < n; i++)
             {
                 pk_label[i] = new Label();
@@ -69,7 +66,6 @@ namespace TDSFormApp
             foreach (String pk_name in entityStructure.PrimaryKeys)
             {
                 pk_label[k].Text = pk_name;
-                //pk_label[k].Name = k + "Label: ";
                 pk_textbox[k].Name = k + "";
                 pk_textbox[k].TextChanged += new EventHandler(textBox_TextChanged);
                 k++;
@@ -156,38 +152,6 @@ namespace TDSFormApp
         private void exitButton_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-
-        private void fillCombobox(string str)
-        {
-
-            //foreach (EntityStructure entity in entityStructures.Structures)
-            //{
-            //    if (entity.Name.StartsWith(str))
-            //    {
-            //        entityCombobox.Items.Add(entity.Name);
-            //        Console.WriteLine("string: " + str);
-            //        Console.WriteLine("entity name: " + entity.Name);
-            //    }
-            //}
-        }
-
-        private void entityCombobox_TextChanged(object sender, EventArgs e)             
-        {
-           /* entityCombobox.Items.Clear();
-           // string str = entityCombobox.Text;
-            string str = "Table";                                                   //nincs kesz
-            foreach (EntityStructure entity in entityStructures.Structures)
-            {
-
-                if (entity.Name.StartsWith(str))
-                {
-                    entityCombobox.Items.Add(entity.Name);
-                    Console.WriteLine("string: " + str);
-                    Console.WriteLine("entity name: " + entity.Name);
-                }
-            }*/
-            //fillCombobox(entityCombobox.Text);
         }
     }
 }
