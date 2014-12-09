@@ -16,10 +16,10 @@ namespace TestDataSeeding.DbClient
         /// Gets the name of every table in the database.
         /// </summary>
         /// <returns>A string list.</returns>
-        public List<string> GetTablesNames()
+        internal List<Tuple<string, string>> GetTablesNames()
         {
-            List<string> tableNames = new List<string>();
-            string query = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES";
+            List<Tuple<string, string>> tableNames = new List<Tuple<string, string>>();
+            string query = "SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.TABLES";
 
             try
             {
@@ -27,7 +27,7 @@ namespace TestDataSeeding.DbClient
 
                 while (dataReader.Read())
                 {
-                    tableNames.Add(dataReader[0].ToString());
+                    tableNames.Add(new Tuple<string,string>(dataReader[0].ToString(), dataReader[1].ToString()));
                 }
 
                 dataReader.Close();
@@ -45,12 +45,14 @@ namespace TestDataSeeding.DbClient
         /// Expands a referenced <paramref name="entityStructure"/> with the attributes.
         /// </summary>
         /// <param name="entityStructure">An EntityStructure reference.</param>
-        public void SetTableAttributes(ref EntityStructure entityStructure)
+        public void SetTableAttributes(ref EntityStructure entityStructure, string schema, string name)
         {
-            StringBuilder builder = new StringBuilder("SELECT COLUMN_NAME,DATA_TYPE ");
-            builder.Append("FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '");
-            builder.Append(entityStructure.Name);
-            builder.Append("'");
+            StringBuilder builder = new StringBuilder("SELECT COLUMN_NAME,DATA_TYPE ")
+                .Append("FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '")
+                .Append(schema)
+                .Append("' AND TABLE_NAME = '")
+                .Append(name)
+                .Append("'");
 
             try
             {
@@ -74,13 +76,17 @@ namespace TestDataSeeding.DbClient
         /// Expands a referenced <paramref name="entityStructure"/> with the primary keys.
         /// </summary>
         /// <param name="entityStructure">An EntityStructure reference.</param>
-        public void SetTablePrimaryKeys(ref EntityStructure entityStructure)
+        public void SetTablePrimaryKeys(ref EntityStructure entityStructure, string schema, string name)
         {
-            StringBuilder builder = new StringBuilder("SELECT COLUMN_NAME ");
-            builder.Append("FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE ");
-            builder.Append("WHERE OBJECTPROPERTY(OBJECT_ID(constraint_name), 'IsPrimaryKey') = 1 AND table_name = '");
-            builder.Append(entityStructure.Name);
-            builder.Append("'");
+            StringBuilder builder = new StringBuilder("SELECT COL_NAME(ic.OBJECT_ID,ic.column_id) AS ColumnName ")
+                .Append("FROM sys.indexes AS i ")
+                .Append("INNER JOIN sys.index_columns AS ic ON i.OBJECT_ID = ic.OBJECT_ID AND i.index_id = ic.index_id ")
+                .Append("INNER JOIN sys.objects as obj ON ic.object_id = obj.object_id ")
+                .Append("WHERE i.is_primary_key = 1 AND SCHEMA_NAME(schema_id) = '")
+                .Append(schema)
+                .Append("' AND OBJECT_NAME(ic.OBJECT_ID) = '")
+                .Append(name)
+                .Append("'");
 
             try
             {
@@ -104,22 +110,26 @@ namespace TestDataSeeding.DbClient
         /// Expands a referenced <paramref name="entityStructure"/> with the foreign keys.
         /// </summary>
         /// <param name="entityStructure">An EntityStructure reference.</param>
-        public void SetTableForeignKeys(ref EntityStructure entityStructure)
+        public void SetTableForeignKeys(ref EntityStructure entityStructure, string schema, string name)
         {
-            StringBuilder builder = new StringBuilder("SELECT ");
-            builder.Append("col1.name AS [column],tab2.name AS referenced_table,col2.name AS referenced_column ");
-            builder.Append("FROM sys.foreign_key_columns fkc ");
-            builder.Append("INNER JOIN sys.tables tab1 ");
-            builder.Append("ON tab1.object_id = fkc.parent_object_id ");
-            builder.Append("INNER JOIN sys.columns col1 ");
-            builder.Append("ON col1.column_id = parent_column_id AND col1.object_id = tab1.object_id ");
-            builder.Append("INNER JOIN sys.tables tab2 ");
-            builder.Append("ON tab2.object_id = fkc.referenced_object_id ");
-            builder.Append("INNER JOIN sys.columns col2 ");
-            builder.Append("ON col2.column_id = referenced_column_id AND col2.object_id = tab2.object_id ");
-            builder.Append("WHERE tab1.name = '");
-            builder.Append(entityStructure.Name);
-            builder.Append("'");
+            StringBuilder builder = new StringBuilder("SELECT ")
+                .Append("col1.name AS [column], SCHEMA_NAME(tab2.schema_id) AS referenced_table_schema, ")
+                .Append("tab2.name AS referenced_table, col2.name AS referenced_column ")
+                .Append("FROM sys.foreign_key_columns fkc ")
+                .Append("INNER JOIN sys.tables tab1 ")
+                .Append("ON tab1.object_id = fkc.parent_object_id ")
+                .Append("INNER JOIN sys.columns col1 ")
+                .Append("ON col1.column_id = parent_column_id AND col1.object_id = tab1.object_id ")
+                .Append("INNER JOIN sys.tables tab2 ")
+                .Append("ON tab2.object_id = fkc.referenced_object_id ")
+                .Append("INNER JOIN sys.columns col2 ")
+                .Append("ON col2.column_id = referenced_column_id AND col2.object_id = tab2.object_id ")
+                .Append("WHERE SCHEMA_NAME(tab1.schema_id) = '")
+                .Append(schema)
+                .Append("' AND tab1.name = '")
+                .Append(name)
+                .Append("'");
+
 
             try
             {
@@ -127,8 +137,10 @@ namespace TestDataSeeding.DbClient
 
                 while (dataReader.Read())
                 {
-                    entityStructure.ForeignKeys.Add(dataReader[0].ToString(), 
-                        new EntityForeignKey(dataReader[1].ToString(),dataReader[2].ToString()));
+                    builder = new StringBuilder(dataReader[1].ToString()).Append(".").Append(dataReader[2].ToString());
+                    
+                    entityStructure.ForeignKeys.Add(dataReader[0].ToString(),
+                        new EntityForeignKey(builder.ToString(), dataReader[3].ToString()));
                 }
 
                 dataReader.Close();

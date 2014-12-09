@@ -3,6 +3,8 @@ using System.Data.SqlClient;
 using TestDataSeeding.Client;
 using TestDataSeeding.Logic;
 using TestDataSeeding.Model;
+using System.Text;
+using System;
 
 namespace TestDataSeeding.DbClient
 {
@@ -112,10 +114,13 @@ namespace TestDataSeeding.DbClient
             {
                 foreach (var tableName in structureBuilder.GetTablesNames())
                 {
-                    EntityStructure structure = new EntityStructure(tableName);
-                    structureBuilder.SetTableAttributes(ref structure);
-                    structureBuilder.SetTablePrimaryKeys(ref structure);
-                    structureBuilder.SetTableForeignKeys(ref structure);
+                    StringBuilder builder = new StringBuilder();
+                    builder.Append(tableName.Item1).Append(".").Append(tableName.Item2);
+                    
+                    EntityStructure structure = new EntityStructure(builder.ToString());
+                    structureBuilder.SetTableAttributes(ref structure, tableName.Item1, tableName.Item2);
+                    structureBuilder.SetTablePrimaryKeys(ref structure, tableName.Item1, tableName.Item2);
+                    structureBuilder.SetTableForeignKeys(ref structure, tableName.Item1, tableName.Item2);
                     structures.Add(structure);
                 }
                 //if a table has references to more than one table, it is considered a relationship table
