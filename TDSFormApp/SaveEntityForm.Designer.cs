@@ -32,7 +32,7 @@
             this.entityCombobox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.saveButton = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.exitButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // panel1
@@ -41,25 +41,27 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.AutoSize = true;
-            this.panel1.Location = new System.Drawing.Point(56, 69);
+            this.panel1.Location = new System.Drawing.Point(56, 57);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(351, 327);
+            this.panel1.Size = new System.Drawing.Size(351, 339);
             this.panel1.TabIndex = 5;
             // 
             // entityCombobox
             // 
+            this.entityCombobox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.entityCombobox.FormattingEnabled = true;
             this.entityCombobox.Location = new System.Drawing.Point(217, 30);
             this.entityCombobox.Name = "entityCombobox";
             this.entityCombobox.Size = new System.Drawing.Size(121, 21);
             this.entityCombobox.TabIndex = 4;
             this.entityCombobox.SelectedIndexChanged += new System.EventHandler(this.entityCombobox_SelectedIndexChanged);
+            this.entityCombobox.TextChanged += new System.EventHandler(this.entityCombobox_TextChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label1.Location = new System.Drawing.Point(124, 33);
+            this.label1.Location = new System.Drawing.Point(100, 30);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(47, 17);
             this.label1.TabIndex = 3;
@@ -69,7 +71,7 @@
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.saveButton.Enabled = false;
-            this.saveButton.Location = new System.Drawing.Point(366, 425);
+            this.saveButton.Location = new System.Drawing.Point(285, 426);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 23);
             this.saveButton.TabIndex = 6;
@@ -77,20 +79,22 @@
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
-            // textBox1
+            // exitButton
             // 
-            this.textBox1.Location = new System.Drawing.Point(344, 30);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 7;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.exitButton.Location = new System.Drawing.Point(383, 426);
+            this.exitButton.Name = "exitButton";
+            this.exitButton.Size = new System.Drawing.Size(75, 23);
+            this.exitButton.TabIndex = 7;
+            this.exitButton.Text = "Exit";
+            this.exitButton.UseVisualStyleBackColor = true;
+            this.exitButton.Click += new System.EventHandler(this.exitButton_Click);
             // 
             // SaveEntityForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(470, 470);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.exitButton);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.entityCombobox);
@@ -109,7 +113,7 @@
         private System.Windows.Forms.ComboBox entityCombobox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button saveButton;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button exitButton;
     }
 }
 
