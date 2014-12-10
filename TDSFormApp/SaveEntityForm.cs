@@ -12,7 +12,6 @@ using TestDataSeeding.Logic;
 using TestDataSeeding.Model;
 using TestDataSeeding.Client;
 using System.Data;
-using System.Configuration;
 
 namespace TDSFormApp
 {
@@ -21,7 +20,7 @@ namespace TDSFormApp
         private static EntityStructures entityStructures = new EntityStructures();
         private static EntityStructure entityStructure = new EntityStructure();
         private static EntityWithKey entity;
-        private static String path = ConfigurationSettings.AppSettings["TdsStoragePath"];
+        private static String path = System.Configuration.ConfigurationSettings.AppSettings["TdsStoragePath"];
         private TdsClient tdsClient = new TdsClient(path);
         private bool[] changed;
         Label[] pk_label;
@@ -50,6 +49,41 @@ namespace TDSFormApp
 
             int n = entityStructure.PrimaryKeys.Count;
 
+            CreatePanelElements(n);
+
+            LoadPanelElements();
+            
+            AddPanelElementsToPanel(n);
+        }
+
+        private void AddPanelElementsToPanel(int n)
+        {
+            int k = n;
+            for (int i = 0; i < n; i++)
+            {
+                pk_label[i].Location = new Point(panel1.Left, panel1.Top + k);
+                this.panel1.Controls.Add(pk_label[i]);
+                pk_textbox[i].Location = new Point(panel1.Left + pk_label[i].Width, panel1.Top + k);
+                this.panel1.Controls.Add(pk_textbox[i]);
+                k += 30;
+            }
+        }
+
+        private void LoadPanelElements()
+        {
+            int k = 0;
+
+            foreach (String pk_name in entityStructure.PrimaryKeys)
+            {
+                pk_label[k].Text = pk_name;
+                pk_textbox[k].Name = k + "";
+                pk_textbox[k].TextChanged += new EventHandler(textBox_TextChanged);
+                k++;
+            }
+        }
+
+        private void CreatePanelElements(int n)
+        {
             pk_label = new Label[n];
             pk_textbox = new TextBox[n];
             changed = new bool[n];
@@ -60,23 +94,6 @@ namespace TDSFormApp
                 pk_textbox[i] = new TextBox();
                 changed[i] = new bool();
                 changed[i] = false;
-            }
-
-            int k = 0;
-            foreach (String pk_name in entityStructure.PrimaryKeys)
-            {
-                pk_label[k].Text = pk_name;
-                pk_textbox[k].Name = k + "";
-                pk_textbox[k].TextChanged += new EventHandler(textBox_TextChanged);
-                k++;
-            }
-            for (int i = 0; i < n; i++)
-            {
-                pk_label[i].Location = new Point(panel1.Left, panel1.Top + k);
-                this.panel1.Controls.Add(pk_label[i]);
-                pk_textbox[i].Location = new Point(panel1.Left + pk_label[i].Width, panel1.Top + k);
-                this.panel1.Controls.Add(pk_textbox[i]);
-                k += 30;
             }
         }
 
@@ -120,38 +137,41 @@ namespace TDSFormApp
 
             entities.Add(entity);
 
+            SaveEntity(entities);
+        }
+
+        private void SaveEntity(List<EntityWithKey> entities)
+        {
             try
             {
                 tdsClient.SaveEntities(entities, overwrite_CheckBox.Checked);
                 MessageBox.Show("The given entity is saved.");
             }
-            catch (Exception ex)
+            catch (EntityAlreadySavedException ex)
             {
-                if (ex is EntityAlreadySavedException)
+                DialogResult result = MessageBox.Show("The entity with the given keys has already been saved.\nOverwrite?",
+                                    "Already save",
+                                    MessageBoxButtons.YesNo);
+                if (result == System.Windows.Forms.DialogResult.Yes)
                 {
-                    DialogResult result = MessageBox.Show("The entity with the given keys has already been saved.\nOverwrite?",
-                                        "Already save",
-                                        MessageBoxButtons.YesNo);
-                    if (result == System.Windows.Forms.DialogResult.Yes)
-                    {
-                        tdsClient.SaveEntities(entities, true);
-                        MessageBox.Show("The given entity is saved.");
-                        
-                    }
-                    else
-                    {
-                        MessageBox.Show("Save aborted.");
-                        return;
-                    }
+                    tdsClient.SaveEntities(entities, true);
+                    MessageBox.Show("The given entity is saved.");
                 }
                 else
-                    MessageBox.Show(ex.Message);         
+                {
+                    MessageBox.Show("Save aborted.");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
         private void exitButton_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Application.Exit();
         }
     }
 }
