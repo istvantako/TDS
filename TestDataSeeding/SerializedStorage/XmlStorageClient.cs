@@ -8,8 +8,8 @@ using System.Xml.Linq;
 using System.IO;
 using TestDataSeeding.Model;
 using TestDataSeeding.Logic;
-using YAXLib;
 using TestDataSeeding.Client;
+using YAXLib;
 
 namespace TestDataSeeding.SerializedStorage
 {
@@ -18,8 +18,9 @@ namespace TestDataSeeding.SerializedStorage
     /// </summary>
     internal class XmlStorageClient : ISerializedStorageClient, ISerializedStorageStructureManager
     {
-
-
+        /// <summary>
+        /// The dictionary with the entities to save.
+        /// </summary>
         private Dictionary<Entity, string> entitiesToSave = new Dictionary<Entity, string>();
         
         public void BeginTransaction()
@@ -30,7 +31,9 @@ namespace TestDataSeeding.SerializedStorage
         public void ExecuteTransaction()
         {
             List<string> savedEntities = new List<string>();
-            foreach(KeyValuePair<Entity, string> entry in entitiesToSave){
+
+            foreach(KeyValuePair<Entity, string> entry in entitiesToSave)
+            {
                 try
                 {
                     InnerSaveEntity(entry.Key, entry.Value);
@@ -42,9 +45,14 @@ namespace TestDataSeeding.SerializedStorage
                     throw e;
                 }
             }
+
             entitiesToSave.Clear();
         }
 
+        /// <summary>
+        /// Deletes the given saved entities.
+        /// </summary>
+        /// <param name="savedEntities">The saved entities.</param>
         private static void DeleteFromDisk(List<string> savedEntities)
         {
             foreach (var entityName in savedEntities)
@@ -59,9 +67,15 @@ namespace TestDataSeeding.SerializedStorage
             {
                 Directory.CreateDirectory(path + "\\Entities");
             }
+
             entitiesToSave.Add(entity, BuildFileName(entity, entityStructure, path));
         }
 
+        /// <summary>
+        /// Saves a given entity to the disk.
+        /// </summary>
+        /// <param name="entity">The given entity.</param>
+        /// <param name="xmlFileName">The filename of the entity.</param>
         private void InnerSaveEntity(Entity entity, string xmlFileName)
         {
             try
@@ -188,7 +202,7 @@ namespace TestDataSeeding.SerializedStorage
         /// <returns>The XML file name with path.</returns>
         private string BuildFileName(Entity entity, EntityStructure entityStructure, string path)
         {
-            StringBuilder builder = new StringBuilder(path + "\\Entities\\" + entity.Name);
+            StringBuilder builder = new StringBuilder(entity.Name);
 
             foreach (var keyName in entityStructure.PrimaryKeys)
             {
@@ -197,7 +211,12 @@ namespace TestDataSeeding.SerializedStorage
 
             builder.Append(".xml");
 
-            return builder.ToString();
+            string filename = builder.ToString();
+            filename = filename.Replace("\\", "_").Replace("/", "_")
+                               .Replace(":", "_").Replace("*", "_").Replace("?", "_")
+                               .Replace("<", "_").Replace(">", "_").Replace("|", "_");
+            string filepath = Path.Combine(path, "Entities", filename);
+            return filepath;
         }
 
         /// <summary>
@@ -209,7 +228,7 @@ namespace TestDataSeeding.SerializedStorage
         /// <returns>The XML file name with path.</returns>
         private string BuildFileName(EntityStructure entityStructure, List<string> primaryKeyValues, string path)
         {
-            StringBuilder builder = new StringBuilder(path + "\\Entities\\" + entityStructure.Name);
+            StringBuilder builder = new StringBuilder(entityStructure.Name);
 
             for (int i = 0; i < entityStructure.PrimaryKeys.Count; i++)
             {
@@ -218,7 +237,12 @@ namespace TestDataSeeding.SerializedStorage
 
             builder.Append(".xml");
 
-            return builder.ToString();
+            string filename = builder.ToString();
+            filename = filename.Replace("\\", "_").Replace("/", "_")
+                               .Replace(":", "_").Replace("*", "_").Replace("?", "_")
+                               .Replace("<", "_").Replace(">", "_").Replace("|", "_");
+            string filepath = Path.Combine(path, "Entities", filename);
+            return filepath;
         }
 
         /// <summary>
@@ -230,7 +254,7 @@ namespace TestDataSeeding.SerializedStorage
         /// <returns>The XML file name with path.</returns>
         private string BuildFileName(string entityName, List<string> primaryKeyValues, string path)
         {
-            StringBuilder builder = new StringBuilder(path + "\\Entities\\" + entityName);
+            StringBuilder builder = new StringBuilder(entityName);
 
             for (int i = 0; i < primaryKeyValues.Count; i++)
             {
@@ -239,7 +263,12 @@ namespace TestDataSeeding.SerializedStorage
 
             builder.Append(".xml");
 
-            return builder.ToString();
+            string filename = builder.ToString();
+            filename = filename.Replace("\\", "_").Replace("/", "_")
+                               .Replace(":", "_").Replace("*", "_").Replace("?", "_")
+                               .Replace("<", "_").Replace(">", "_").Replace("|", "_");
+            string filepath = Path.Combine(path, "Entities", filename);
+            return filepath;
         }
 
         /// <summary>
@@ -269,8 +298,8 @@ namespace TestDataSeeding.SerializedStorage
                YAXExceptionTypes.Warning);
             object deserializedObject = null;
 
-            XElement xElement = XElement.Load(xmlFilePath);
-            deserializedObject = deserializer.Deserialize(xElement.ToString());
+            //XElement xElement = XElement.Load(xmlFilePath);
+            deserializedObject = deserializer.Deserialize(File.ReadAllText(xmlFilePath));
 
             if (deserializer.ParsingErrors.ContainsAnyError)
             {

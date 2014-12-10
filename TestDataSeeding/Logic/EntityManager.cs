@@ -30,12 +30,21 @@ namespace TestDataSeeding.Logic
         /// </summary>
         private EntityStructures entityStructures;
 
+        /// <summary>
+        /// The catalog for the saved associative entities.
+        /// </summary>
         private EntityCatalog catalog;
 
         /// <summary>
         /// The visited entities during the recursive save/restore action.
         /// </summary>
         private List<EntityWithKey> visitedEntities;
+
+        /// <summary>
+        /// The stack of locked entities. The top of the stack is the current entity.
+        /// A dependency can't reference a locked entity.
+        /// </summary>
+        private Stack<string> lockedEntities;
 
         /// <summary>
         /// Constructs a new EntityManager with a MS-SQL Server and XML serialized storage client.
@@ -45,6 +54,7 @@ namespace TestDataSeeding.Logic
             dbClient = new MsSqlClient();
             serializedStorageClient = new XmlStorageClient();
             visitedEntities = new List<EntityWithKey>();
+            lockedEntities = new Stack<string>();
         }
 
         public void LoadEntities(List<EntityWithKey> entities, string path)
@@ -57,6 +67,12 @@ namespace TestDataSeeding.Logic
                 // Restore the entities and its dependencies.
                 foreach (var entity in entities)
                 {
+                    EntityStructure entityStructure = entityStructures.Find(entity.EntityName);
+                    if (entityStructure == null)
+                    {
+                        throw new TdsLogicException("The given entity/table name (" + entity.EntityName +") is not found.");
+                    }
+
                     InnerLoadEntity(entity.EntityName, entity.PrimaryKeyValues, path);
                 }
 
@@ -65,10 +81,13 @@ namespace TestDataSeeding.Logic
             catch (Exception exception)
             {
                 visitedEntities.Clear();
+                lockedEntities.Clear();
+
                 throw exception;
             }
 
             visitedEntities.Clear();
+            lockedEntities.Clear();
         }
 
         /// <summary>
@@ -79,6 +98,14 @@ namespace TestDataSeeding.Logic
         /// <param name="path">The storage path.</param>
         private void InnerLoadEntity(string entityName, List<string> entityPrimaryKeyValues, string path)
         {
+            // Check if entity is locked, if not, lock it.
+            if (IsLocked(entityName))
+            {
+                return;
+            }
+            lockedEntities.Push(entityName);
+            bool locked = true;
+
             // Get the structure of the entity.
             EntityStructure entityStructure = entityStructures.Find(entityName);
 
@@ -87,6 +114,12 @@ namespace TestDataSeeding.Logic
             // Return, if the current entity has already been updated in this batch.
             if (IsVisited(entityName, entityPrimaryKeyValues))
             {
+                // If the entity was visited, unlock the entity and return.
+                if (locked)
+                {
+                    lockedEntities.Pop();
+                }
+
                 return;
             }
 
@@ -125,6 +158,13 @@ namespace TestDataSeeding.Logic
 
                 // Restore the associative entities if the current entity is part of a many-to-many (associative) entity.
                 LoadAssociativeEntities(entityFromSerializedStorage, entityStructure, path);
+
+                // Unlock the entity.
+                string entityPop = lockedEntities.Pop();
+                if (!entityName.Equals(entityPop))
+                {
+                    throw new TdsLogicException("Entity unlock error.");
+                }
             }
             catch (Exception exception)
             {
@@ -143,6 +183,13 @@ namespace TestDataSeeding.Logic
             // Restore each associative entity and their dependencies.
             foreach (var associativeEntityName in entityStructure.BelongsToMany)
             {
+                // Check if entity is locked, if not, lock it.
+                if (IsLocked(associativeEntityName))
+                {
+                    continue;
+                }
+                lockedEntities.Push(associativeEntityName);
+
                 // Get the referenced attributes of the entity from the associative entity.
                 var associativeEntityStructure = entityStructures.Find(associativeEntityName);
 
@@ -170,6 +217,7 @@ namespace TestDataSeeding.Logic
                                                          .Select(attribute => attribute.Value)
                                                          .ToList();
 
+                    // Check if the entity has already been saved.
                     if (IsVisited(associativeEntity.Name, associativeEntityPrimaryKeyValues))
                     {
                         continue;
@@ -206,6 +254,13 @@ namespace TestDataSeeding.Logic
                         dbClient.InsertWithTransaction(associativeEntity, associativeEntityStructure);
                     }
                 }
+
+                // Unlock the entity.
+                string entityPop = lockedEntities.Pop();
+                if (!associativeEntityName.Equals(entityPop))
+                {
+                    throw new TdsLogicException("Entity unlock error.");
+                }
             }
         }
 
@@ -220,6 +275,12 @@ namespace TestDataSeeding.Logic
                 // Saves the entities and their dependencies.
                 foreach (var entity in entities)
                 {
+                    EntityStructure entityStructure = entityStructures.Find(entity.EntityName);
+                    if (entityStructure == null)
+                    {
+                        throw new TdsLogicException("The given entity/table name (" + entity.EntityName + ") is not found.");
+                    }
+
                     InnerSaveEntity(entity.EntityName, entity.PrimaryKeyValues, path, overwrite);
                 }
 
@@ -229,10 +290,13 @@ namespace TestDataSeeding.Logic
             catch (Exception exception)
             {
                 visitedEntities.Clear();
+                lockedEntities.Clear();
+
                 throw exception;
             }
 
             visitedEntities.Clear();
+            lockedEntities.Clear();
         }
 
         /// <summary>
@@ -244,6 +308,14 @@ namespace TestDataSeeding.Logic
         /// <param name="overwrite">If true, overwrite the already saved entities.</param>
         private void InnerSaveEntity(string entityName, List<string> entityPrimaryKeyValues, string path, bool overwrite)
         {
+            // Check if entity is locked, if not, lock it.
+            if (IsLocked(entityName))
+            {
+                return;
+            }
+            lockedEntities.Push(entityName);
+            bool locked = true;
+
             // Get the entity with the given name and primary key values from the database and its structure. 
             EntityStructure entityStructure = entityStructures.Find(entityName);
 
@@ -252,6 +324,12 @@ namespace TestDataSeeding.Logic
             // Return, if the current entity has already been updated in this batch.
             if (IsVisited(entityName, entityPrimaryKeyValues))
             {
+                // If the entity was visited, unlock the entity and return.
+                if (locked)
+                {
+                    lockedEntities.Pop();
+                }
+
                 return;
             }
 
@@ -286,6 +364,13 @@ namespace TestDataSeeding.Logic
 
                 // Save the associative entities if the current entity is part of a many-to-many (associative) entity.
                 SaveAssociativeEntities(entityFromDb, entityStructure, path, overwrite);
+
+                // Unlock the entity.
+                string entityPop = lockedEntities.Pop();
+                if (!entityName.Equals(entityPop))
+                {
+                    throw new TdsLogicException("Entity unlock error.");
+                }
             }
             catch (Exception exception)
             {
@@ -305,6 +390,13 @@ namespace TestDataSeeding.Logic
             // Save each associative entity and their dependencies.
             foreach (var associativeEntityName in entityStructure.BelongsToMany)
             {
+                // Check if entity is locked, if not, lock it.
+                if (IsLocked(associativeEntityName))
+                {
+                    continue;
+                }
+                lockedEntities.Push(associativeEntityName);
+
                 // Get the referenced attributes of the entity from the associative entity.
                 var associativeEntityStructure = entityStructures.Find(associativeEntityName);
 
@@ -327,6 +419,7 @@ namespace TestDataSeeding.Logic
                                                          .Select(attribute => attribute.Value)
                                                          .ToList();
 
+                    // Check if the entity has already been visited.
                     if (IsVisited(associativeEntity.Name, associativeEntityPrimaryKeyValues))
                     {
                         continue;
@@ -349,6 +442,13 @@ namespace TestDataSeeding.Logic
                     serializedStorageClient.SaveEntity(associativeEntity, associativeEntityStructure, path);
                     catalog.Add(associativeEntity, associativeEntityStructure,
                         serializedStorageClient.GetEntityFileName(associativeEntity.Name, associativeEntityPrimaryKeyValues, path));
+                }
+
+                // Unlock the entity.
+                string entityPop = lockedEntities.Pop();
+                if (!associativeEntityName.Equals(entityPop))
+                {
+                    throw new TdsLogicException("Entity unlock error.");
                 }
             }
         }
@@ -411,6 +511,16 @@ namespace TestDataSeeding.Logic
         private bool IsVisited(string entityName, List<string> entityPrimaryKeyValues)
         {
             return visitedEntities.Count(entityWithKey => entityWithKey.IsEqual(entityName, entityPrimaryKeyValues)) > 0;
+        }
+
+        /// <summary>
+        /// Returns true, if the entity is locked.
+        /// </summary>
+        /// <param name="entityName">The name of the entity.</param>
+        /// <returns>True, if the entity is locked.</returns>
+        private bool IsLocked(string entityName)
+        {
+            return lockedEntities.Count(entity => entity.Equals(entityName)) > 0;
         }
     }
 }

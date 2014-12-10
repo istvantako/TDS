@@ -45,6 +45,7 @@
     <Compile Include="Client\IEntityManager.cs" />
     <Compile Include="Client\ISerializedStorageStructureManager.cs" />
     <Compile Include="Client\TdsClient.cs" />
+    <Compile Include="Client\TdsLoadEntityAttribute.cs" />
     <Compile Include="DbClient\MsSqlStructureBuilder.cs" />
     <Compile Include="Logic\EntityAlreadySavedException.cs" />
     <Compile Include="Logic\EntityManager.cs" />

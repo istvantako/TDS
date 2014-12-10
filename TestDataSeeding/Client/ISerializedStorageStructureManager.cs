@@ -7,6 +7,9 @@ using TestDataSeeding.Model;
 
 namespace TestDataSeeding.Client
 {
+    /// <summary>
+    /// Interface for saving and retrieving the entity structures from the disk.
+    /// </summary>
     internal interface ISerializedStorageStructureManager
     {
         /// <summary>

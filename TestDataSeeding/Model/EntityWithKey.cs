@@ -6,30 +6,54 @@ using System.Threading.Tasks;
 
 namespace TestDataSeeding.Model
 {
+    /// <summary>
+    /// Entity identifier.
+    /// Holds the name of the entity and the primary key values.
+    /// </summary>
     public class EntityWithKey
     {
+        /// <summary>
+        /// The name of the entity.
+        /// </summary>
         public string EntityName
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// The primary key values.
+        /// </summary>
         public List<string> PrimaryKeyValues
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
         public EntityWithKey()
         {
         }
 
+        /// <summary>
+        /// Constructs a new entity identifier with the given values.
+        /// </summary>
+        /// <param name="entityName">The name of the entity.</param>
+        /// <param name="primaryKeyValues">The primary key values.</param>
         public EntityWithKey(string entityName, List<string> primaryKeyValues)
         {
             EntityName = entityName;
             PrimaryKeyValues = primaryKeyValues;
         }
 
+        /// <summary>
+        /// Returns true, if the given entity identifiers are equal.
+        /// </summary>
+        /// <param name="entityName">The given entity name.</param>
+        /// <param name="entityPrimaryKeyValues">The given primary key values.</param>
+        /// <returns>True, if the given entity identifiers are equal.</returns>
         public bool IsEqual(string entityName, List<string> entityPrimaryKeyValues)
         {
             if (!EntityName.Equals(entityName))

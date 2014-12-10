@@ -7,8 +7,15 @@ using TestDataSeeding.Model;
 
 namespace TestDataSeeding.Client
 {
+    /// <summary>
+    /// Interface for retrieving the database structure.
+    /// </summary>
     internal interface IDbStructureManager
     {
+        /// <summary>
+        /// Returns the database structure as entity structures.
+        /// </summary>
+        /// <returns>The database structure as entity structures.</returns>
         EntityStructures GetDatabaseStructure();
     }
 }

@@ -12,12 +12,18 @@ namespace TestDataSeeding.Logic
     /// </summary>
     internal interface ISerializedStorageClient
     {
+        /// <summary>
+        /// Prepares a transaction.
+        /// </summary>
         void BeginTransaction();
 
+        /// <summary>
+        /// Executes the prepared transaction.
+        /// </summary>
         void ExecuteTransaction();
 
         /// <summary>
-        /// Saves the <paramref name="entity"/> to an XML file.
+        /// Serializes the <paramref name="entity"/> and saves it in a file.
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <param name="entityStructure">The structure of the entity.</param>
@@ -25,7 +31,8 @@ namespace TestDataSeeding.Logic
         void SaveEntity(Entity entity, EntityStructure entityStructure, string path);
 
         /// <summary>
-        /// Returns a new entity identified by the entity name from the <paramref name="entityStructure"/> and <paramref name="primaryKeyValues"/>.
+        /// Returns a new entity identified by the entity name from the <paramref name="entityStructure"/> and
+        /// <paramref name="primaryKeyValues"/>.
         /// </summary>
         /// <param name="entityStructure">The structure of the entity.</param>
         /// <param name="primaryKeyValues">A list with the pramary key values that identifies the entity.</param>
@@ -72,8 +79,18 @@ namespace TestDataSeeding.Logic
         /// <param name="path">The storage path where to save the collection.</param>
         void SaveEntityStructures(EntityStructures entityStructures, string path);
 
+        /// <summary>
+        /// Returns the catalog with the associative entities from the given path.
+        /// </summary>
+        /// <param name="path">The given path.</param>
+        /// <returns>The catalog with the associative entities from the given path.</returns>
         EntityCatalog GetCatalog(string path);
 
+        /// <summary>
+        /// Saves the catalog with the associative entities to the given path.
+        /// </summary>
+        /// <param name="catalog">The given catalog.</param>
+        /// <param name="path">The given path.</param>
         void SaveCatalog(EntityCatalog catalog, string path);
     }
 }

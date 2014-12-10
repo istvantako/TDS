@@ -48,6 +48,10 @@ namespace TestDataSeeding.Client
             entityManager = new EntityManager();
         }
 
+        /// <summary>
+        /// Loads an entity from the default path.
+        /// </summary>
+        /// <param name="entity">The entity identifier.</param>
         public void LoadEntity(EntityWithKey entity)
         {
             List<EntityWithKey> entities = new List<EntityWithKey>();
@@ -56,6 +60,11 @@ namespace TestDataSeeding.Client
             entityManager.LoadEntities(entities, defaultStoragePath);
         }
 
+        /// <summary>
+        /// Loads an entity from the given path.
+        /// </summary>
+        /// <param name="entity">The entity identifier.</param>
+        /// <param name="path">The path.</param>
         public void LoadEntity(EntityWithKey entity, string path)
         {
             List<EntityWithKey> entities = new List<EntityWithKey>();
@@ -64,6 +73,11 @@ namespace TestDataSeeding.Client
             entityManager.LoadEntities(entities, path);
         }
 
+        /// <summary>
+        /// Saves an entity to the default path.
+        /// </summary>
+        /// <param name="entity">The entity identifier.</param>
+        /// <param name="overwrite">If true, force overwrite, default is false.</param>
         public void SaveEntity(EntityWithKey entity, bool overwrite = false)
         {
             List<EntityWithKey> entities = new List<EntityWithKey>();
@@ -72,6 +86,12 @@ namespace TestDataSeeding.Client
             entityManager.SaveEntities(entities, defaultStoragePath, overwrite);
         }
 
+        /// <summary>
+        /// Saves an entity to the given path.
+        /// </summary>
+        /// <param name="entity">The given entity identifier.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="overwrite">If true, force overwrite, default is false.</param>
         public void SaveEntity(EntityWithKey entity, string path, bool overwrite = false)
         {
             List<EntityWithKey> entities = new List<EntityWithKey>();
@@ -80,46 +100,96 @@ namespace TestDataSeeding.Client
             entityManager.SaveEntities(entities, path, overwrite);
         }
 
+        /// <summary>
+        /// Loads the given entities from the default path.
+        /// </summary>
+        /// <param name="entities">The list of entity identifiers.</param>
         public void LoadEntities(List<EntityWithKey> entities)
         {
             entityManager.LoadEntities(entities, defaultStoragePath);
         }
 
+        /// <summary>
+        /// Loads the given entities from the given path.
+        /// </summary>
+        /// <param name="entities">The list of entity identifiers.</param>
+        /// <param name="path">The path.</param>
         public void LoadEntities(List<EntityWithKey> entities, string path)
         {
             entityManager.LoadEntities(entities, path);
         }
 
+        /// <summary>
+        /// Saves the given entities to the default path.
+        /// </summary>
+        /// <param name="entities">The list of entity identifiers.</param>
+        /// <param name="overwrite">If true, force overwrite, default is false.</param>
         public void SaveEntities(List<EntityWithKey> entities, bool overwrite = false)
         {
             entityManager.SaveEntities(entities, defaultStoragePath, overwrite);
         }
 
+        /// <summary>
+        /// Saves the entities to the given path.
+        /// </summary>
+        /// <param name="entities">The list of entity identifiers.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="overwrite">If true, force overwrite, default is false.</param>
         public void SaveEntities(List<EntityWithKey> entities, string path, bool overwrite = false)
         {
             entityManager.SaveEntities(entities, path, overwrite);
         }
 
+        /// <summary>
+        /// Generates the database structure to the default path.
+        /// </summary>
         public void GenerateDatabaseStructure()
         {
             serializedStorageStructureManager.SaveEntityStructures(dbStructureManager.GetDatabaseStructure(), defaultStoragePath);
         }
 
+        /// <summary>
+        /// Generates the database structure to the given path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        public void GenerateDatabaseStructure(string path)
+        {
+            serializedStorageStructureManager.SaveEntityStructures(dbStructureManager.GetDatabaseStructure(), path);
+        }
+
+        /// <summary>
+        /// Gets the entity structures from the default path.
+        /// </summary>
+        /// <returns>The entity structures from the default path.</returns>
         public EntityStructures GetEntityStructures()
         {
             return serializedStorageStructureManager.GetEntityStructures(defaultStoragePath);
         }
 
+        /// <summary>
+        /// Gets the entity structures from the given path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <returns>the entity structures from the given path.</returns>
         public EntityStructures GetEntityStructures(string path)
         {
             return serializedStorageStructureManager.GetEntityStructures(path);
         }
 
+        /// <summary>
+        /// Saves the entity structures to the default path.
+        /// </summary>
+        /// <param name="entityStructures">The given entity structures.</param>
         public void SaveEntityStructures(EntityStructures entityStructures)
         {
             serializedStorageStructureManager.SaveEntityStructures(entityStructures, defaultStoragePath);
         }
 
+        /// <summary>
+        /// Saves the entity structures to the given path.
+        /// </summary>
+        /// <param name="entityStructures">The given entity structures.</param>
+        /// <param name="path">The path.</param>
         public void SaveEntityStructures(EntityStructures entityStructures, string path)
         {
             serializedStorageStructureManager.SaveEntityStructures(entityStructures, path);
