@@ -5,6 +5,7 @@ using TestDataSeeding.Logic;
 using TestDataSeeding.Model;
 using System.Text;
 using System;
+using System.Diagnostics;
 
 namespace TestDataSeeding.DbClient
 {
@@ -49,13 +50,14 @@ namespace TestDataSeeding.DbClient
                 throw;
             }
 
+            ConvertData(ref queriedEntity, entityStructure);
             return queriedEntity;
         }
 
-        public List<Entity> GetAssociativeEntities(string entityName, Dictionary<string, string> keyValues)
+        public List<Entity> GetAssociativeEntities(EntityStructure entityStructure, Dictionary<string, string> keyValues)
         {
             List<Entity> queriedEntities = new List<Entity>();
-            string query = queryBuilder.CreateSelectQuery(entityName, keyValues);
+            string query = queryBuilder.CreateSelectQuery(entityStructure.Name, keyValues);
             try
             {
                 SqlDataReader dataReader = queryExecutor.ExecuteQuery(query);
@@ -63,12 +65,14 @@ namespace TestDataSeeding.DbClient
                 while (dataReader.Read())
                 {
                     Entity queriedEntity = new Entity();
-                    queriedEntity.Name = entityName;
+                    queriedEntity.Name = entityStructure.Name;
 
                     for (var i = 0; i < dataReader.FieldCount; i++)
                     {
                         queriedEntity.AttributeValues.Add(dataReader.GetName(i), dataReader[i].ToString());
                     }
+
+                    ConvertData(ref queriedEntity, entityStructure);
                     queriedEntities.Add(queriedEntity);
                 }
 
@@ -116,7 +120,7 @@ namespace TestDataSeeding.DbClient
                 {
                     StringBuilder builder = new StringBuilder();
                     builder.Append(tableName.Item1).Append(".").Append(tableName.Item2);
-                    
+
                     EntityStructure structure = new EntityStructure(builder.ToString());
                     structureBuilder.SetTableAttributes(ref structure, tableName.Item1, tableName.Item2);
                     structureBuilder.SetTablePrimaryKeys(ref structure, tableName.Item1, tableName.Item2);
@@ -152,6 +156,27 @@ namespace TestDataSeeding.DbClient
             }
 
             return structures;
+        }
+
+        /// <summary>
+        /// Converts some attributes of the referenced <paramref name="entity"/> to be suitable for
+        /// loading them back in the database
+        /// </summary>
+        /// <param name="entity">An Entity reference.</param>
+        /// <param name="entity">Structure of the <paramref name="entity"/>.</param>
+        private void ConvertData(ref Entity entity, EntityStructure structure)
+        {
+            foreach (var attribute in structure.Attributes)
+            {
+                if (attribute.Value.Equals("date"))
+                {
+                    if (entity.AttributeValues[attribute.Key] != "")
+                    {
+                        DateTime dt = Convert.ToDateTime(entity.AttributeValues[attribute.Key]);
+                        entity.AttributeValues[attribute.Key] = dt.ToString(@"yyyy-MM-ddTHH\:mm\:ss.fffffffzzz");
+                    }
+                }
+            }
         }
     }
 }
