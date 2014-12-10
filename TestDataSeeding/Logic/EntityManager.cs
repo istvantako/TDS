@@ -409,7 +409,7 @@ namespace TestDataSeeding.Logic
                                                           .ToDictionary(attribute => attribute.Key, attribute => attribute.Value);
 
                 // Get the associative entities.
-                var associativeEntities = dbClient.GetAssociativeEntities(associativeEntityName, keysAndValues);
+                var associativeEntities = dbClient.GetAssociativeEntities(associativeEntityStructure, keysAndValues);
 
                 // Save each associative entity and its dependencies.
                 foreach (var associativeEntity in associativeEntities)

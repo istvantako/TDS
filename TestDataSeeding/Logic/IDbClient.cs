@@ -25,10 +25,10 @@ namespace TestDataSeeding.Logic
         /// <summary>
         /// Returns a list of associative entities identified by the given key values.
         /// </summary>
-        /// <param name="entityName">The name of associative entity name.</param>
+        /// <param name="entityStructure">The structure of associative entity name.</param>
         /// <param name="keyValues">The dictionary with the given keys and values.</param>
         /// <returns>A list of associative entities identified by the given key values.</returns>
-        List<Entity> GetAssociativeEntities(string entityName, Dictionary<string, string> keyValues);
+        List<Entity> GetAssociativeEntities(EntityStructure entityStructure, Dictionary<string, string> keyValues);
 
         /// <summary>
         /// Add the <paramref name="entity"/> to be inserted on next ExecuteTransaction() call.

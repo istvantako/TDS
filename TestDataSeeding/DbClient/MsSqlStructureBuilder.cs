@@ -45,7 +45,7 @@ namespace TestDataSeeding.DbClient
         /// Expands a referenced <paramref name="entityStructure"/> with the attributes.
         /// </summary>
         /// <param name="entityStructure">An EntityStructure reference.</param>
-        public void SetTableAttributes(ref EntityStructure entityStructure, string schema, string name)
+        internal void SetTableAttributes(ref EntityStructure entityStructure, string schema, string name)
         {
             StringBuilder builder = new StringBuilder("SELECT COLUMN_NAME,DATA_TYPE ")
                 .Append("FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '")
@@ -76,7 +76,7 @@ namespace TestDataSeeding.DbClient
         /// Expands a referenced <paramref name="entityStructure"/> with the primary keys.
         /// </summary>
         /// <param name="entityStructure">An EntityStructure reference.</param>
-        public void SetTablePrimaryKeys(ref EntityStructure entityStructure, string schema, string name)
+        internal void SetTablePrimaryKeys(ref EntityStructure entityStructure, string schema, string name)
         {
             StringBuilder builder = new StringBuilder("SELECT COL_NAME(ic.OBJECT_ID,ic.column_id) AS ColumnName ")
                 .Append("FROM sys.indexes AS i ")
@@ -110,7 +110,7 @@ namespace TestDataSeeding.DbClient
         /// Expands a referenced <paramref name="entityStructure"/> with the foreign keys.
         /// </summary>
         /// <param name="entityStructure">An EntityStructure reference.</param>
-        public void SetTableForeignKeys(ref EntityStructure entityStructure, string schema, string name)
+        internal void SetTableForeignKeys(ref EntityStructure entityStructure, string schema, string name)
         {
             StringBuilder builder = new StringBuilder("SELECT ")
                 .Append("col1.name AS [column], SCHEMA_NAME(tab2.schema_id) AS referenced_table_schema, ")
