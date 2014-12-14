@@ -37,15 +37,15 @@ namespace TdsClientTesterApp
             //entities.Add(entity);
 
 
-            //tds.SaveEntities(entities, "D:\\TDS");
-            //Console.WriteLine("Mentes sikeres!");
+            tds.SaveEntities(entities, "D:\\TDS");
+            Console.WriteLine("Mentes sikeres!");
 
             //tds.SaveEntities(entities, "E:\\TDS");
             //Console.WriteLine("Mentes sikeres!");
 
 
-            tds.LoadEntities(entities, "D:\\TDS");
-            Console.WriteLine("Visszaallitas sikeres!");
+            //tds.LoadEntities(entities, "D:\\TDS");
+            //Console.WriteLine("Visszaallitas sikeres!");
 
             //tds.LoadEntities(entities, "E:\\TDS");
             //Console.WriteLine("Visszaallitas sikeres!");
