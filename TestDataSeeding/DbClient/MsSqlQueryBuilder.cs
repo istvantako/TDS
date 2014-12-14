@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using TestDataSeeding.Model;
@@ -13,24 +14,37 @@ namespace TestDataSeeding.DbClient
         /// <param name="entityStructure">An entity structure.</param>
         /// <param name="primaryKeyValues">An string list containing the primary keys.</param>
         /// <returns>The SQL SELECT query string.</returns>
-        public string CreateSelectQuery(EntityStructure entityStructure, List<string> primaryKeyValues)
+        internal string CreateSelectQuery(EntityStructure entityStructure, List<string> primaryKeyValues)
         {
-            //SELECT * FROM @Tablename WHERE @KeyAttribute1='@KeyValue1'//
-            StringBuilder builder = new StringBuilder("SELECT * FROM ");
-            builder.Append(entityStructure.Name)
-                   .Append(" WHERE ")
-                   .Append(entityStructure.PrimaryKeys[0])
-                   .Append("='")
-                   .Append(primaryKeyValues[0])
-                   .Append("'");
-            // AND @KeyAttributeX='@KeyValueX'//
-            for (var i = 1; i < entityStructure.PrimaryKeys.Count; i++)
+            //SELECT @Attribute1, @AttributeN//
+            StringBuilder builder = new StringBuilder("SELECT ");
+
+            string separator = "";
+            for (var i = 0; i < entityStructure.Attributes.Count; i++)
             {
-                builder.Append(" AND ")
-                       .Append(entityStructure.PrimaryKeys[i])
-                       .Append("='")
-                       .Append(primaryKeyValues[i])
-                       .Append("'");
+                string attribute = entityStructure.Attributes.ElementAt(i).Key;
+                string type = entityStructure.Attributes.ElementAt(i).Value;
+
+                builder.Append(separator)
+                       .Append(ConvertAttributeforSelect(attribute,type));
+                separator = ", ";
+            }
+
+            // FROM @TableName WHERE @KeyAttribute1 = @KeyValue1 AND @KeyAttributeN = @KeyValueN//
+            builder.Append(" FROM ")
+                   .Append(entityStructure.Name)
+                   .Append(" WHERE ");
+
+            separator = "";
+            for (var i = 0; i < entityStructure.PrimaryKeys.Count; i++)
+            {
+                string attribute = entityStructure.PrimaryKeys[i];
+                string type = entityStructure.Attributes[entityStructure.PrimaryKeys[i]];
+
+                builder.Append(separator)
+                       .Append(ConvertAttributeforWhere(attribute, type))
+                       .Append(ConvertValue(primaryKeyValues[i], type));
+                separator = " AND ";
             }
 
             return builder.ToString();
@@ -39,27 +53,39 @@ namespace TestDataSeeding.DbClient
         /// <summary>
         /// Creates the select query to retrieve the given entities.
         /// </summary>
-        /// <param name="entityName">The name of associative entity name.</param>
+        /// <param name="entityStructure">An entity structure.</param>
         /// <param name="keyValues">The dictionary with the given keys and values.</param>
         /// <returns>The SQL SELECT query string.</returns>
-        public string CreateSelectQuery(string entityName, Dictionary<string, string> keyValues)
+        internal string CreateSelectQuery(EntityStructure entityStructure, Dictionary<string, string> keyValues)
         {
-            //SELECT * FROM @Tablename WHERE @KeyAttribute1='@KeyValue1'//
-            StringBuilder builder = new StringBuilder("SELECT * FROM ");
-            builder.Append(entityName)
-                   .Append(" WHERE ")
-                   .Append(keyValues.ElementAt(0).Key)
-                   .Append("='")
-                   .Append(keyValues.ElementAt(0).Value)
-                   .Append("'");
-            // AND @KeyAttributeX='@KeyValueX'//
-            for (var i = 1; i < keyValues.Count; i++)
+            //SELECT @Attribute1, @AttributeN//
+            StringBuilder builder = new StringBuilder("select ");
+
+            string separator = "";
+            for (var i = 0; i < entityStructure.Attributes.Count; i++)
             {
-                builder.Append(" AND ")
-                       .Append(keyValues.ElementAt(i).Key)
-                       .Append("='")
-                       .Append(keyValues.ElementAt(i).Value)
-                       .Append("'");
+                string attribute = entityStructure.Attributes.ElementAt(i).Key;
+                string type = entityStructure.Attributes.ElementAt(i).Value;
+
+                builder.Append(separator)
+                       .Append(ConvertAttributeforSelect(attribute, type));
+                separator = ", ";
+            }
+            // FROM @TableName WHERE @KeyAttribute1 = @KeyValue1 AND @KeyAttributeN = @KeyValueN//
+            builder.Append(" FROM ")
+                   .Append(entityStructure.Name)
+                   .Append(" WHERE ");
+
+            separator = "";
+            for (var i = 0; i < keyValues.Count; i++)
+            {
+                string attribute = keyValues.ElementAt(i).Key;
+                string type = "varchar";
+
+                builder.Append(separator)
+                       .Append(ConvertAttributeforWhere(attribute, type))
+                       .Append(ConvertValue(keyValues.ElementAt(i).Value, type));
+                separator = " AND ";
             }
 
             return builder.ToString();
@@ -69,51 +95,47 @@ namespace TestDataSeeding.DbClient
         /// Creates the update query which updates the given entity.
         /// </summary>
         /// <param name="entity">An entity.</param>
-        /// <param name="entityStructure">The structure of the givem entity.</param>
+        /// <param name="entityStructure">The structure of the given entity.</param>
         /// <returns>The SQL UPDATE query string.</returns>
-        public string CreateUpdateQuery(Entity entity, EntityStructure entityStructure)
+        internal string CreateUpdateQuery(Entity entity, EntityStructure entityStructure)
         {
             //we get the names of those attributes which are not PrimaryKeys
-            List<string> nonPrimaryKeyAttributes = new List<string>();
-            foreach (var item in entity.AttributeValues)
-            {
-                if (!entityStructure.IsPrimaryKey(item.Key))
-                {
-                    nonPrimaryKeyAttributes.Add(item.Key);
-                }
-            }
+            var nonPrimaryKeyAttributes = entityStructure.Attributes.Where(attribute => !entityStructure.IsPrimaryKey(attribute.Key));
 
-            //UPDATE @Tablename SET @Attribute1='@Value1'//
+            //UPDATE @Tablename SET @Attribute1 = @Value1 , @AttributeN = @ValueN//
             StringBuilder builder = new StringBuilder("UPDATE ");
             builder.Append(entity.Name)
-                   .Append(" SET ")
-                   .Append(nonPrimaryKeyAttributes[0])
-                   .Append("='")
-                   .Append(entity.AttributeValues[nonPrimaryKeyAttributes[0]])
-                   .Append("'");
-            //,@AttributeX='@ValueX'//
-            for (var i = 1; i < nonPrimaryKeyAttributes.Count; i++)
+                   .Append(" SET ");
+
+            string separator = "";
+            foreach (var item in nonPrimaryKeyAttributes)
             {
-                builder.Append(", ")
-                       .Append(nonPrimaryKeyAttributes[i])
-                       .Append("='")
-                       .Append(entity.AttributeValues[nonPrimaryKeyAttributes[i]])
-                       .Append("'");
+                string value = entity.AttributeValues[item.Key];
+                string type = item.Value;
+
+                builder.Append(separator)
+                       .Append('"')
+                       .Append(item.Key)
+                       .Append('"')
+                       .Append(" = ")
+                       .Append(ConvertValue(value,type));
+                separator = ", ";
             }
-            // WHERE @KeyAttribute1='@KeyValue1'//
-            builder.Append(" WHERE ")
-                   .Append(entityStructure.PrimaryKeys[0])
-                   .Append("='")
-                   .Append(entity.AttributeValues[entityStructure.PrimaryKeys[0]])
-                   .Append("'");
-            // AND @KeyAttributeX='@KeyValueX'//
-            for (var i = 1; i < entityStructure.PrimaryKeys.Count; i++)
+            // WHERE @KeyAttribute1 = @KeyValue1 AND @KeyAttributeN = @KeyValueN//
+            builder.Append(" WHERE ");
+
+            separator = "";
+            for (var i = 0; i < entityStructure.PrimaryKeys.Count; i++)
             {
-                builder.Append(" AND ")
-                       .Append(entityStructure.PrimaryKeys[i])
-                       .Append("='")
-                       .Append(entity.AttributeValues[entityStructure.PrimaryKeys[i]])
-                       .Append("'");
+                string attribute = entityStructure.PrimaryKeys[i];
+                string value = entity.AttributeValues[entityStructure.PrimaryKeys[i]];
+                string type = entityStructure.Attributes[entityStructure.PrimaryKeys[i]];
+                
+                builder.Append(separator)
+                       .Append(ConvertAttributeforWhere(attribute,type))
+                       .Append(ConvertValue(value,type));
+
+                separator = " AND ";
             }
 
             return builder.ToString();
@@ -125,21 +147,136 @@ namespace TestDataSeeding.DbClient
         /// <param name="entity">An entity.</param>
         /// <param name="entityStructure">The structure of the given entity.</param>
         /// <returns>The SQL INSERT query string.</returns>
-        public string CreateInsertQuery(Entity entity, EntityStructure entityStructure)
+        internal string CreateInsertQuery(Entity entity, EntityStructure entityStructure)
         {
-            //INSERT INTO @Tablename VALUES ('@Value1//
+            //INSERT INTO @Tablename VALUES (@Value1, @ValueN)//
             StringBuilder builder = new StringBuilder("INSERT INTO ");
             builder.Append(entity.Name)
-                   .Append(" VALUES ('")
-                   .Append(entity.AttributeValues.ElementAt(0).Value);
-            //','@ValueX//
-            for (int i = 1; i < entity.AttributeValues.Count; i++)
+                   .Append(" VALUES (");
+            
+            string separator = "";
+            for (int i = 0; i < entity.AttributeValues.Count; i++)
             {
-                builder.Append("', '")
-                       .Append(entity.AttributeValues.ElementAt(i).Value);
+                string value = entity.AttributeValues.ElementAt(i).Value;
+                string type = entityStructure.Attributes[entity.AttributeValues.ElementAt(i).Key];
+
+                builder.Append(separator)
+                       .Append(ConvertValue(value,type));
+
+                separator=", ";
             }
-            //')//
-            builder.Append("')");
+            
+            builder.Append(")");
+
+            return builder.ToString();
+        }
+
+        /// <summary>
+        /// Prepares the <paramref name="attribute"/> for a select command.
+        /// </summary>
+        /// <param name="attribute">The attribute to be handled.</param>
+        /// <param name="type">Type of the <paramref name="attribute"/>.</param>
+        /// <returns>The attribte string for the SELECT <paramref name="attribute"/> command. </returns>
+        private string ConvertAttributeforSelect(string attribute, string type)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            string[] datetimes = { "date", "time", "datetime", "datetime2", "smalldatetime", "datetimeoffset" };
+            //if atribute is of a dateTime type we need to extract it as iso format
+            if (datetimes.Contains(type))
+            {
+                builder.Append("CONVERT(VARCHAR(34), ")
+                       .Append('"')
+                       .Append(attribute)
+                       .Append('"')
+                       .Append(", 126) AS ")
+                       .Append('"')
+                       .Append(attribute)
+                       .Append('"');
+                return builder.ToString();
+            }
+            else
+            {
+                builder.Append('"')
+                       .Append(attribute)
+                       .Append('"');
+                return builder.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Prepares the <paramref name="value"/> for an insert command or where statement.
+        /// </summary>
+        /// <param name="value">The value to be handled.</param>
+        /// <param name="type">Type of the <paramref name="value"/>.</param>
+        /// <returns>The value string for the Insert <paramref name="value"/> command or where statement.</returns>
+        private string ConvertValue(string value, string type)
+        {
+            if (value == "") return "null";
+
+            string[] strings = { "char", "varchar", "text", "sql_variant", "bit", "xml",
+                                 "geography", "geometry", "hierarchyid", "uniqueidentifier" };
+            string[] nstrings = { "nchar", "nvarchar", "ntext" };
+            string[] datetimes = { "date", "time", "datetime", "datetime2", "smalldatetime", "datetimeoffset" };
+
+            StringBuilder builder = new StringBuilder();
+
+            //'stringValue'// -also escapes the sql quote signs(')
+            if (strings.Contains(type))
+            {
+                builder.Append("'")
+                   .Append(value.Replace("'", "''"))
+                   .Append("'");
+                return builder.ToString();
+            }
+            //N'stringValue'// -also escapes the sql quote signs(')
+            else if (nstrings.Contains(type))
+            {
+                builder.Append("N'")
+                   .Append(value.Replace("'", "''"))
+                   .Append("'");
+                return builder.ToString();
+            }
+            //'datetimeValue'//
+            else if (datetimes.Contains(type))
+            {
+                builder.Append("'")
+                   .Append(value)
+                   .Append("'");
+                return builder.ToString();
+            }
+            //numericValue//
+            else
+            {
+                return value;
+            }
+        }
+
+        /// <summary>
+        /// Prepares the <paramref name="attribute"/> for a WHERE statement.
+        /// </summary>
+        /// <param name="attribute">The attribute to be handled.</param>
+        /// <param name="type">Type of the <paramref name="attribute"/>.</param>
+        /// <returns>The attribte string for the WHERE <paramref name="attribute"/> statement. </returns>
+        private string ConvertAttributeforWhere(string attribute, string type)
+        {
+            string[] deprecatedTypes = { "text", "ntext", "image" };
+
+            StringBuilder builder = new StringBuilder();
+            builder.Append('"')
+                   .Append(attribute)
+                   .Append('"');
+
+            //Attribute LIKE //
+            if (deprecatedTypes.Contains(type))
+            {
+                builder.Append(" LIKE ");
+            }
+            //Attribute = //
+            else
+            {
+                builder.Append(" = ");
+            }
 
             return builder.ToString();
         }
