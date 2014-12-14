@@ -194,12 +194,11 @@ namespace TestDataSeeding.Logic
                 var associativeEntityStructure = entityStructures.Find(associativeEntityName);
 
                 var keys = associativeEntityStructure.ForeignKeys.Where(attribute => attribute.Value.EntityName == entity.Name)
-                                                                 .Select(attribute => attribute.Value.KeyName)
-                                                                 .ToList();
+                                                                 .ToDictionary(attribute => attribute.Value.KeyName, attribute => attribute.Key);
 
                 // Get the values of the referenced attributes.
-                var keysAndValues = entity.AttributeValues.Where(attribute => keys.Contains(attribute.Key))
-                                                          .ToDictionary(attribute => attribute.Key, attribute => attribute.Value);
+                var keysAndValues = entity.AttributeValues.Where(attribute => keys.ContainsKey(attribute.Key))
+                                                          .ToDictionary(attribute => keys[attribute.Key], attribute => attribute.Value);
 
                 // Get the associative entities.
                 List<Entity> associativeEntities = new List<Entity>();
@@ -401,12 +400,11 @@ namespace TestDataSeeding.Logic
                 var associativeEntityStructure = entityStructures.Find(associativeEntityName);
 
                 var keys = associativeEntityStructure.ForeignKeys.Where(attribute => attribute.Value.EntityName == entity.Name)
-                                                                 .Select(attribute => attribute.Value.KeyName)
-                                                                 .ToList();
+                                                                 .ToDictionary(attribute => attribute.Value.KeyName, attribute => attribute.Key);
 
                 // Get the values of the referenced attributes.
-                var keysAndValues = entity.AttributeValues.Where(attribute => keys.Contains(attribute.Key))
-                                                          .ToDictionary(attribute => attribute.Key, attribute => attribute.Value);
+                var keysAndValues = entity.AttributeValues.Where(attribute => keys.ContainsKey(attribute.Key))
+                                                          .ToDictionary(attribute => keys[attribute.Key], attribute => attribute.Value);
 
                 // Get the associative entities.
                 var associativeEntities = dbClient.GetAssociativeEntities(associativeEntityStructure, keysAndValues);
