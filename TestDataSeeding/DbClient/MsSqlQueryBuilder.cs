@@ -80,7 +80,7 @@ namespace TestDataSeeding.DbClient
             for (var i = 0; i < keyValues.Count; i++)
             {
                 string attribute = keyValues.ElementAt(i).Key;
-                string type = "varchar";
+                string type = entityStructure.Attributes[keyValues.ElementAt(i).Key];
 
                 builder.Append(separator)
                        .Append(ConvertAttributeforWhere(attribute, type))
