@@ -2,9 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDataSeeding", "TestDataSeeding\TestDataSeeding.csproj", "{ABF18B9D-1FC0-4506-B4F2-13CF085A79AB}"
-	ProjectSection(ProjectDependencies) = postProject
-		{89FE3D9A-E671-4A12-95B1-DE8B53D25DE5} = {89FE3D9A-E671-4A12-95B1-DE8B53D25DE5}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TdsConsoleApp", "TdsConsoleApp\TdsConsoleApp.csproj", "{BFB4FACE-0BB3-4CFD-A0DF-287E6B27CDA0}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -14,8 +11,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TdsClientTesterApp", "TdsClientTesterApp\TdsClientTesterApp.csproj", "{7BFB8F86-4C81-4580-AC5A-B4D967243D65}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDSFormApp", "TDSFormApp\TDSFormApp.csproj", "{FF5994C6-A607-41D6-966F-98EA9BE3EFFF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YaxLib", "YaxLib\YaxLib.csproj", "{89FE3D9A-E671-4A12-95B1-DE8B53D25DE5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,10 +34,6 @@ Global
 		{FF5994C6-A607-41D6-966F-98EA9BE3EFFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF5994C6-A607-41D6-966F-98EA9BE3EFFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF5994C6-A607-41D6-966F-98EA9BE3EFFF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{89FE3D9A-E671-4A12-95B1-DE8B53D25DE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{89FE3D9A-E671-4A12-95B1-DE8B53D25DE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{89FE3D9A-E671-4A12-95B1-DE8B53D25DE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{89FE3D9A-E671-4A12-95B1-DE8B53D25DE5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
