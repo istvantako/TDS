@@ -58,7 +58,7 @@ namespace TestDataSeeding.DbClient
         internal string CreateSelectQuery(EntityStructure entityStructure, Dictionary<string, string> keyValues)
         {
             //SELECT @Attribute1, @AttributeN//
-            StringBuilder builder = new StringBuilder("select ");
+            StringBuilder builder = new StringBuilder("SELECT ");
 
             string separator = "";
             for (var i = 0; i < entityStructure.Attributes.Count; i++)

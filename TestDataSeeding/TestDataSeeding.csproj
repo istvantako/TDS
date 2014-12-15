@@ -58,6 +58,7 @@
     <Compile Include="DbClient\MsSqlStructureBuilder.cs" />
     <Compile Include="Logic\EntityAlreadySavedException.cs" />
     <Compile Include="Logic\EntityManager.cs" />
+    <Compile Include="Logic\EntityManagerLogger.cs" />
     <Compile Include="Logic\IDbClient.cs" />
     <Compile Include="Logic\ISerializedStorageClient.cs" />
     <Compile Include="Logic\TdsLogicException.cs" />
