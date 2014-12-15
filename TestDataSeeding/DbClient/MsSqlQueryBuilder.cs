@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using TestDataSeeding.Model;
@@ -26,7 +25,7 @@ namespace TestDataSeeding.DbClient
                 string type = entityStructure.Attributes.ElementAt(i).Value;
 
                 builder.Append(separator)
-                       .Append(ConvertAttributeforSelect(attribute,type));
+                       .Append(ConvertAttribute(attribute,type));
                 separator = ", ";
             }
 
@@ -42,7 +41,7 @@ namespace TestDataSeeding.DbClient
                 string type = entityStructure.Attributes[entityStructure.PrimaryKeys[i]];
 
                 builder.Append(separator)
-                       .Append(ConvertAttributeforWhere(attribute, type))
+                       .Append('"').Append(attribute).Append('"').Append(" = ")
                        .Append(ConvertValue(primaryKeyValues[i], type));
                 separator = " AND ";
             }
@@ -68,7 +67,7 @@ namespace TestDataSeeding.DbClient
                 string type = entityStructure.Attributes.ElementAt(i).Value;
 
                 builder.Append(separator)
-                       .Append(ConvertAttributeforSelect(attribute, type));
+                       .Append(ConvertAttribute(attribute, type));
                 separator = ", ";
             }
             // FROM @TableName WHERE @KeyAttribute1 = @KeyValue1 AND @KeyAttributeN = @KeyValueN//
@@ -83,7 +82,7 @@ namespace TestDataSeeding.DbClient
                 string type = entityStructure.Attributes[keyValues.ElementAt(i).Key];
 
                 builder.Append(separator)
-                       .Append(ConvertAttributeforWhere(attribute, type))
+                       .Append('"').Append(attribute).Append('"').Append(" = ")
                        .Append(ConvertValue(keyValues.ElementAt(i).Value, type));
                 separator = " AND ";
             }
@@ -132,7 +131,7 @@ namespace TestDataSeeding.DbClient
                 string type = entityStructure.Attributes[entityStructure.PrimaryKeys[i]];
                 
                 builder.Append(separator)
-                       .Append(ConvertAttributeforWhere(attribute,type))
+                       .Append('"').Append(attribute).Append('"').Append(" = ")
                        .Append(ConvertValue(value,type));
 
                 separator = " AND ";
@@ -172,34 +171,52 @@ namespace TestDataSeeding.DbClient
         }
 
         /// <summary>
-        /// Prepares the <paramref name="attribute"/> for a select command.
+        /// Prepares the <paramref name="attribute"/> for a SELECT command.
         /// </summary>
         /// <param name="attribute">The attribute to be handled.</param>
         /// <param name="type">Type of the <paramref name="attribute"/>.</param>
         /// <returns>The attribte string for the SELECT <paramref name="attribute"/> command. </returns>
-        private string ConvertAttributeforSelect(string attribute, string type)
+        private string ConvertAttribute(string attribute, string type)
         {
             StringBuilder builder = new StringBuilder();
 
             string[] datetimes = { "date", "time", "datetime", "datetime2", "smalldatetime", "datetimeoffset" };
-            //if atribute is of a dateTime type we need to extract it as iso format
+            string[] binaries = { "binary", "varbinary" };
+            string image = "image";
+            string timestamp = "timestamp";
+
+            //CONVERT(VARCHAR(34), "@DatetimeAttribute", 126) AS "@DatetimeAttribute"
             if (datetimes.Contains(type))
             {
-                builder.Append("CONVERT(VARCHAR(34), ")
-                       .Append('"')
-                       .Append(attribute)
-                       .Append('"')
-                       .Append(", 126) AS ")
-                       .Append('"')
-                       .Append(attribute)
-                       .Append('"');
+                builder.Append("CONVERT(VARCHAR(34), ").Append('"').Append(attribute).Append('"')
+                       .Append(", 126) AS ").Append('"').Append(attribute).Append('"');
                 return builder.ToString();
             }
+            //CONVERT(VARCHAR(MAX), "@BinaryAttribute", 1) AS "@BinaryAttribute"
+            else if (binaries.Contains(type))
+            {
+                builder.Append("CONVERT(VARCHAR(MAX), ").Append('"').Append(attribute).Append('"')
+                       .Append(", 1) AS ").Append('"').Append(attribute).Append('"');
+                return builder.ToString();
+            }
+            //CONVERT(VARCHAR(MAX), CONVERT(VARBINARY(MAX), "@ImageAttribute", 1), 1) AS "@ImageAttribute"
+            else if (type == image)
+            {
+                builder.Append("CONVERT(VARCHAR(MAX), CONVERT(VARBINARY(MAX), ")
+                       .Append('"').Append(attribute).Append('"').Append(", 1), 1) AS ")
+                       .Append('"').Append(attribute).Append('"');
+                return builder.ToString();
+            }
+            //'null' AS "@TimestampAttribute"
+            else if (type == timestamp)
+            {
+                builder.Append("'null' AS ").Append('"').Append(attribute).Append('"');
+                return builder.ToString();
+            }
+            //"@OtherAttribute"
             else
             {
-                builder.Append('"')
-                       .Append(attribute)
-                       .Append('"');
+                builder.Append('"').Append(attribute).Append('"');
                 return builder.ToString();
             }
         }
@@ -250,35 +267,6 @@ namespace TestDataSeeding.DbClient
             {
                 return value;
             }
-        }
-
-        /// <summary>
-        /// Prepares the <paramref name="attribute"/> for a WHERE statement.
-        /// </summary>
-        /// <param name="attribute">The attribute to be handled.</param>
-        /// <param name="type">Type of the <paramref name="attribute"/>.</param>
-        /// <returns>The attribte string for the WHERE <paramref name="attribute"/> statement. </returns>
-        private string ConvertAttributeforWhere(string attribute, string type)
-        {
-            string[] deprecatedTypes = { "text", "ntext", "image" };
-
-            StringBuilder builder = new StringBuilder();
-            builder.Append('"')
-                   .Append(attribute)
-                   .Append('"');
-
-            //Attribute LIKE //
-            if (deprecatedTypes.Contains(type))
-            {
-                builder.Append(" LIKE ");
-            }
-            //Attribute = //
-            else
-            {
-                builder.Append(" = ");
-            }
-
-            return builder.ToString();
         }
     }
 }
