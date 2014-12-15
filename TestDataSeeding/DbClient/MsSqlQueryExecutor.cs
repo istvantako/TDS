@@ -2,8 +2,6 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
-using System.IO;
-using System.Diagnostics;
 using System.Collections.Generic;
 
 namespace TestDataSeeding.DbClient
@@ -11,6 +9,13 @@ namespace TestDataSeeding.DbClient
     internal class MsSqlQueryExecutor
     {
         private SqlConnection connection;
+        private log4net.ILog log;
+
+        internal MsSqlQueryExecutor()
+        {
+            log4net.Config.XmlConfigurator.Configure();
+            log = log4net.LogManager.GetLogger(typeof(MsSqlQueryExecutor));
+        }
 
         /// <summary>
         /// Opens the database connection.
@@ -47,7 +52,7 @@ namespace TestDataSeeding.DbClient
         /// <returns>An SqlDataReader with the result of the query</returns>
         internal SqlDataReader ExecuteQuery(string query)
         {
-            Log(query);
+            log.Info(query);
             try
             {
                 OpenConnection();
@@ -60,7 +65,7 @@ namespace TestDataSeeding.DbClient
                 CloseConnection();
                 if (e is SqlException)
                 {
-                    Log(e.Message);
+                    log.Fatal(e.Message);
                     throw new DbException(e.Message, e);
                 }
                 else
@@ -77,7 +82,7 @@ namespace TestDataSeeding.DbClient
         /// <returns>Number of rows affected</returns>
         internal int ExecuteNonQuery(string command)
         {
-            Log(command);
+            log.Info(command);
             try
             {
                 OpenConnection();
@@ -91,7 +96,7 @@ namespace TestDataSeeding.DbClient
                 CloseConnection();
                 if (e is SqlException)
                 {
-                    Log(e.Message);
+                    log.Fatal(e.Message);
                     throw new DbException(e.Message, e);
                 }
                 else
@@ -111,7 +116,7 @@ namespace TestDataSeeding.DbClient
             {
                 OpenConnection();
 
-                Log("Begin transaction.");
+                log.Info("Begin transaction.");
                 SqlCommand command = connection.CreateCommand();
                 SqlTransaction transaction;
 
@@ -130,7 +135,7 @@ namespace TestDataSeeding.DbClient
                     {
                         //execute statement
                         command.CommandText = statement;
-                        Log(statement);
+                        log.Info(statement);
                         rowsAffected = command.ExecuteNonQuery();
                         if (rowsAffected != 1)
                         {
@@ -140,14 +145,14 @@ namespace TestDataSeeding.DbClient
 
                     // Attempt to commit the transaction.
                     transaction.Commit();
-                    Log("Commit transaction.");
+                    log.Info("Commit transaction.");
                 }
                 catch
                 {
                     // Attempt to roll back the transaction. 
                     try
                     {
-                        Log("Rollback transaction.");
+                        log.Fatal("Rollback transaction.");
                         transaction.Rollback();
                         CloseConnection();
                     }
@@ -167,7 +172,7 @@ namespace TestDataSeeding.DbClient
                 CloseConnection();
                 if ((e is SqlException) || (e is DbException))
                 {
-                    Log(e.Message);
+                    log.Fatal(e.Message);
                     throw new DbException(e.Message, e);
                 }
                 //if not SqlException or DbException it has to connectionString format, or null Exception
@@ -175,25 +180,6 @@ namespace TestDataSeeding.DbClient
                 {
                     throw new DbException("Corrupt App config. Invalid connection string.", e);
                 }
-            }
-        }
-
-
-        /// <summary>
-        /// Appends the <paramref name="line"/> to the file specified in App.config as "DatabaseLogPath"
-        /// </summary>
-        /// <param name="line">The string to be appended.</param>
-        private void Log(String line)
-        {
-            try
-            {
-                StreamWriter file = new StreamWriter(ConfigurationManager.AppSettings["DatabaseLogPath"], true);
-                file.WriteLine(DateTime.Now + " " + line);
-                file.Close();
-            }
-            catch (Exception e)
-            {
-                throw new DbException("Corrupt App config. Invalid database logfile path.", e);
             }
         }
     }

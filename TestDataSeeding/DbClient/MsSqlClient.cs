@@ -6,7 +6,6 @@ using TestDataSeeding.Model;
 using System.Text;
 using System;
 using System.Linq;
-using System.Diagnostics;
 
 namespace TestDataSeeding.DbClient
 {
@@ -16,6 +15,13 @@ namespace TestDataSeeding.DbClient
         private MsSqlQueryExecutor queryExecutor = new MsSqlQueryExecutor();
         private MsSqlStructureBuilder structureBuilder = new MsSqlStructureBuilder();
         private List<string> transactionData = new List<string>();
+        private log4net.ILog log;
+
+        public MsSqlClient()
+        {
+            log4net.Config.XmlConfigurator.Configure();
+            log = log4net.LogManager.GetLogger(typeof(MsSqlQueryExecutor));
+        }
 
         public Entity GetEntity(EntityStructure entityStructure, List<string> primaryKeyValues)
         {
@@ -46,8 +52,12 @@ namespace TestDataSeeding.DbClient
                 dataReader.Close();
                 queryExecutor.CloseConnection();
             }
-            catch (DbException)
+            catch (Exception e)
             {
+                if ((e is SqlException))
+                {
+                    log.Fatal(e.Message);
+                }
                 throw;
             }
 
@@ -78,8 +88,12 @@ namespace TestDataSeeding.DbClient
                 dataReader.Close();
                 queryExecutor.CloseConnection();
             }
-            catch (DbException)
+            catch (Exception e)
             {
+                if ((e is SqlException))
+                {
+                    log.Fatal(e.Message);
+                }
                 throw;
             }
 
