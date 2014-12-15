@@ -7,51 +7,49 @@ Test Data Seeding
 
 Exact Numerics:
 
-	bit			        compatible
-	tinyint			    compatible
-	smallint		    compatible
-	int			        compatible
-	bigint			    compatible
-	decimal			    compatible
-	numeric			    compatible
-	smallmoney		    compatible
-	money			    compatible
+	bit			        compatible,PK
+	tinyint			    compatible,PK
+	smallint		    compatible,PK
+	int			        compatible,PK
+	bigint			    compatible,PK
+	decimal			    compatible,PK
+	numeric			    compatible,PK
+	smallmoney		    compatible,PK
+	money			    compatible,PK
 Approximate Numerics:
 
-	real			    compatible
-	float			    compatible
+	real			    compatible,PK
+	float			    compatible,PK
 Date and Time:
 
-	date			    compatible
-	time			    compatible
-	smalldatetime	    compatible
-	datetime		    compatible
-	datetime2		    compatible
-	datetimeoffset	    compatible
+	date			    compatible,PK
+	time			    compatible,PK
+	smalldatetime	    compatible,PK
+	datetime		    compatible,PK
+	datetime2		    compatible,PK
+	datetimeoffset	    compatible,PK
 Character Strings:
 
-	char			    compatible
-	varchar			    compatible
-	text			    compatible
+	char			    compatible,PK
+	varchar			    compatible,PK
+	text			    compatible	
 Unicode Character Strings:
 
-	nchar			    compatible
-	nvarchar		    compatible
+	nchar			    compatible,PK
+	nvarchar		    compatible,PK
 	ntext			    compatible
 Binary Strings:
 
-	binary 			    incompatible    -binary type, to be handled
-	varbinary		    incompatible    -binary type, to be handled
-	image			    incompatible    -binary type, to be handled
+	binary 			    compatible,PK
+	varbinary		    compatible,PK
+	image			    compatible
 Other Data Types:
 
-	uniqueidentifier	compatible
-	hierarchyid		    compatible
+	uniqueidentifier	compatible	PK
+	hierarchyid		    compatible	PK
 	sql_variant		    compatible
-	xml			        compatbile	    -note: if not primary key
-	geography		    compatible	    -note: if not primary key
-	geometry		    compatible	    -note: if not primary key
-	timestamp		    incompatible	-binary type, to be handled
-	cursor			    -
-	table			    -
+	xml			        compatbile
+	geography		    compatible
+	geometry		    compatible
+	timestamp		    compatible
 
