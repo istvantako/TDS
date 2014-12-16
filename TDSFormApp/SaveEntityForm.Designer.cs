@@ -34,6 +34,7 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.exitButton = new System.Windows.Forms.Button();
             this.overwrite_CheckBox = new System.Windows.Forms.CheckBox();
+            this.generateStructuresButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // panel1
@@ -100,11 +101,22 @@
             this.overwrite_CheckBox.Text = "Overwrite";
             this.overwrite_CheckBox.UseVisualStyleBackColor = true;
             // 
+            // generateStructuresButton
+            // 
+            this.generateStructuresButton.Location = new System.Drawing.Point(56, 426);
+            this.generateStructuresButton.Name = "generateStructuresButton";
+            this.generateStructuresButton.Size = new System.Drawing.Size(162, 23);
+            this.generateStructuresButton.TabIndex = 9;
+            this.generateStructuresButton.Text = "Generate database structure";
+            this.generateStructuresButton.UseVisualStyleBackColor = true;
+            this.generateStructuresButton.Click += new System.EventHandler(this.generateStructuresButton_Click);
+            // 
             // SaveEntityForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(470, 470);
+            this.Controls.Add(this.generateStructuresButton);
             this.Controls.Add(this.overwrite_CheckBox);
             this.Controls.Add(this.exitButton);
             this.Controls.Add(this.saveButton);
@@ -127,6 +139,7 @@
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.Button exitButton;
         private System.Windows.Forms.CheckBox overwrite_CheckBox;
+        private System.Windows.Forms.Button generateStructuresButton;
     }
 }
 

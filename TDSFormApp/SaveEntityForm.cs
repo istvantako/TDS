@@ -25,7 +25,8 @@ namespace TDSFormApp
         private bool[] changed;
         Label[] pk_label;
         TextBox[] pk_textbox;
-
+        ToolTip[] pk_tooltip;
+        //ToolTip saveButtonToolTip;
         public SaveEntityForm()
         {
             InitializeComponent();
@@ -39,6 +40,7 @@ namespace TDSFormApp
             {
                 entityCombobox.Items.Add(entity.Name);
             }
+            ToolTip saveButtonToolTip = new ToolTip();
         }
 
         
@@ -78,6 +80,8 @@ namespace TDSFormApp
                 pk_label[k].Text = pk_name;
                 pk_textbox[k].Name = k + "";
                 pk_textbox[k].TextChanged += new EventHandler(textBox_TextChanged);
+              
+                pk_tooltip[k].SetToolTip(this.pk_textbox[k], entityStructure.Attributes[pk_name] );
                 k++;
             }
         }
@@ -87,21 +91,58 @@ namespace TDSFormApp
             pk_label = new Label[n];
             pk_textbox = new TextBox[n];
             changed = new bool[n];
-
+            pk_tooltip = new ToolTip[n];
             for (int i = 0; i < n; i++)
             {
                 pk_label[i] = new Label();
                 pk_textbox[i] = new TextBox();
+                pk_tooltip[i] = new ToolTip();
                 changed[i] = new bool();
                 changed[i] = false;
             }
         }
+        private bool isValid(int id)
+        {
+            string type = entityStructure.Attributes[pk_label[id].Text];            
+            bool ok = true;
 
+            if (type.Equals("int")) 
+            {
+                string text = pk_textbox[id].Text;
+                
+                for (int i = 0; i < text.Length; i++)
+                {
+                    if (!text[i].Equals(".") && !char.IsDigit(text[i]))
+                    {
+                        ok = false;
+                    }
+                    
+                }
+            }
+
+            return ok;
+        }
+        private void createErrorMessage(int id)
+        {
+
+            //i'll do it... but now i got some unexpected errors 
+
+           // saveButtonToolTip.SetToolTip(this.saveButton,pk_panel[id].Text + "'s type is invalid.");
+        }
         private void textBox_TextChanged(object sender, EventArgs e)
         {
             int id = Int32.Parse(((TextBox)sender).Name);               //name of the primary key textbox
             if (((TextBox)sender).Text != "")
-                changed[id] = true;
+            {
+                if (isValid(id))
+                {
+                    changed[id] = true;
+                }
+                else
+                {
+                    createErrorMessage(id);
+                }
+            }
             else
             {
                 saveButton.Enabled = false;
@@ -116,6 +157,7 @@ namespace TDSFormApp
                 }
             }
             saveButton.Enabled = true;
+            
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -172,6 +214,21 @@ namespace TDSFormApp
         private void exitButton_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void generateStructuresButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                tdsClient.GenerateDatabaseStructure();
+                // ha az utvonalat is meg kellene adni, akkor jobb lenne egy menustripet hasznalni, mindket esetre kulon gomb
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

@@ -12,8 +12,8 @@ namespace TdsClientTesterApp
 {
     class Program
     {
-        [TdsLoadEntity("TableA", "1")]
-        [TdsLoadEntity("TableB", "1")]
+      //  [TdsLoadEntity("TableA", "1")]
+       // [TdsLoadEntity("TableB", "1")]
         static void TestAnnotation()
         {
             Console.WriteLine("TestAnnotation method.");
@@ -23,8 +23,8 @@ namespace TdsClientTesterApp
         {
             //TdsClient tds = new TdsClient(ConfigurationManager.AppSettings["TdsStoragePath"]);
             //TdsClient tds = new TdsClient("D:\\TDS");
-            TdsClient tds = new TdsClient("E:\\TDS");
-
+            TdsClient tds = new TdsClient("D:\\TDS");
+            tds.GenerateDatabaseStructure("D:\\TDS");
             //tds.GenerateDatabaseStructure();
             //tds.GetEntityStructures();
             //Console.WriteLine("Struktura generalas sikeres!");
@@ -33,15 +33,16 @@ namespace TdsClientTesterApp
             //var entity = new EntityWithKey("TableA", new List<string> { "3" });
             //entities.Add(entity);
 
-            var entities = new List<EntityWithKey>();
-            var entity = new EntityWithKey("Sales.SalesOrderHeader", new List<string> { "67339" });
-            entities.Add(entity);
+        //    var entities = new List<EntityWithKey>();
+           // var entity = new EntityWithKey("Sales.SalesOrderHeader", new List<string> { "67339" });
+          //  entities.Add(entity);
 
 
             //tds.SaveEntities(entities, "D:\\TDS");
             //Console.WriteLine("Mentes sikeres!");
 
-            tds.SaveEntities(entities, "E:\\TDS");
+           // tds.SaveEntities(entities, "E:\\TDS");
+
             Console.WriteLine("Mentes sikeres!");
 
 
