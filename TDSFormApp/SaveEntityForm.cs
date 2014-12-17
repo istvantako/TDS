@@ -20,7 +20,7 @@ namespace TDSFormApp
         private static EntityStructures entityStructures = new EntityStructures();
         private static EntityStructure entityStructure = new EntityStructure();
         private static EntityWithKey entity;
-        private static String path = System.Configuration.ConfigurationSettings.AppSettings["TdsStoragePath"];
+        private static String path = ConfigurationManager.AppSettings["TdsStoragePath"];
         private TdsClient tdsClient = new TdsClient(path);
         private bool[] changed;
         Label[] pk_label;
@@ -161,7 +161,7 @@ namespace TDSFormApp
                 tdsClient.SaveEntities(entities, overwrite_CheckBox.Checked);
                 MessageBox.Show("The given entity is saved.");
             }
-            catch (EntityAlreadySavedException ex)
+            catch (EntityAlreadySavedException)
             {
                 DialogResult result = MessageBox.Show("The entity with the given keys has already been saved.\nOverwrite?",
                                     "Already save",
