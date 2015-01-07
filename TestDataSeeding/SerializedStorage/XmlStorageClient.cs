@@ -151,6 +151,10 @@ namespace TestDataSeeding.SerializedStorage
 
         public void SaveEntityStructures(EntityStructures entityStructures, string path)
         {
+
+            if(File.Exists(path+"\\Structures.xml")){
+                throw new EntityStructureAlreadyExistsException();
+            }
             try
             {
                 Serialize<EntityStructures>(entityStructures, path + "\\Structures.xml");

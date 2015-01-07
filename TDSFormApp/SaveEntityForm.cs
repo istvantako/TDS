@@ -12,6 +12,7 @@ using TestDataSeeding.Logic;
 using TestDataSeeding.Model;
 using TestDataSeeding.Client;
 using System.Data;
+using TestDataSeeding.SerializedStorage;
 
 namespace TDSFormApp
 {
@@ -198,16 +199,19 @@ namespace TDSFormApp
                                     MessageBoxButtons.YesNo);
                 if (result == System.Windows.Forms.DialogResult.Yes)
                 {
-                    tdsClient.GenerateDatabaseStructure();
-                    MessageBox.Show("It is done.");
+                    try
+                    {
+                        tdsClient.GenerateDatabaseStructure();
+                    }
+                    catch (EntityStructureAlreadyExistsException exc)
+                    {
+                        MessageBox.Show(exc.Message);
+                    }
+                    catch (Exception exc)
+                    {
+                        throw exc;
+                    }
                 }
-                else
-                {
-                    MessageBox.Show("Generate aborted.");
-                    return;
-                }
-                
-               
 
             }
             catch (Exception ex)
