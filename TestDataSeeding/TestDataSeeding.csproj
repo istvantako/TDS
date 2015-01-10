@@ -74,6 +74,7 @@
     <Compile Include="DbClient\DbException.cs" />
     <Compile Include="DbClient\MsSqlQueryBuilder.cs" />
     <Compile Include="DbClient\MsSqlQueryExecutor.cs" />
+    <Compile Include="SerializedStorage\EntityStructureAlreadyExistsException.cs" />
     <Compile Include="SerializedStorage\SerializedStorageException.cs" />
     <Compile Include="SerializedStorage\XmlStorageClient.cs" />
   </ItemGroup>

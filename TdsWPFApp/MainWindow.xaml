@@ -1,0 +1,57 @@
+﻿<Window x:Class="TdsWPFApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:TdsWPFApp"
+        Title="EntitySaver" Height="300" Width="400" MinWidth="322" MinHeight="208">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Margin="5,5,5,5" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Entity:" FontSize="15" Grid.Column="0"/>
+            <!--local:Filtered-->
+            <ComboBox x:Name="ComboBoxEntities" IsEditable="True" Grid.Column="1" SelectionChanged="ComboBoxEntities_SelectionChanged">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <!--local:Filtered-->
+        </Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="1">
+            <ItemsControl Name="ItemsControlPrimaryKeys" KeyboardNavigation.IsTabStop="False">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid x:Name="Cica" Margin="5,5,5,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150" FrameworkElement.FlowDirection="LeftToRight" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Name}" />
+                            <TextBox Text="{Binding Value}" Grid.Column="1" ToolTip="{Binding Type}" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        <Grid Margin="0,0,0,0" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button x:Name="ButtonGenerateStructure" Grid.Column="0" Content="Generate database structure" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,0" Click="ButtonGenerateStructure_Click"/>
+            <Button x:Name="ButtonSave" Grid.Column="1" Content="Save" HorizontalAlignment="Center" VerticalAlignment="Top" Width="50" Margin="5,0" Click="ButtonSave_Click"/>
+            <Button x:Name="ButtonExit" Grid.Column="2" Content="Exit" HorizontalAlignment="Right" VerticalAlignment="Top" Width="50" Margin="5,0" Click="ButtonExit_Click"/>
+        </Grid>
+    </Grid>
+</Window>
