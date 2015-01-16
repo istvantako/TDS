@@ -18,11 +18,11 @@ namespace TDSFormApp
 {
     public partial class SaveEntityForm : Form
     {
-        private static EntityStructures entityStructures = new EntityStructures();
-        private static EntityStructure entityStructure = new EntityStructure();
+        private static EntityStructures entityStructures;
+        private static EntityStructure entityStructure;
         private static EntityWithKey entity;
         private static String path = ConfigurationManager.AppSettings["TdsStoragePath"];
-        private TdsClient tdsClient = new TdsClient(path);
+        private TdsClient tdsClient;
         private bool[] changed;
         Label[] pk_label;
         TDSFormTextbox[] pk_textbox;
@@ -37,6 +37,10 @@ namespace TDSFormApp
         {
             try
             {
+                entityStructures = new EntityStructures();
+                entityStructure = new EntityStructure();
+                tdsClient = new TdsClient(path);
+                entityCombobox.Items.Clear();
                 entityStructures = tdsClient.GetEntityStructures();
 
                 foreach (EntityStructure entity in entityStructures.Structures)
@@ -199,30 +203,35 @@ namespace TDSFormApp
         {
             try
             {
-                
-                DialogResult result = MessageBox.Show("If the database structure existed, it would be overwritten .\nOverwrite?",
-                                    "Already save",
-                                    MessageBoxButtons.YesNo);
-                if (result == System.Windows.Forms.DialogResult.Yes)
-                {
-                    try
-                    {
-                        tdsClient.GenerateDatabaseStructure();
-                    }
-                    catch (EntityStructureAlreadyExistsException exc)
-                    {
-                        MessageBox.Show(exc.Message);
-                    }
-                    catch (Exception exc)
-                    {
-                        throw exc;
-                    }
-                }
-
+                tdsClient.GenerateDatabaseStructure(false);
+                SaveEntityForm_Load(sender,e);
+                MessageBox.Show("Structure successfully generated.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                if (ex is EntityStructureAlreadyExistsException)
+                {
+                    DialogResult result = MessageBox.Show("An entityStructure already exists.\n" +
+                            "Proceed?", "GenerateStructure", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        try
+                        {
+                            tdsClient.GenerateDatabaseStructure(true);
+                            SaveEntityForm_Load(sender, e);
+                            MessageBox.Show("Structure successfully generated.");
+                        }
+                        catch (Exception exc)
+                        {
+                            MessageBox.Show("An exception occured:\n" + exc.Message);
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("An exception occured:\n" + ex.Message);
+                }
             }
         }
     }
