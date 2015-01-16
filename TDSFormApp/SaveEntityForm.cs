@@ -35,13 +35,19 @@ namespace TDSFormApp
 
         private void SaveEntityForm_Load(object sender, EventArgs e)
         {
-            entityStructures = tdsClient.GetEntityStructures();
-            
-            foreach (EntityStructure entity in entityStructures.Structures)
+            try
             {
-                entityCombobox.Items.Add(entity.Name);
+                entityStructures = tdsClient.GetEntityStructures();
+
+                foreach (EntityStructure entity in entityStructures.Structures)
+                {
+                    entityCombobox.Items.Add(entity.Name);
+                }
             }
-            
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
         }
 
         

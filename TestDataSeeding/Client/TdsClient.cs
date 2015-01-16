@@ -52,12 +52,12 @@ namespace TestDataSeeding.Client
         /// Loads an entity from the default path.
         /// </summary>
         /// <param name="entity">The entity identifier.</param>
-        public void LoadEntity(EntityWithKey entity)
+        public void LoadEntity(EntityWithKey entity, bool useLock = false)
         {
             List<EntityWithKey> entities = new List<EntityWithKey>();
             entities.Add(entity);
 
-            entityManager.LoadEntities(entities, defaultStoragePath);
+            entityManager.LoadEntities(entities, defaultStoragePath, useLock);
         }
 
         /// <summary>
@@ -65,12 +65,12 @@ namespace TestDataSeeding.Client
         /// </summary>
         /// <param name="entity">The entity identifier.</param>
         /// <param name="path">The path.</param>
-        public void LoadEntity(EntityWithKey entity, string path)
+        public void LoadEntity(EntityWithKey entity, string path, bool useLock = false)
         {
             List<EntityWithKey> entities = new List<EntityWithKey>();
             entities.Add(entity);
 
-            entityManager.LoadEntities(entities, path);
+            entityManager.LoadEntities(entities, path, useLock);
         }
 
         /// <summary>
@@ -78,12 +78,12 @@ namespace TestDataSeeding.Client
         /// </summary>
         /// <param name="entity">The entity identifier.</param>
         /// <param name="overwrite">If true, force overwrite, default is false.</param>
-        public void SaveEntity(EntityWithKey entity, bool overwrite = false)
+        public void SaveEntity(EntityWithKey entity, bool useLock = false, bool overwrite = false)
         {
             List<EntityWithKey> entities = new List<EntityWithKey>();
             entities.Add(entity);
 
-            entityManager.SaveEntities(entities, defaultStoragePath, overwrite);
+            entityManager.SaveEntities(entities, defaultStoragePath, useLock, overwrite);
         }
 
         /// <summary>
@@ -92,21 +92,21 @@ namespace TestDataSeeding.Client
         /// <param name="entity">The given entity identifier.</param>
         /// <param name="path">The path.</param>
         /// <param name="overwrite">If true, force overwrite, default is false.</param>
-        public void SaveEntity(EntityWithKey entity, string path, bool overwrite = false)
+        public void SaveEntity(EntityWithKey entity, string path, bool useLock = false, bool overwrite = false)
         {
             List<EntityWithKey> entities = new List<EntityWithKey>();
             entities.Add(entity);
 
-            entityManager.SaveEntities(entities, path, overwrite);
+            entityManager.SaveEntities(entities, path, useLock, overwrite);
         }
 
         /// <summary>
         /// Loads the given entities from the default path.
         /// </summary>
         /// <param name="entities">The list of entity identifiers.</param>
-        public void LoadEntities(List<EntityWithKey> entities)
+        public void LoadEntities(List<EntityWithKey> entities, bool useLock = false)
         {
-            entityManager.LoadEntities(entities, defaultStoragePath);
+            entityManager.LoadEntities(entities, defaultStoragePath, useLock);
         }
 
         /// <summary>
@@ -114,9 +114,9 @@ namespace TestDataSeeding.Client
         /// </summary>
         /// <param name="entities">The list of entity identifiers.</param>
         /// <param name="path">The path.</param>
-        public void LoadEntities(List<EntityWithKey> entities, string path)
+        public void LoadEntities(List<EntityWithKey> entities, string path, bool useLock = false)
         {
-            entityManager.LoadEntities(entities, path);
+            entityManager.LoadEntities(entities, path, useLock);
         }
 
         /// <summary>
@@ -124,9 +124,9 @@ namespace TestDataSeeding.Client
         /// </summary>
         /// <param name="entities">The list of entity identifiers.</param>
         /// <param name="overwrite">If true, force overwrite, default is false.</param>
-        public void SaveEntities(List<EntityWithKey> entities, bool overwrite = false)
+        public void SaveEntities(List<EntityWithKey> entities, bool useLock = false, bool overwrite = false)
         {
-            entityManager.SaveEntities(entities, defaultStoragePath, overwrite);
+            entityManager.SaveEntities(entities, defaultStoragePath, useLock, overwrite);
         }
 
         /// <summary>
@@ -135,9 +135,9 @@ namespace TestDataSeeding.Client
         /// <param name="entities">The list of entity identifiers.</param>
         /// <param name="path">The path.</param>
         /// <param name="overwrite">If true, force overwrite, default is false.</param>
-        public void SaveEntities(List<EntityWithKey> entities, string path, bool overwrite = false)
+        public void SaveEntities(List<EntityWithKey> entities, string path, bool useLock = false, bool overwrite = false)
         {
-            entityManager.SaveEntities(entities, path, overwrite);
+            entityManager.SaveEntities(entities, path, useLock, overwrite);
         }
 
         /// <summary>
