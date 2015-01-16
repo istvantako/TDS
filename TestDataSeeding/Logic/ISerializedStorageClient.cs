@@ -77,7 +77,7 @@ namespace TestDataSeeding.Logic
         /// </summary>
         /// <param name="entityStructures">The given EntityStructures collection.</param>
         /// <param name="path">The storage path where to save the collection.</param>
-        void SaveEntityStructures(EntityStructures entityStructures, string path);
+        void SaveEntityStructures(EntityStructures entityStructures, string path, bool overwrite);
 
         /// <summary>
         /// Returns the catalog with the associative entities from the given path.
