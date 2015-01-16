@@ -8,6 +8,7 @@ using System.Configuration;
 using TestDataSeeding.Client;
 using TestDataSeeding.Model;
 using TestDataSeeding.Logic;
+using TestDataSeeding.SerializedStorage;
 
 namespace TdsConsoleApp
 {
@@ -15,6 +16,7 @@ namespace TdsConsoleApp
     {
         private static EntityWithKey entity;
         private static string path = string.Empty;
+        private static bool save = true;
 
         /// <summary>
         /// Validates and sets the entity and path members based on the arguments.
@@ -23,7 +25,7 @@ namespace TdsConsoleApp
         /// <returns>Return true if the arguments were valid.</returns>
         private static bool ProcessInput(string[] args)
         {
-            if (args.Length < 2)
+            if (args.Length < 1)
             {
                 return false;
             }
@@ -31,6 +33,16 @@ namespace TdsConsoleApp
             string entityName;
             int startIndex = 1;
 
+            if (args[0].StartsWith("-genStructure"))
+            {
+                save = false;
+                return true;
+            }
+
+            if (args.Length < 2)
+            {
+                return false;
+            }
             if (args[0].StartsWith("-path="))
             {
                 path = args[0].Substring(6);
@@ -56,6 +68,45 @@ namespace TdsConsoleApp
             else
             {
                 return false;
+            }
+        }
+
+        private static void ExecuteGenerateCommand()
+        {
+            TdsClient tdsClient = new TdsClient(path);
+            try
+            {
+                tdsClient.GenerateDatabaseStructure();
+                Console.WriteLine("The Entity Structure is saved.");
+            }
+            catch (Exception ex)
+            {
+                if (ex is EntityStructureAlreadyExistsException)
+                {
+
+                    string answer = string.Empty;
+                    Console.WriteLine("An Entity Structure already exists.");
+                    while ((answer != "Y") && (answer != "N"))
+                    {
+                        Console.WriteLine("Overwrite? (Y/N)");
+                        answer = Console.ReadLine();
+
+                        switch (answer)
+                        {
+                            case "Y":
+                                tdsClient.GenerateDatabaseStructure(true);
+
+                                Console.WriteLine("The Entity Structure is saved.");
+                                break;
+                            case "N":
+                                Console.WriteLine("Save aborted.");
+                                break;
+                            default:
+                                Console.WriteLine("Unknown answer.");
+                                break;
+                        }
+                    }
+                }
             }
         }
 
@@ -126,8 +177,16 @@ namespace TdsConsoleApp
                     }
                 }
 
-                Console.Write("Executing save on entity: " + entity.ToString());
-                ExecuteSaveCommand();
+
+                if (save)
+                {
+                    Console.Write("Executing save on entity: " + entity.ToString());
+                    ExecuteSaveCommand();
+                }
+                else
+                {
+                    ExecuteGenerateCommand();
+                }
             }
             else
             {
@@ -135,6 +194,7 @@ namespace TdsConsoleApp
                 Console.WriteLine("Correct calls:");
                 Console.WriteLine("    entityName param1 <param2 ..>");
                 Console.WriteLine("    -path=targetPath entityName param1 <param2 ..>");
+                Console.WriteLine("    -genStructure");
             }
             Console.ReadLine();
         }
