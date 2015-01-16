@@ -118,7 +118,7 @@ namespace TdsWPFApp
         {
             try
             {
-                tdsClient.SaveEntities(entities, CheckBoxForceSave.IsChecked.Value);
+                tdsClient.SaveEntities(entities, overwrite: CheckBoxForceSave.IsChecked.Value);
                 MessageBox.Show("The given entity is saved.");
             }
             catch (EntityAlreadySavedException)
@@ -128,7 +128,7 @@ namespace TdsWPFApp
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    tdsClient.SaveEntities(entities, true);
+                    tdsClient.SaveEntities(entities, overwrite: true);
                     MessageBox.Show("The given entity is saved.");
                 }
                 else
