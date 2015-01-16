@@ -109,7 +109,7 @@ namespace TdsWPFApp
         {
             try
             {
-                tdsClient.SaveEntities(entities, false);
+                tdsClient.SaveEntities(entities, overwrite: false);
                 MessageBox.Show("The given entity is saved.");
             }
             catch (EntityAlreadySavedException)
@@ -119,7 +119,7 @@ namespace TdsWPFApp
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    tdsClient.SaveEntities(entities, true);
+                    tdsClient.SaveEntities(entities, overwrite: true);
                     MessageBox.Show("The given entity is saved.");
                 }
                 else

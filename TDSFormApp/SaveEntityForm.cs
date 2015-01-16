@@ -165,7 +165,7 @@ namespace TDSFormApp
         {
             try
             {
-                tdsClient.SaveEntities(entities, overwrite_CheckBox.Checked);
+                tdsClient.SaveEntities(entities, overwrite: overwrite_CheckBox.Checked);
                 MessageBox.Show("The given entity is saved.");
             }
             catch (EntityAlreadySavedException)
@@ -175,7 +175,7 @@ namespace TDSFormApp
                                     MessageBoxButtons.YesNo);
                 if (result == System.Windows.Forms.DialogResult.Yes)
                 {
-                    tdsClient.SaveEntities(entities, true);
+                    tdsClient.SaveEntities(entities, overwrite: true);
                     MessageBox.Show("The given entity is saved.");
                 }
                 else
