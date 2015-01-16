@@ -27,6 +27,11 @@ namespace TdsWPFApp
         {
             InitializeComponent();
 
+            initializeFormComponents();
+        }
+
+        private void initializeFormComponents()
+        {
             LoadData();
 
             TextBoxConnection.Text = connectionString;
@@ -83,10 +88,12 @@ namespace TdsWPFApp
         }
 
         private void ButtonGenerateStructure_Click(object sender, RoutedEventArgs e)
-        {
+        {       
             try
             {
-                tdsClient.GenerateDatabaseStructure();
+                tdsClient.GenerateDatabaseStructure(CheckBoxForceSave.IsChecked.Value);
+                initializeFormComponents();
+                MessageBox.Show("Structure successfully generated.");
             }
             catch (Exception ex)
             {
@@ -99,7 +106,9 @@ namespace TdsWPFApp
                     {
                         try
                         {
-                            tdsClient.GenerateDatabaseStructure();
+                            tdsClient.GenerateDatabaseStructure(true);
+                            initializeFormComponents();
+                            MessageBox.Show("Structure successfully generated.");
                         }
                         catch (Exception exc)
                         {

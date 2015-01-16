@@ -24,6 +24,6 @@ namespace TestDataSeeding.Client
         /// </summary>
         /// <param name="entityStructures">The given EntityStructures collection.</param>
         /// <param name="path">The storage path where to save the collection.</param>
-        void SaveEntityStructures(EntityStructures entityStructures, string path);
+        void SaveEntityStructures(EntityStructures entityStructures, string path, bool overwrite);
     }
 }

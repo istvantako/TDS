@@ -22,7 +22,7 @@ namespace TestDataSeeding.SerializedStorage
         /// The dictionary with the entities to save.
         /// </summary>
         private Dictionary<Entity, string> entitiesToSave = new Dictionary<Entity, string>();
-        
+
         public void BeginTransaction()
         {
             entitiesToSave.Clear();
@@ -32,7 +32,7 @@ namespace TestDataSeeding.SerializedStorage
         {
             List<string> savedEntities = new List<string>();
 
-            foreach(KeyValuePair<Entity, string> entry in entitiesToSave)
+            foreach (KeyValuePair<Entity, string> entry in entitiesToSave)
             {
                 try
                 {
@@ -149,10 +149,10 @@ namespace TestDataSeeding.SerializedStorage
             return entityStructures;
         }
 
-        public void SaveEntityStructures(EntityStructures entityStructures, string path)
+        public void SaveEntityStructures(EntityStructures entityStructures, string path, bool overwrite)
         {
-
-            if(File.Exists(path+"\\Structures.xml")){
+            if (!overwrite && File.Exists(path + "\\Structures.xml"))
+            {
                 throw new EntityStructureAlreadyExistsException();
             }
             try
@@ -311,7 +311,7 @@ namespace TestDataSeeding.SerializedStorage
                 Console.WriteLine(deserializer.ParsingErrors.ToString());
             }
 
-            return ((T) deserializedObject);
+            return ((T)deserializedObject);
         }
     }
 }

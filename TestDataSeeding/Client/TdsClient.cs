@@ -143,18 +143,18 @@ namespace TestDataSeeding.Client
         /// <summary>
         /// Generates the database structure to the default path.
         /// </summary>
-        public void GenerateDatabaseStructure()
+        public void GenerateDatabaseStructure(bool overwrite = false)
         {
-            serializedStorageStructureManager.SaveEntityStructures(dbStructureManager.GetDatabaseStructure(), defaultStoragePath);
+            serializedStorageStructureManager.SaveEntityStructures(dbStructureManager.GetDatabaseStructure(), defaultStoragePath, overwrite);
         }
 
         /// <summary>
         /// Generates the database structure to the given path.
         /// </summary>
         /// <param name="path">The path.</param>
-        public void GenerateDatabaseStructure(string path)
+        public void GenerateDatabaseStructure(string path, bool overwrite = false)
         {
-            serializedStorageStructureManager.SaveEntityStructures(dbStructureManager.GetDatabaseStructure(), path);
+            serializedStorageStructureManager.SaveEntityStructures(dbStructureManager.GetDatabaseStructure(), path, overwrite);
         }
 
         /// <summary>
@@ -180,9 +180,9 @@ namespace TestDataSeeding.Client
         /// Saves the entity structures to the default path.
         /// </summary>
         /// <param name="entityStructures">The given entity structures.</param>
-        public void SaveEntityStructures(EntityStructures entityStructures)
+        public void SaveEntityStructures(EntityStructures entityStructures, bool overwrite = false)
         {
-            serializedStorageStructureManager.SaveEntityStructures(entityStructures, defaultStoragePath);
+            serializedStorageStructureManager.SaveEntityStructures(entityStructures, defaultStoragePath, overwrite);
         }
 
         /// <summary>
@@ -190,9 +190,9 @@ namespace TestDataSeeding.Client
         /// </summary>
         /// <param name="entityStructures">The given entity structures.</param>
         /// <param name="path">The path.</param>
-        public void SaveEntityStructures(EntityStructures entityStructures, string path)
+        public void SaveEntityStructures(EntityStructures entityStructures, string path, bool overwrite = false)
         {
-            serializedStorageStructureManager.SaveEntityStructures(entityStructures, path);
+            serializedStorageStructureManager.SaveEntityStructures(entityStructures, path, overwrite);
         }
     }
 }
