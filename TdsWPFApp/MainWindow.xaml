@@ -55,7 +55,8 @@
                     <Label x:Name="LabelStoragePath"/>
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                     <DockPanel Margin="0,0,0,5">
-                        <CheckBox x:Name="CheckBoxForceSave" Content="Force Save" VerticalAlignment="Center" ToolTip="Overwrites existing saves without promting."/>
+                        <CheckBox x:Name="CheckBoxForceSave" Content="Force Save" VerticalAlignment="Center" ToolTip="Overwrites existing saves without promting." Margin="0,0,5,0"/>
+                        <CheckBox x:Name="CheckBoxLock" Content="Lock Save" VerticalAlignment="Center" ToolTip="Set to limit the depth of dependency savings in cicles to 1." HorizontalAlignment="Center"/>
                         <Button x:Name="ButtonGenerateStructure" Content="Generate database structure" Click="ButtonGenerateStructure_Click" Width="170" HorizontalAlignment="Right"/>
                     </DockPanel>
                 </StackPanel>
