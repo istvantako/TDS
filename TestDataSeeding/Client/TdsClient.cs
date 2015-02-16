@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,12 +37,15 @@ namespace TestDataSeeding.Client
         /// </summary>
         private string defaultStoragePath;
 
+        private string structFileName;
+
         /// <summary>
         /// Constructs a new instance of TdsClient.
         /// </summary>
-        public TdsClient(string defaultStoragePath)
+        public TdsClient(string defaultStoragePath, string structureFileName = Common.Consts.Structure.STRUCTURE_FILE_DEFAULT_NAME)
         {
             this.defaultStoragePath = defaultStoragePath;
+            structFileName = structureFileName;
 
             dbStructureManager = new MsSqlClient();
             serializedStorageStructureManager = new XmlStorageClient();
@@ -57,7 +61,7 @@ namespace TestDataSeeding.Client
             List<EntityWithKey> entities = new List<EntityWithKey>();
             entities.Add(entity);
 
-            entityManager.LoadEntities(entities, defaultStoragePath);
+            entityManager.LoadEntities(entities, defaultStoragePath, Path.Combine(defaultStoragePath, structFileName));
         }
 
         /// <summary>
@@ -70,7 +74,7 @@ namespace TestDataSeeding.Client
             List<EntityWithKey> entities = new List<EntityWithKey>();
             entities.Add(entity);
 
-            entityManager.LoadEntities(entities, path);
+            entityManager.LoadEntities(entities, path, Path.Combine(path, structFileName));
         }
 
         /// <summary>
@@ -83,7 +87,7 @@ namespace TestDataSeeding.Client
             List<EntityWithKey> entities = new List<EntityWithKey>();
             entities.Add(entity);
 
-            entityManager.SaveEntities(entities, defaultStoragePath, overwrite);
+            entityManager.SaveEntities(entities, defaultStoragePath, Path.Combine(defaultStoragePath, structFileName), overwrite);
         }
 
         /// <summary>
@@ -97,7 +101,7 @@ namespace TestDataSeeding.Client
             List<EntityWithKey> entities = new List<EntityWithKey>();
             entities.Add(entity);
 
-            entityManager.SaveEntities(entities, path, overwrite);
+            entityManager.SaveEntities(entities, path, Path.Combine(path, structFileName), overwrite);
         }
 
         /// <summary>
@@ -106,7 +110,7 @@ namespace TestDataSeeding.Client
         /// <param name="entities">The list of entity identifiers.</param>
         public void LoadEntities(List<EntityWithKey> entities)
         {
-            entityManager.LoadEntities(entities, defaultStoragePath);
+            entityManager.LoadEntities(entities, defaultStoragePath, Path.Combine(defaultStoragePath, structFileName));
         }
 
         /// <summary>
@@ -116,7 +120,7 @@ namespace TestDataSeeding.Client
         /// <param name="path">The path.</param>
         public void LoadEntities(List<EntityWithKey> entities, string path)
         {
-            entityManager.LoadEntities(entities, path);
+            entityManager.LoadEntities(entities, path, Path.Combine(path, structFileName));
         }
 
         /// <summary>
@@ -126,7 +130,7 @@ namespace TestDataSeeding.Client
         /// <param name="overwrite">If true, force overwrite, default is false.</param>
         public void SaveEntities(List<EntityWithKey> entities, bool overwrite = false)
         {
-            entityManager.SaveEntities(entities, defaultStoragePath, overwrite);
+            entityManager.SaveEntities(entities, defaultStoragePath, Path.Combine(defaultStoragePath, structFileName), overwrite);
         }
 
         /// <summary>
@@ -137,7 +141,7 @@ namespace TestDataSeeding.Client
         /// <param name="overwrite">If true, force overwrite, default is false.</param>
         public void SaveEntities(List<EntityWithKey> entities, string path, bool overwrite = false)
         {
-            entityManager.SaveEntities(entities, path, overwrite);
+            entityManager.SaveEntities(entities, path, Path.Combine(path, structFileName), overwrite);
         }
 
         /// <summary>
@@ -163,7 +167,7 @@ namespace TestDataSeeding.Client
         /// <returns>The entity structures from the default path.</returns>
         public EntityStructures GetEntityStructures()
         {
-            return serializedStorageStructureManager.GetEntityStructures(defaultStoragePath);
+            return serializedStorageStructureManager.GetEntityStructures(Path.Combine(defaultStoragePath, structFileName));
         }
 
         /// <summary>
@@ -173,7 +177,7 @@ namespace TestDataSeeding.Client
         /// <returns>the entity structures from the given path.</returns>
         public EntityStructures GetEntityStructures(string path)
         {
-            return serializedStorageStructureManager.GetEntityStructures(path);
+            return serializedStorageStructureManager.GetEntityStructures(Path.Combine(path, structFileName));
         }
 
         /// <summary>

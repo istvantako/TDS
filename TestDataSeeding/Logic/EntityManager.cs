@@ -63,12 +63,12 @@ namespace TestDataSeeding.Logic
             logger = new EntityManagerLogger();
         }
 
-        public void LoadEntities(List<EntityWithKey> entities, string path)
+        public void LoadEntities(List<EntityWithKey> entities, string storagePath, string path)
         {
             try
             {
                 entityStructures = serializedStorageClient.GetEntityStructures(path);
-                catalog = serializedStorageClient.GetCatalog(path);
+                catalog = serializedStorageClient.GetCatalog(storagePath);
 
                 logger.StartNewLog();
 
@@ -81,7 +81,7 @@ namespace TestDataSeeding.Logic
                         throw new TdsLogicException("The given entity/table name (" + entity.EntityName +") is not found.");
                     }
 
-                    InnerLoadEntity(entity.EntityName, entity.PrimaryKeyValues, path);
+                    InnerLoadEntity(entity.EntityName, entity.PrimaryKeyValues, storagePath);
                 }
 
                 dbClient.ExecuteTransaction();
@@ -290,12 +290,12 @@ namespace TestDataSeeding.Logic
             }
         }
 
-        public void SaveEntities(List<EntityWithKey> entities, string path, bool overwrite = false)
+        public void SaveEntities(List<EntityWithKey> entities, string storageFolder, string pathToStructure, bool overwrite = false)
         {
             try
             {
-                entityStructures = serializedStorageClient.GetEntityStructures(path);
-                catalog = serializedStorageClient.GetCatalog(path);
+                entityStructures = serializedStorageClient.GetEntityStructures(pathToStructure);
+                catalog = serializedStorageClient.GetCatalog(storageFolder);
                 serializedStorageClient.BeginTransaction();
 
                 logger.StartNewLog();
@@ -309,11 +309,11 @@ namespace TestDataSeeding.Logic
                         throw new TdsLogicException("The given entity/table name (" + entity.EntityName + ") is not found.");
                     }
 
-                    InnerSaveEntity(entity.EntityName, entity.PrimaryKeyValues, path, overwrite);
+                    InnerSaveEntity(entity.EntityName, entity.PrimaryKeyValues, storageFolder, overwrite);
                 }
 
                 serializedStorageClient.ExecuteTransaction();
-                serializedStorageClient.SaveCatalog(catalog, path);
+                serializedStorageClient.SaveCatalog(catalog, storageFolder);
             }
             catch (Exception exception)
             {
