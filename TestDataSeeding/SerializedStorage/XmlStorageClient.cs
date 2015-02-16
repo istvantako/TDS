@@ -10,6 +10,7 @@ using TestDataSeeding.Model;
 using TestDataSeeding.Logic;
 using TestDataSeeding.Client;
 using YAXLib;
+using TestDataSeeding.Common;
 
 namespace TestDataSeeding.SerializedStorage
 {
@@ -133,13 +134,13 @@ namespace TestDataSeeding.SerializedStorage
             return BuildFileName(entityName, primaryKeyValues, path);
         }
 
-        public EntityStructures GetEntityStructures(string path)
+        public EntityStructures GetEntityStructures(string pathToFile)
         {
             EntityStructures entityStructures = null;
 
             try
             {
-                entityStructures = Deserialize<EntityStructures>(path + "\\Structures.xml");
+                entityStructures = Deserialize<EntityStructures>(pathToFile);
             }
             catch (Exception exception)
             {
@@ -161,13 +162,13 @@ namespace TestDataSeeding.SerializedStorage
             }
         }
 
-        public EntityCatalog GetCatalog(string path)
+        public EntityCatalog GetCatalog(string storageFolder)
         {
             EntityCatalog catalog = null;
 
             try
             {
-                catalog = Deserialize<EntityCatalog>(path + "\\Catalog.xml");
+                catalog = Deserialize<EntityCatalog>(Path.Combine(storageFolder, Consts.Structure.STRUCTURE_FILE_DEFAULT_NAME));
             }
             catch (FileNotFoundException)
             {
