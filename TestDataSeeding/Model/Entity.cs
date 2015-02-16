@@ -44,6 +44,7 @@ namespace TestDataSeeding.Model
             this.AttributeValues = new Dictionary<string, string>();
         }
 
+        #region Overriden methods from Object
         /// <summary>
         /// Determines whether two object instances are equal.
         /// </summary>
@@ -156,5 +157,6 @@ namespace TestDataSeeding.Model
 
             return stringBuilder.ToString();
         }
+        #endregion
     }
 }
