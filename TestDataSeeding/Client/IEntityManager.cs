@@ -17,7 +17,7 @@ namespace TestDataSeeding.Client
         /// </summary>
         /// <param name="entities">The list of entities with their primary key values.</param>
         /// <param name="path">The path where the entities are stored.</param>
-        void LoadEntities(List<EntityWithKey> entities, string path);
+        void LoadEntities(List<EntityWithKey> entities, string storageFolder, string path);
 
         /// <summary>
         /// Saves the given entities and their dependencies.
@@ -25,6 +25,6 @@ namespace TestDataSeeding.Client
         /// <param name="entities">The list of entities with their primary key values.</param>
         /// <param name="path">The path where the entities are stored.</param>
         /// <param name="overwrite">If true, overwrite the already saved entities.</param>
-        void SaveEntities(List<EntityWithKey> entities, string path, bool overwrite = false);
+        void SaveEntities(List<EntityWithKey> entities, string storageFolder, string pathToStructure, bool overwrite = false);
     }
 }
