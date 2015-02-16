@@ -15,9 +15,9 @@ namespace TestDataSeeding.Client
         /// <summary>
         /// Returns an EntityStructures collection from the specified <paramref name="path"/>.
         /// </summary>
-        /// <param name="path">The path where the entity structures are stored.</param>
+        /// <param name="pathToFile">Path to file which contains the structure</param>
         /// <returns>An EntityStructures collection from the specified <paramref name="path"/>.</returns>
-        EntityStructures GetEntityStructures(string path);
+        EntityStructures GetEntityStructures(string pathToFile);
 
         /// <summary>
         /// Saves the given <paramref name="entityStructures"/> collection in the given <paramref name="path"/>.
