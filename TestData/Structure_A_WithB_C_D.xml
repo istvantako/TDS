@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<EntityStructures>
+  <Structures>
+    <EntityStructure Name="A">
+		<Attributes>
+			<Attribute AttributeName="Id" Type="numeric" />
+			<Attribute AttributeName="Name" Type="nchar" />
+			<Attribute AttributeName="B_Id" Type="numeric" />
+			<Attribute AttributeName="B_Id2" Type="numeric" />
+		</Attributes>
+		<PrimaryKeys>Id</PrimaryKeys>
+		<ForeignKeys>
+			<ForeignKey AttributeName="B_Id">
+				<Target>
+					<Name>B</Name>
+					<AttributeName>Id</AttributeName>
+				</Target>
+			</ForeignKey>
+			<ForeignKey AttributeName="B_Id2">
+				<Target>
+					<Name>B</Name>
+					<AttributeName>Id2</AttributeName>
+				</Target>
+			</ForeignKey>
+		</ForeignKeys>
+		<BelongsToMany />
+    </EntityStructure>
+    <EntityStructure Name="B">
+		<Attributes>
+			<Attribute AttributeName="Id" Type="numeric" />
+			<Attribute AttributeName="Id2" Type="numeric" />
+			<Attribute AttributeName="Name" Type="nchar" />
+		</Attributes>
+		<PrimaryKeys>Id, Id2</PrimaryKeys>
+		<ForeignKeys />
+		<BelongsToMany />
+    </EntityStructure>
+    <EntityStructure Name="C">
+		<Attributes>
+			<Attribute AttributeName="A_Id" Type="numeric" />
+			<Attribute AttributeName="Id" Type="numeric" />
+			<Attribute AttributeName="Id2" Type="numeric" />
+			<Attribute AttributeName="Name" Type="nchar" />
+			<Attribute AttributeName="D_Id" Type="numeric" />
+			<Attribute AttributeName="D_Id2" Type="numeric" />
+		</Attributes>
+		<PrimaryKeys>A_Id, Id, Id2</PrimaryKeys>
+		<ForeignKeys>
+			<ForeignKey AttributeName="A_Id">
+				<Target>
+					<Name>A</Name>
+					<AttributeName>Id</AttributeName>
+				</Target>
+			</ForeignKey>
+			<ForeignKey AttributeName="D_Id">
+				<Target>
+					<Name>D</Name>
+					<AttributeName>Id</AttributeName>
+				</Target>
+			</ForeignKey>
+			<ForeignKey AttributeName="D_Id2">
+				<Target>
+					<Name>D</Name>
+					<AttributeName>Id2</AttributeName>
+				</Target>
+			</ForeignKey>
+		</ForeignKeys>
+		<BelongsToMany />
+    </EntityStructure>
+    <EntityStructure Name="D">
+		<Attributes>
+			<Attribute AttributeName="Id" Type="numeric" />
+			<Attribute AttributeName="Id2" Type="numeric" />
+			<Attribute AttributeName="Name" Type="nchar" />
+		</Attributes>
+		<PrimaryKeys>Id, Id2</PrimaryKeys>
+		<ForeignKeys />
+		<BelongsToMany />
+    </EntityStructure>
+  </Structures>
+</EntityStructures>

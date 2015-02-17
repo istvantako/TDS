@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<EntityStructures>
+  <Structures>
+    <EntityStructure Name="A">
+		<Attributes>
+			<Attribute AttributeName="Id" Type="numeric" />
+			<Attribute AttributeName="Name" Type="nchar" />
+			<Attribute AttributeName="B_Id" Type="numeric" />
+			<Attribute AttributeName="B_Id2" Type="numeric" />
+		</Attributes>
+		<PrimaryKeys>Id</PrimaryKeys>
+		<ForeignKeys />
+		<BelongsToMany />
+    </EntityStructure>
+  </Structures>
+</EntityStructures>
