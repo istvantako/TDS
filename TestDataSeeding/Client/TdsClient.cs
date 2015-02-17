@@ -56,12 +56,12 @@ namespace TestDataSeeding.Client
         /// Loads an entity from the default path.
         /// </summary>
         /// <param name="entity">The entity identifier.</param>
-        public void LoadEntity(EntityWithKey entity)
+        public void LoadEntity(EntityWithKey entity, bool useLock = false)
         {
             List<EntityWithKey> entities = new List<EntityWithKey>();
             entities.Add(entity);
 
-            entityManager.LoadEntities(entities, defaultStoragePath, Path.Combine(defaultStoragePath, structFileName));
+            entityManager.LoadEntities(entities, defaultStoragePath, Path.Combine(defaultStoragePath, structFileName), useLock);
         }
 
         /// <summary>
@@ -69,12 +69,12 @@ namespace TestDataSeeding.Client
         /// </summary>
         /// <param name="entity">The entity identifier.</param>
         /// <param name="path">The path.</param>
-        public void LoadEntity(EntityWithKey entity, string path)
+        public void LoadEntity(EntityWithKey entity, string path, bool useLock = false)
         {
             List<EntityWithKey> entities = new List<EntityWithKey>();
             entities.Add(entity);
 
-            entityManager.LoadEntities(entities, path, Path.Combine(path, structFileName));
+            entityManager.LoadEntities(entities, path, Path.Combine(path, structFileName), useLock);
         }
 
         /// <summary>
@@ -82,12 +82,12 @@ namespace TestDataSeeding.Client
         /// </summary>
         /// <param name="entity">The entity identifier.</param>
         /// <param name="overwrite">If true, force overwrite, default is false.</param>
-        public void SaveEntity(EntityWithKey entity, bool overwrite = false)
+        public void SaveEntity(EntityWithKey entity, bool useLock = false, bool overwrite = false)
         {
             List<EntityWithKey> entities = new List<EntityWithKey>();
             entities.Add(entity);
 
-            entityManager.SaveEntities(entities, defaultStoragePath, Path.Combine(defaultStoragePath, structFileName), overwrite);
+            entityManager.SaveEntities(entities, defaultStoragePath, Path.Combine(defaultStoragePath, structFileName), useLock, overwrite);
         }
 
         /// <summary>
@@ -96,21 +96,21 @@ namespace TestDataSeeding.Client
         /// <param name="entity">The given entity identifier.</param>
         /// <param name="path">The path.</param>
         /// <param name="overwrite">If true, force overwrite, default is false.</param>
-        public void SaveEntity(EntityWithKey entity, string path, bool overwrite = false)
+        public void SaveEntity(EntityWithKey entity, string path, bool useLock = false, bool overwrite = false)
         {
             List<EntityWithKey> entities = new List<EntityWithKey>();
             entities.Add(entity);
 
-            entityManager.SaveEntities(entities, path, Path.Combine(path, structFileName), overwrite);
+            entityManager.SaveEntities(entities, path, Path.Combine(path, structFileName), useLock, overwrite);
         }
 
         /// <summary>
         /// Loads the given entities from the default path.
         /// </summary>
         /// <param name="entities">The list of entity identifiers.</param>
-        public void LoadEntities(List<EntityWithKey> entities)
+        public void LoadEntities(List<EntityWithKey> entities, bool useLock = false)
         {
-            entityManager.LoadEntities(entities, defaultStoragePath, Path.Combine(defaultStoragePath, structFileName));
+            entityManager.LoadEntities(entities, defaultStoragePath, Path.Combine(defaultStoragePath, structFileName), useLock);
         }
 
         /// <summary>
@@ -118,9 +118,9 @@ namespace TestDataSeeding.Client
         /// </summary>
         /// <param name="entities">The list of entity identifiers.</param>
         /// <param name="path">The path.</param>
-        public void LoadEntities(List<EntityWithKey> entities, string path)
+        public void LoadEntities(List<EntityWithKey> entities, string path, bool useLock = false)
         {
-            entityManager.LoadEntities(entities, path, Path.Combine(path, structFileName));
+            entityManager.LoadEntities(entities, path, Path.Combine(path, structFileName), useLock);
         }
 
         /// <summary>
@@ -128,9 +128,9 @@ namespace TestDataSeeding.Client
         /// </summary>
         /// <param name="entities">The list of entity identifiers.</param>
         /// <param name="overwrite">If true, force overwrite, default is false.</param>
-        public void SaveEntities(List<EntityWithKey> entities, bool overwrite = false)
+        public void SaveEntities(List<EntityWithKey> entities, bool useLock = false, bool overwrite = false)
         {
-            entityManager.SaveEntities(entities, defaultStoragePath, Path.Combine(defaultStoragePath, structFileName), overwrite);
+            entityManager.SaveEntities(entities, defaultStoragePath, Path.Combine(defaultStoragePath, structFileName), useLock, overwrite);
         }
 
         /// <summary>
@@ -139,26 +139,26 @@ namespace TestDataSeeding.Client
         /// <param name="entities">The list of entity identifiers.</param>
         /// <param name="path">The path.</param>
         /// <param name="overwrite">If true, force overwrite, default is false.</param>
-        public void SaveEntities(List<EntityWithKey> entities, string path, bool overwrite = false)
+        public void SaveEntities(List<EntityWithKey> entities, string path, bool useLock = false, bool overwrite = false)
         {
-            entityManager.SaveEntities(entities, path, Path.Combine(path, structFileName), overwrite);
+            entityManager.SaveEntities(entities, path, Path.Combine(path, structFileName), useLock, overwrite);
         }
 
         /// <summary>
         /// Generates the database structure to the default path.
         /// </summary>
-        public void GenerateDatabaseStructure()
+        public void GenerateDatabaseStructure(bool overwrite = false)
         {
-            serializedStorageStructureManager.SaveEntityStructures(dbStructureManager.GetDatabaseStructure(), defaultStoragePath);
+            serializedStorageStructureManager.SaveEntityStructures(dbStructureManager.GetDatabaseStructure(), defaultStoragePath, overwrite);
         }
 
         /// <summary>
         /// Generates the database structure to the given path.
         /// </summary>
         /// <param name="path">The path.</param>
-        public void GenerateDatabaseStructure(string path)
+        public void GenerateDatabaseStructure(string path, bool overwrite = false)
         {
-            serializedStorageStructureManager.SaveEntityStructures(dbStructureManager.GetDatabaseStructure(), path);
+            serializedStorageStructureManager.SaveEntityStructures(dbStructureManager.GetDatabaseStructure(), path, overwrite);
         }
 
         /// <summary>
@@ -184,9 +184,9 @@ namespace TestDataSeeding.Client
         /// Saves the entity structures to the default path.
         /// </summary>
         /// <param name="entityStructures">The given entity structures.</param>
-        public void SaveEntityStructures(EntityStructures entityStructures)
+        public void SaveEntityStructures(EntityStructures entityStructures, bool overwrite = false)
         {
-            serializedStorageStructureManager.SaveEntityStructures(entityStructures, defaultStoragePath);
+            serializedStorageStructureManager.SaveEntityStructures(entityStructures, defaultStoragePath, overwrite);
         }
 
         /// <summary>
@@ -194,9 +194,9 @@ namespace TestDataSeeding.Client
         /// </summary>
         /// <param name="entityStructures">The given entity structures.</param>
         /// <param name="path">The path.</param>
-        public void SaveEntityStructures(EntityStructures entityStructures, string path)
+        public void SaveEntityStructures(EntityStructures entityStructures, string path, bool overwrite = false)
         {
-            serializedStorageStructureManager.SaveEntityStructures(entityStructures, path);
+            serializedStorageStructureManager.SaveEntityStructures(entityStructures, path, overwrite);
         }
     }
 }
