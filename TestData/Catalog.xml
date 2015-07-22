@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<EntityCatalog>
+  <CatalogItems>
+    <EntityCatalogItem EntityName="E">
+      <PrimaryKeyValues>
+        <KeyValuePair Key="B_Id" Value="5.00" />
+        <KeyValuePair Key="B_Id2" Value="1.00" />
+        <KeyValuePair Key="D_Id" Value="5.00" />
+        <KeyValuePair Key="D_Id2" Value="1.00" />
+        <KeyValuePair Key="Id" Value="1.00" />
+      </PrimaryKeyValues>
+      <Filename>..\..\..\TestData\Entities\E_5.00_1.00_5.00_1.00_1.00.xml</Filename>
+    </EntityCatalogItem>
+  </CatalogItems>
+</EntityCatalog>

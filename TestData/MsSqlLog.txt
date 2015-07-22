@@ -1,0 +1,2 @@
+﻿2015-01-04 15:08:55,632 INFO  - SELECT "Id", "Name", "MT_Id", "MT_Version" FROM M WHERE "Id" = 1
+2015-01-04 15:10:07,943 INFO  - SELECT "Id", "Name", "MT_Id", "MT_Version" FROM M WHERE "Id" = 1

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<Entity Name="E">
+  <AttributeValues>
+    <Attribute AttributeName="B_Id" Value="5.00" />
+    <Attribute AttributeName="B_Id2" Value="1.00" />
+    <Attribute AttributeName="D_Id" Value="5.00" />
+    <Attribute AttributeName="D_Id2" Value="1.00" />
+    <Attribute AttributeName="Id" Value="1.00" />
+  </AttributeValues>
+</Entity>
