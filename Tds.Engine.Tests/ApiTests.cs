@@ -1,10 +1,9 @@
-﻿using System;
+﻿using System.Linq;
 using System.Collections.Generic;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 
-using Tds.Engine;
 using Tds.Interaces;
 using Tds.Interaces.Database;
 using Tds.Interaces.Structure;
@@ -18,24 +17,24 @@ namespace Tds.Engine.Tests
     {
         [TestMethod]
         [ExpectedException(typeof(EntityStructureNotFoundException))]
-        public void Save_EntityDoesNotExist_ThrowsException()
+        public void Backup_EntityDoesNotExist_ThrowsException()
         {
             // Arrange
             var entityName = "testEntity";
 
-            var structureProvider = Substitute.For<IStructureProvider>();
+            var structureProvider = GetStructureProviderMock();
 
             var api = new Api(structureProvider);
 
             // Act
-            api.Save(entityName, "");
+            api.Backup(entityName, "");
 
             // Assert
         }
 
         [TestMethod]
         [ExpectedException(typeof(EntityNotFoundInDatabaseException))]
-        public void Save_EntityWithOneKeyDoesntExist_ThrowsException()
+        public void Backup_EntityWithOneKeyDoesntExist_ThrowsException()
         {
             // Arrange
             var entityName = "testEntity";
@@ -43,33 +42,22 @@ namespace Tds.Engine.Tests
             var entityKey = 10;
 
             #region Prepare structure provider
-            var structureProvider = Substitute.For<IStructureProvider>();
-            structureProvider.GetEntityStructure(entityName).Returns(new EntityStructure()
-            {
-                Keys = new KeyStructure[] 
-                    { 
-                        new KeyStructure()
-                        {
-                            Sequence = 0,
-                            Name = entityKeyName,
-                            Type = DataType.Integer
-                        }
-                    }
-            });
+            EntityStructure structure;
+            var structureProvider = GetStructureProviderMock_GetEntityStructure(entityName, out structure, entityKeyName);
             #endregion
 
-            var databaseProvider = Substitute.For<IDatabaseProvider>();
+            var productionStorageProvider = Substitute.For<IStorageProvider>();
 
-            var api = new Api(structureProvider, databaseProvider);
+            var api = new Api(structureProvider, productionStorageProvider);
 
             // Act
-            api.Save(entityName, entityKey.ToString());
+            api.Backup(entityName, entityKey.ToString());
 
             // Assert
         }
 
         [TestMethod]
-        public void Save_EntityWithOneKeyWithNoDependencies_SavesEntity()
+        public void Backup_EntityWithOneKeyWithNoDependencies_BackupEntity()
         {
             // Arrange
             var entityName = "testEntity";
@@ -80,60 +68,54 @@ namespace Tds.Engine.Tests
                 Name = entityName,
                 Properties = new Dictionary<string,object>() { { entityKeyName, entityKey } }
             };
-            var keys = new KeyStructure[] 
-                    { 
-                        new KeyStructure()
-                        {
-                            Sequence = 0,
-                            Name = entityKeyName,
-                            Type = DataType.Integer
-                        }
-                    };
 
             #region Prepare structure provider
-            var structureProvider = Substitute.For<IStructureProvider>();
-            var entityStructure = new EntityStructure()
-            {
-                Keys = keys
-            };
-            structureProvider.GetEntityStructure(entityName).Returns(entityStructure);
+            EntityStructure structure;
+            var structureProvider = GetStructureProviderMock_GetEntityStructure(entityName, out structure, entityKeyName);
             #endregion
 
-            #region Prepare database provider
-            var databaseProvider = Substitute.For<IDatabaseProvider>();
-            databaseProvider
-                .GetEntities(entityName, Arg.Is<EntityKey>(x => x.Name == entityKeyName && x.Value.Equals(entityKey)))
-                .Returns(new List<Entity>() { new Entity() { Name = entityName } });
+            #region Prepare production storage provider
+            var productionStorageProvider = Substitute.For<IStorageProvider>();
+            productionStorageProvider
+                .Read(entityName, Arg.Is<IEnumerable<EntityKey>>(x => x.Count() == 1 &&
+                                                                        x.Any(y => y.Name == entityKeyName && 
+                                                                                y.Value.Equals(entityKey))), structure)
+                .Returns(entity);
             #endregion
 
-            #region Prepare file storage provider
-            var fileStorageProvider = Substitute.For<IFileStorageProvider>();
-            fileStorageProvider.
-                Get(entityName, Arg.Is<List<object>>(x => x.Count == 1 && x[0] == entityKey.ToString())).
-                Returns(new Entity());
+            #region Prepare backup storage provider
+            var backupStorageProvider = Substitute.For<IStorageProvider>();
+            backupStorageProvider.
+                Write(entity, Arg.Is<IEnumerable<EntityKey>>(x => x.Count() == 1 &&
+                                                            x.Any(y => y.Name == entityKeyName &&
+                                                                        y.Value.Equals(entityKey))), structure);
             #endregion
 
-            var api = new Api(structureProvider, databaseProvider, fileStorageProvider);
+            var api = new Api(structureProvider, productionStorageProvider, backupStorageProvider);
 
             // Act
-            api.Save(entityName, entityKey.ToString());
+            api.Backup(entityName, entityKey.ToString());
 
             // Assert
             structureProvider.
                 Received().
                 GetEntityStructure(entityName);
-            databaseProvider.
+            productionStorageProvider.
                 Received().
-                GetEntities(entityName, Arg.Is<EntityKey>(x => x.Name == entityKeyName && x.Value.Equals(entityKey)));
-            fileStorageProvider.
+                Read(entityName, Arg.Is<IEnumerable<EntityKey>>(x => x.Count() == 1 &&
+                                                                        x.Any(y => y.Name == entityKeyName &&
+                                                                                y.Value.Equals(entityKey))), structure);
+            backupStorageProvider.
                 Received().
-                Save(entity,
-                    Arg.Is<List<EntityKey>>(x => x.Count == 1 && x[0].Name == entityKeyName && x[0].Value.Equals(entityKey)),
-                    entityStructure);
+                Write(entity,
+                    Arg.Is<IEnumerable<EntityKey>>(x => x.Count() == 1 && 
+                                                    x.Any(y => y.Name == entityKeyName && 
+                                                            y.Value.Equals(entityKey))),
+                    structure);
         }
 
         [TestMethod]
-        public void Save_EntityWithTwoKeysWithNoDependencies_SavesEntity()
+        public void Backup_EntityWithTwoKeysWithNoDependencies_BackupEntity()
         {
             // Arrange
             var entityName = "testEntity";
@@ -142,46 +124,112 @@ namespace Tds.Engine.Tests
             var entityKey1 = 10;
             var entityKey2 = "turoo";
 
+            var entity = new Entity() { Name = entityName, Properties = new Dictionary<string, object>() };
+
             #region Prepare structure provider
-            var structureProvider = Substitute.For<IStructureProvider>();
-            structureProvider.GetEntityStructure(entityName).Returns(new EntityStructure()
+            EntityStructure structure;
+            var structureProvider = GetStructureProviderMock_GetEntityStructure(entityName, out structure, 
+                entityKeyName1, DataType.Integer, entityKeyName2, DataType.String);
+            #endregion
+
+            #region Prepare production storage provider
+            var productionStorageProvider = Substitute.For<IStorageProvider>();
+            productionStorageProvider
+                .Read(entityName,
+                        Arg.Is<IEnumerable<EntityKey>>(x => x.Count() == 2 &&
+                                                                x.Any(y => y.Name == entityKeyName1 && y.Value.Equals(entityKey1)) &&
+                                                                x.Any(y => y.Name == entityKeyName2 && y.Value.Equals(entityKey2))),
+                        structure)
+                .Returns(entity);
+            #endregion
+
+            #region Prepare backup storage provider
+            var backupStorageProvider = Substitute.For<IStorageProvider>();
+            backupStorageProvider
+                .Write(entity,
+                        Arg.Is<IEnumerable<EntityKey>>(x => x.Count() == 2 &&
+                                                                x.Any(y => y.Name == entityKeyName1 && y.Value.Equals(entityKey1)) &&
+                                                                x.Any(y => y.Name == entityKeyName2 && y.Value.Equals(entityKey2))),
+                        structure);
+            #endregion
+
+            var api = new Api(structureProvider, productionStorageProvider, backupStorageProvider);
+
+            // Act
+            api.Backup(entityName, entityKey1.ToString(), entityKey2);
+
+            // Assert
+            productionStorageProvider.Received().Read(entityName,
+                        Arg.Is<IEnumerable<EntityKey>>(x => x.Count() == 2 &&
+                                                                x.Any(y => y.Name == entityKeyName1 && y.Value.Equals(entityKey1)) &&
+                                                                x.Any(y => y.Name == entityKeyName2 && y.Value.Equals(entityKey2))),
+                                            structure);
+
+            backupStorageProvider.Received().Write(entity,
+                        Arg.Is<IEnumerable<EntityKey>>(x => x.Count() == 2 &&
+                                                                x.Any(y => y.Name == entityKeyName1 && y.Value.Equals(entityKey1)) &&
+                                                                x.Any(y => y.Name == entityKeyName2 && y.Value.Equals(entityKey2))),
+                                            structure);
+        }
+
+        #region Private methods (helpers)
+        private IStructureProvider GetStructureProviderMock()
+        {
+            return Substitute.For<IStructureProvider>();
+        }
+
+        private IStructureProvider GetStructureProviderMock_GetEntityStructure(string entityName, out EntityStructure structure,
+            string name, DataType type = DataType.Integer)
+        {
+            structure = new EntityStructure()
             {
                 Keys = new KeyStructure[] 
                     { 
                         new KeyStructure()
                         {
                             Sequence = 0,
-                            Name = entityKeyName1,
-                            Type = DataType.Integer
-                        },
+                            Name = name,
+                            Type = type
+                        }
+                    }
+            };
+
+            var mock = GetStructureProviderMock();
+            mock.GetEntityStructure(entityName).Returns(structure);
+
+            return mock;
+        }
+
+        private IStructureProvider GetStructureProviderMock_GetEntityStructure(string entityName, out EntityStructure structure,
+                    string name1, DataType type1,
+                    string name2, DataType type2 = DataType.Integer)
+        {
+            structure = new EntityStructure()
+            {
+                Keys = new KeyStructure[] 
+                    { 
+                        new KeyStructure()
+                        {
+                            Sequence = 0,
+                            Name = name1,
+                            Type = type1
+                        },                        
                         new KeyStructure()
                         {
                             Sequence = 1,
-                            Name = entityKeyName2,
-                            Type = DataType.String
+                            Name = name2,
+                            Type = type2
                         }
                     }
-            });
-            #endregion
+            };
 
-            #region Prepare database provider
-            var databaseProvider = Substitute.For<IDatabaseProvider>();
-            databaseProvider
-                .GetEntities(entityName,
-                                Arg.Is<EntityKey>(x => x.Name == entityKeyName1 && x.Value.Equals(entityKey1)),
-                                Arg.Is<EntityKey>(x => x.Name == entityKeyName2 && x.Value.Equals(entityKey2)))
-                .Returns(new List<Entity>() { new Entity() { Name = entityName } });
-            #endregion
+            var mock = GetStructureProviderMock();
+            mock.GetEntityStructure(entityName).Returns(structure);
 
-            var api = new Api(structureProvider, databaseProvider);
-
-            // Act
-            api.Save(entityName, entityKey1.ToString(), entityKey2);
-
-            // Assert
-            databaseProvider.Received().GetEntities(entityName,
-                Arg.Is<EntityKey>(x => x.Name == entityKeyName1 && x.Value.Equals(entityKey1)),
-                Arg.Is<EntityKey>(x => x.Name == entityKeyName2 && x.Value.Equals(entityKey2)));
+            return mock;
         }
+
+
+        #endregion
     }
 }

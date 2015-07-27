@@ -12,30 +12,23 @@ namespace Tds.Engine
     {
         #region Private fields
         private IStructureProvider _structureProvider;
-        private IDatabaseProvider _databaseProvider;
+        private IStorageProvider _productionStorageProvider;
+        private IStorageProvider _backupStorageProvider;
         #endregion
 
         #region Constructurs
-        public Api(IStructureProvider structureProvider, IDatabaseProvider databaseProvider, IFileStorageProvider fileStorageProvider)
+        public Api(IStructureProvider structureProvider = null, 
+            IStorageProvider productionStorageProvide = null,
+            IStorageProvider backupStorageProvider = null)
         {
             _structureProvider = structureProvider;
-            _databaseProvider = databaseProvider;
-        }
-
-        public Api(IStructureProvider structureProvider, IDatabaseProvider databaseProvider)
-        {
-            _structureProvider = structureProvider;
-            _databaseProvider = databaseProvider;
-        }
-
-        public Api(IStructureProvider structureProvider)
-        {
-            _structureProvider = structureProvider;
+            _productionStorageProvider = productionStorageProvide;
+            _backupStorageProvider = backupStorageProvider;
         }
         #endregion
 
         #region Public methods
-        public void Save(string entityName, params string[] keys)
+        public void Backup(string entityName, params string[] keys)
         {
             // ==================================
             // Get entity structure
@@ -50,12 +43,17 @@ namespace Tds.Engine
             // Get entity from database
             // ==================================
             var entityKeys = GetEntityKeys(entityStructure.Keys, keys);
-            var entityFromDatabase = _databaseProvider.GetEntities(entityName, entityKeys);
+            var entityFromDatabase = _productionStorageProvider.Read(entityName, entityKeys, entityStructure);
             if (entityFromDatabase == null) 
             {
                 throw new EntityNotFoundInDatabaseException(entityName, 
                     entityKeys.ToDictionary(x => x.Name, x => x.Value.ToString()));
             }
+
+            // ==================================
+            // Save entity into a file
+            // ==================================
+            _backupStorageProvider.Write(entityFromDatabase, entityKeys, entityStructure);
         }
         #endregion
 
