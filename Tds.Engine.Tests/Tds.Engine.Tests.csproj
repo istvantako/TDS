@@ -66,9 +66,9 @@
       <Project>{5c4ba125-6f2f-42d4-992a-8ddbe07f95d7}</Project>
       <Name>Tds.Engine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tds.Interaces\Tds.Interaces.csproj">
+    <ProjectReference Include="..\Tds.Interfaces\Tds.Interfaces.csproj">
       <Project>{f8cb8e0b-a695-4368-8e22-838d3a5aa0ec}</Project>
-      <Name>Tds.Interaces</Name>
+      <Name>Tds.Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tds.Types\Tds.Types.csproj">
       <Project>{dbb10a77-aeec-4c64-87e1-e5996e372028}</Project>

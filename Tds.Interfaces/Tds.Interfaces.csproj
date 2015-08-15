@@ -7,8 +7,8 @@
     <ProjectGuid>{F8CB8E0B-A695-4368-8E22-838D3A5AA0EC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tds.Interaces</RootNamespace>
-    <AssemblyName>Tds.Interaces</AssemblyName>
+    <RootNamespace>Tds.Interfaces</RootNamespace>
+    <AssemblyName>Tds.Interfaces</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDataSeeding", "TestDataSeeding\TestDataSeeding.csproj", "{ABF18B9D-1FC0-4506-B4F2-13CF085A79AB}"
 EndProject
@@ -16,8 +16,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDSFormApp", "TDSFormApp\TD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TdsWPFApp", "TdsWPFApp\TdsWPFApp.csproj", "{84876661-389C-4441-92E9-38D596D6ADFF}"
 EndProject
-Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "ModelingProject2", "ModelingProject2\ModelingProject2.modelproj", "{B3E1CD48-9B83-492A-AB3D-34D2EAB2A1E4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.Tests.Model", "Tds.Tests.Model\Tds.Tests.Model.csproj", "{7E93B9A8-0D91-4B51-9643-2B6F5948B1C8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.Tests.SystemTests", "Tds.Tests.SystemTests\Tds.Tests.SystemTests.csproj", "{8D3978B8-88A6-47C6-A566-BAAA2A7B6ABF}"
@@ -26,13 +24,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.Engine", "Tds.Engine\Td
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.Engine.Tests", "Tds.Engine.Tests\Tds.Engine.Tests.csproj", "{940AE95A-DB69-49F3-BD40-6D4404524957}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.Interaces", "Tds.Interaces\Tds.Interaces.csproj", "{F8CB8E0B-A695-4368-8E22-838D3A5AA0EC}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F5BE648A-029F-48F1-A602-73581593F678}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.Types", "Tds.Types\Tds.Types.csproj", "{DBB10A77-AEEC-4C64-87E1-E5996E372028}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.Types.Tests", "Tds.Types.Tests\Tds.Types.Tests.csproj", "{36A3DC93-EE89-420D-970F-FAAFEC4D04A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.Interfaces", "Tds.Interfaces\Tds.Interfaces.csproj", "{F8CB8E0B-A695-4368-8E22-838D3A5AA0EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,10 +58,6 @@ Global
 		{84876661-389C-4441-92E9-38D596D6ADFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84876661-389C-4441-92E9-38D596D6ADFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84876661-389C-4441-92E9-38D596D6ADFF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B3E1CD48-9B83-492A-AB3D-34D2EAB2A1E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3E1CD48-9B83-492A-AB3D-34D2EAB2A1E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3E1CD48-9B83-492A-AB3D-34D2EAB2A1E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3E1CD48-9B83-492A-AB3D-34D2EAB2A1E4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7E93B9A8-0D91-4B51-9643-2B6F5948B1C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7E93B9A8-0D91-4B51-9643-2B6F5948B1C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E93B9A8-0D91-4B51-9643-2B6F5948B1C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -80,10 +74,6 @@ Global
 		{940AE95A-DB69-49F3-BD40-6D4404524957}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{940AE95A-DB69-49F3-BD40-6D4404524957}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{940AE95A-DB69-49F3-BD40-6D4404524957}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F8CB8E0B-A695-4368-8E22-838D3A5AA0EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F8CB8E0B-A695-4368-8E22-838D3A5AA0EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F8CB8E0B-A695-4368-8E22-838D3A5AA0EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F8CB8E0B-A695-4368-8E22-838D3A5AA0EC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DBB10A77-AEEC-4C64-87E1-E5996E372028}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DBB10A77-AEEC-4C64-87E1-E5996E372028}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBB10A77-AEEC-4C64-87E1-E5996E372028}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -92,14 +82,18 @@ Global
 		{36A3DC93-EE89-420D-970F-FAAFEC4D04A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36A3DC93-EE89-420D-970F-FAAFEC4D04A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36A3DC93-EE89-420D-970F-FAAFEC4D04A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8CB8E0B-A695-4368-8E22-838D3A5AA0EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8CB8E0B-A695-4368-8E22-838D3A5AA0EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8CB8E0B-A695-4368-8E22-838D3A5AA0EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8CB8E0B-A695-4368-8E22-838D3A5AA0EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{7E93B9A8-0D91-4B51-9643-2B6F5948B1C8} = {F5BE648A-029F-48F1-A602-73581593F678}
 		{8D3978B8-88A6-47C6-A566-BAAA2A7B6ABF} = {F5BE648A-029F-48F1-A602-73581593F678}
 		{940AE95A-DB69-49F3-BD40-6D4404524957} = {F5BE648A-029F-48F1-A602-73581593F678}
-		{7E93B9A8-0D91-4B51-9643-2B6F5948B1C8} = {F5BE648A-029F-48F1-A602-73581593F678}
 		{36A3DC93-EE89-420D-970F-FAAFEC4D04A9} = {F5BE648A-029F-48F1-A602-73581593F678}
 	EndGlobalSection
 EndGlobal
