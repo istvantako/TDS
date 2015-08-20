@@ -1,6 +1,6 @@
-﻿using Tds.Interaces.Structure;
+﻿using Tds.Interfaces.Structure;
 
-namespace Tds.Interaces
+namespace Tds.Interfaces
 {
     public interface IStructureProvider
     {

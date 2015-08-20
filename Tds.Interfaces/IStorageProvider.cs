@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 
-using Tds.Interaces.Database;
-using Tds.Interaces.Structure;
+using Tds.Interfaces.Database;
+using Tds.Interfaces.Structure;
 
-namespace Tds.Interaces
+namespace Tds.Interfaces
 {
     public interface IStorageProvider
     {

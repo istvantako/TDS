@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 
-using Tds.Interaces;
-using Tds.Interaces.Database;
-using Tds.Interaces.Structure;
+using Tds.Interfaces;
+using Tds.Interfaces.Database;
+using Tds.Interfaces.Structure;
 using Tds.Engine.Exceptions;
 using Tds.Types;
 

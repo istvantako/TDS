@@ -1,4 +1,4 @@
-﻿namespace Tds.Interaces.Database
+﻿namespace Tds.Interfaces.Database
 {
     public class EntityKey
     {

@@ -1,6 +1,6 @@
 ﻿using Tds.Types;
 
-namespace Tds.Interaces.Structure
+namespace Tds.Interfaces.Structure
 {
     public class KeyStructure
     {

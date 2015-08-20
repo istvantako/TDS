@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Tds.Interaces.Database
+namespace Tds.Interfaces.Database
 {
     public class Entity
     {

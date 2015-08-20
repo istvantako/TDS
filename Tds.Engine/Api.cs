@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 
 using Tds.Engine.Exceptions;
-using Tds.Interaces;
-using Tds.Interaces.Database;
-using Tds.Interaces.Structure;
+using Tds.Interfaces;
+using Tds.Interfaces.Database;
+using Tds.Interfaces.Structure;
 using Tds.Types;
 
 namespace Tds.Engine
