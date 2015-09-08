@@ -42,6 +42,8 @@
     <Compile Include="Api.cs" />
     <Compile Include="Exceptions\EntityNotFoundInDatabaseException.cs" />
     <Compile Include="Exceptions\EntityStructureNotFoundException.cs" />
+    <Compile Include="IDependencyResolver.cs" />
+    <Compile Include="IMaintenanceTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
