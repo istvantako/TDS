@@ -42,7 +42,7 @@ namespace Tds.Engine.Tests
             var entityKey = 10;
 
             #region Prepare structure provider
-            EntityStructure structure;
+            IEntityStructure structure;
             var structureProvider = GetStructureProviderMock_GetEntityStructure(entityName, out structure, entityKeyName);
             #endregion
 
@@ -63,21 +63,21 @@ namespace Tds.Engine.Tests
             var entityName = "testEntity";
             var entityKeyName = "keyName";
             var entityKey = 10;
-            var entity = new Entity()
+            var entity = new IEntity()
             {
                 Name = entityName,
                 Properties = new Dictionary<string,object>() { { entityKeyName, entityKey } }
             };
 
             #region Prepare structure provider
-            EntityStructure structure;
+            IEntityStructure structure;
             var structureProvider = GetStructureProviderMock_GetEntityStructure(entityName, out structure, entityKeyName);
             #endregion
 
             #region Prepare production storage provider
             var productionStorageProvider = Substitute.For<IStorageProvider>();
             productionStorageProvider
-                .Read(entityName, Arg.Is<IEnumerable<EntityKey>>(x => x.Count() == 1 &&
+                .Read(entityName, Arg.Is<IEnumerable<IEntityKey>>(x => x.Count() == 1 &&
                                                                         x.Any(y => y.Name == entityKeyName && 
                                                                                 y.Value.Equals(entityKey))), structure)
                 .Returns(entity);
@@ -86,7 +86,7 @@ namespace Tds.Engine.Tests
             #region Prepare backup storage provider
             var backupStorageProvider = Substitute.For<IStorageProvider>();
             backupStorageProvider.
-                Write(entity, Arg.Is<IEnumerable<EntityKey>>(x => x.Count() == 1 &&
+                Write(entity, Arg.Is<IEnumerable<IEntityKey>>(x => x.Count() == 1 &&
                                                             x.Any(y => y.Name == entityKeyName &&
                                                                         y.Value.Equals(entityKey))), structure);
             #endregion
@@ -102,13 +102,13 @@ namespace Tds.Engine.Tests
                 GetEntityStructure(entityName);
             productionStorageProvider.
                 Received().
-                Read(entityName, Arg.Is<IEnumerable<EntityKey>>(x => x.Count() == 1 &&
+                Read(entityName, Arg.Is<IEnumerable<IEntityKey>>(x => x.Count() == 1 &&
                                                                         x.Any(y => y.Name == entityKeyName &&
                                                                                 y.Value.Equals(entityKey))), structure);
             backupStorageProvider.
                 Received().
                 Write(entity,
-                    Arg.Is<IEnumerable<EntityKey>>(x => x.Count() == 1 && 
+                    Arg.Is<IEnumerable<IEntityKey>>(x => x.Count() == 1 && 
                                                     x.Any(y => y.Name == entityKeyName && 
                                                             y.Value.Equals(entityKey))),
                     structure);
@@ -124,10 +124,10 @@ namespace Tds.Engine.Tests
             var entityKey1 = 10;
             var entityKey2 = "turoo";
 
-            var entity = new Entity() { Name = entityName, Properties = new Dictionary<string, object>() };
+            var entity = new IEntity() { Name = entityName, Properties = new Dictionary<string, object>() };
 
             #region Prepare structure provider
-            EntityStructure structure;
+            IEntityStructure structure;
             var structureProvider = GetStructureProviderMock_GetEntityStructure(entityName, out structure, 
                 entityKeyName1, DataType.Integer, entityKeyName2, DataType.String);
             #endregion
@@ -136,7 +136,7 @@ namespace Tds.Engine.Tests
             var productionStorageProvider = Substitute.For<IStorageProvider>();
             productionStorageProvider
                 .Read(entityName,
-                        Arg.Is<IEnumerable<EntityKey>>(x => x.Count() == 2 &&
+                        Arg.Is<IEnumerable<IEntityKey>>(x => x.Count() == 2 &&
                                                                 x.Any(y => y.Name == entityKeyName1 && y.Value.Equals(entityKey1)) &&
                                                                 x.Any(y => y.Name == entityKeyName2 && y.Value.Equals(entityKey2))),
                         structure)
@@ -147,7 +147,7 @@ namespace Tds.Engine.Tests
             var backupStorageProvider = Substitute.For<IStorageProvider>();
             backupStorageProvider
                 .Write(entity,
-                        Arg.Is<IEnumerable<EntityKey>>(x => x.Count() == 2 &&
+                        Arg.Is<IEnumerable<IEntityKey>>(x => x.Count() == 2 &&
                                                                 x.Any(y => y.Name == entityKeyName1 && y.Value.Equals(entityKey1)) &&
                                                                 x.Any(y => y.Name == entityKeyName2 && y.Value.Equals(entityKey2))),
                         structure);
@@ -160,13 +160,13 @@ namespace Tds.Engine.Tests
 
             // Assert
             productionStorageProvider.Received().Read(entityName,
-                        Arg.Is<IEnumerable<EntityKey>>(x => x.Count() == 2 &&
+                        Arg.Is<IEnumerable<IEntityKey>>(x => x.Count() == 2 &&
                                                                 x.Any(y => y.Name == entityKeyName1 && y.Value.Equals(entityKey1)) &&
                                                                 x.Any(y => y.Name == entityKeyName2 && y.Value.Equals(entityKey2))),
                                             structure);
 
             backupStorageProvider.Received().Write(entity,
-                        Arg.Is<IEnumerable<EntityKey>>(x => x.Count() == 2 &&
+                        Arg.Is<IEnumerable<IEntityKey>>(x => x.Count() == 2 &&
                                                                 x.Any(y => y.Name == entityKeyName1 && y.Value.Equals(entityKey1)) &&
                                                                 x.Any(y => y.Name == entityKeyName2 && y.Value.Equals(entityKey2))),
                                             structure);
@@ -178,14 +178,14 @@ namespace Tds.Engine.Tests
             return Substitute.For<IStructureProvider>();
         }
 
-        private IStructureProvider GetStructureProviderMock_GetEntityStructure(string entityName, out EntityStructure structure,
+        private IStructureProvider GetStructureProviderMock_GetEntityStructure(string entityName, out IEntityStructure structure,
             string name, DataType type = DataType.Integer)
         {
-            structure = new EntityStructure()
+            structure = new IEntityStructure()
             {
-                Keys = new KeyStructure[] 
+                Keys = new IKeyStructure[] 
                     { 
-                        new KeyStructure()
+                        new IKeyStructure()
                         {
                             Sequence = 0,
                             Name = name,
@@ -200,21 +200,21 @@ namespace Tds.Engine.Tests
             return mock;
         }
 
-        private IStructureProvider GetStructureProviderMock_GetEntityStructure(string entityName, out EntityStructure structure,
+        private IStructureProvider GetStructureProviderMock_GetEntityStructure(string entityName, out IEntityStructure structure,
                     string name1, DataType type1,
                     string name2, DataType type2 = DataType.Integer)
         {
-            structure = new EntityStructure()
+            structure = new IEntityStructure()
             {
-                Keys = new KeyStructure[] 
+                Keys = new IKeyStructure[] 
                     { 
-                        new KeyStructure()
+                        new IKeyStructure()
                         {
                             Sequence = 0,
                             Name = name1,
                             Type = type1
                         },                        
-                        new KeyStructure()
+                        new IKeyStructure()
                         {
                             Sequence = 1,
                             Name = name2,

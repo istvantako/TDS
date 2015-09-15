@@ -1,20 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDataSeeding", "TestDataSeeding\TestDataSeeding.csproj", "{ABF18B9D-1FC0-4506-B4F2-13CF085A79AB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TdsConsoleApp", "TdsConsoleApp\TdsConsoleApp.csproj", "{BFB4FACE-0BB3-4CFD-A0DF-287E6B27CDA0}"
-	ProjectSection(ProjectDependencies) = postProject
-		{ABF18B9D-1FC0-4506-B4F2-13CF085A79AB} = {ABF18B9D-1FC0-4506-B4F2-13CF085A79AB}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TdsClientTesterApp", "TdsClientTesterApp\TdsClientTesterApp.csproj", "{7BFB8F86-4C81-4580-AC5A-B4D967243D65}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDSFormApp", "TDSFormApp\TDSFormApp.csproj", "{FF5994C6-A607-41D6-966F-98EA9BE3EFFF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TdsWPFApp", "TdsWPFApp\TdsWPFApp.csproj", "{84876661-389C-4441-92E9-38D596D6ADFF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.Tests.Model", "Tds.Tests.Model\Tds.Tests.Model.csproj", "{7E93B9A8-0D91-4B51-9643-2B6F5948B1C8}"
 EndProject
@@ -32,6 +21,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.Types.Tests", "Tds.Type
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.Interfaces", "Tds.Interfaces\Tds.Interfaces.csproj", "{F8CB8E0B-A695-4368-8E22-838D3A5AA0EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.StructureProviders", "Tds.StructureProviders\Tds.StructureProviders.csproj", "{86B3695E-EB3E-4939-933D-C5EF81067F84}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DBB10A77-AEEC-4C64-87E1-E5996E372028} = {DBB10A77-AEEC-4C64-87E1-E5996E372028}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.StorageProviders", "Tds.StorageProviders\Tds.StorageProviders.csproj", "{B0A41A2E-DE73-4ADE-88DB-41167245D605}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,22 +38,6 @@ Global
 		{ABF18B9D-1FC0-4506-B4F2-13CF085A79AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABF18B9D-1FC0-4506-B4F2-13CF085A79AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABF18B9D-1FC0-4506-B4F2-13CF085A79AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BFB4FACE-0BB3-4CFD-A0DF-287E6B27CDA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BFB4FACE-0BB3-4CFD-A0DF-287E6B27CDA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BFB4FACE-0BB3-4CFD-A0DF-287E6B27CDA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BFB4FACE-0BB3-4CFD-A0DF-287E6B27CDA0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7BFB8F86-4C81-4580-AC5A-B4D967243D65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7BFB8F86-4C81-4580-AC5A-B4D967243D65}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7BFB8F86-4C81-4580-AC5A-B4D967243D65}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7BFB8F86-4C81-4580-AC5A-B4D967243D65}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FF5994C6-A607-41D6-966F-98EA9BE3EFFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FF5994C6-A607-41D6-966F-98EA9BE3EFFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FF5994C6-A607-41D6-966F-98EA9BE3EFFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FF5994C6-A607-41D6-966F-98EA9BE3EFFF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{84876661-389C-4441-92E9-38D596D6ADFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{84876661-389C-4441-92E9-38D596D6ADFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{84876661-389C-4441-92E9-38D596D6ADFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{84876661-389C-4441-92E9-38D596D6ADFF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7E93B9A8-0D91-4B51-9643-2B6F5948B1C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7E93B9A8-0D91-4B51-9643-2B6F5948B1C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E93B9A8-0D91-4B51-9643-2B6F5948B1C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -86,6 +66,14 @@ Global
 		{F8CB8E0B-A695-4368-8E22-838D3A5AA0EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8CB8E0B-A695-4368-8E22-838D3A5AA0EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8CB8E0B-A695-4368-8E22-838D3A5AA0EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86B3695E-EB3E-4939-933D-C5EF81067F84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86B3695E-EB3E-4939-933D-C5EF81067F84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86B3695E-EB3E-4939-933D-C5EF81067F84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86B3695E-EB3E-4939-933D-C5EF81067F84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0A41A2E-DE73-4ADE-88DB-41167245D605}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0A41A2E-DE73-4ADE-88DB-41167245D605}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0A41A2E-DE73-4ADE-88DB-41167245D605}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0A41A2E-DE73-4ADE-88DB-41167245D605}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

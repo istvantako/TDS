@@ -58,14 +58,14 @@ namespace Tds.Engine
         #endregion
 
         #region Private fields
-        private EntityKey[] GetEntityKeys(KeyStructure[] keysStructure, string[] keys)
+        private IEntityKey[] GetEntityKeys(IKeyStructure[] keysStructure, string[] keys)
         {
-            var result = new EntityKey[keysStructure.Length];
+            var result = new IEntityKey[keysStructure.Length];
             
             var index = 0;
             foreach (var item in keysStructure.OrderBy(x => x.Sequence))
 	        {
-                result[index] = new EntityKey() 
+                result[index] = new IEntityKey() 
                 { 
                     Name = item.Name,
                     Value = Converter.ConvertFromString(item.Type, keys[index])

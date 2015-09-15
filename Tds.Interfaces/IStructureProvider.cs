@@ -1,9 +1,12 @@
-﻿using Tds.Interfaces.Structure;
+﻿using System.Collections.Generic;
+using Tds.Interfaces.Structure;
 
 namespace Tds.Interfaces
 {
     public interface IStructureProvider
     {
-        EntityStructure GetEntityStructure(string entityName);
+        public virtual IEnumerable<IEntityStructure> EntityStructures { get; set; }
+
+        IEntityStructure GetEntityStructure(string entityName);
     }
 }

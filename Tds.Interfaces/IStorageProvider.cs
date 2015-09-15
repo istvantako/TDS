@@ -7,7 +7,9 @@ namespace Tds.Interfaces
 {
     public interface IStorageProvider
     {
-        Entity Read(string entityName, IEnumerable<EntityKey> keys, EntityStructure structure);
-        void Write(Entity entity, IEnumerable<EntityKey> keys, EntityStructure structure);
+        public virtual IStructureProvider StructureProvider { get; set; }
+
+        IEntity Read(string entityName, IEnumerable<IEntityKey> keys);
+        void Write(IEntity entity, IEnumerable<IEntityKey> keys);
     }
 }
