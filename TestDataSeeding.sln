@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.Types.Tests", "Tds.Type
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.Interfaces", "Tds.Interfaces\Tds.Interfaces.csproj", "{F8CB8E0B-A695-4368-8E22-838D3A5AA0EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.StructureProviders", "Tds.StructureProviders\Tds.StructureProviders.csproj", "{86B3695E-EB3E-4939-933D-C5EF81067F84}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.MetadataProviders", "Tds.MetadataProviders\Tds.MetadataProviders.csproj", "{86B3695E-EB3E-4939-933D-C5EF81067F84}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DBB10A77-AEEC-4C64-87E1-E5996E372028} = {DBB10A77-AEEC-4C64-87E1-E5996E372028}
 	EndProjectSection

@@ -2,8 +2,8 @@
 
 using Tds.Engine.Exceptions;
 using Tds.Interfaces;
-using Tds.Interfaces.Database;
-using Tds.Interfaces.Structure;
+using Tds.Interfaces.Model;
+using Tds.Interfaces.Metadata;
 using Tds.Types;
 
 namespace Tds.Engine
@@ -11,13 +11,13 @@ namespace Tds.Engine
     public class Api
     {
         #region Private fields
-        private IStructureProvider _structureProvider;
+        private IMetadataProvider _structureProvider;
         private IStorageProvider _productionStorageProvider;
         private IStorageProvider _backupStorageProvider;
         #endregion
 
         #region Constructurs
-        public Api(IStructureProvider structureProvider = null, 
+        public Api(IMetadataProvider structureProvider = null, 
             IStorageProvider productionStorageProvide = null,
             IStorageProvider backupStorageProvider = null)
         {
@@ -27,7 +27,7 @@ namespace Tds.Engine
         }
         #endregion
 
-        #region Public methods
+        /*#region Public methods
         public void Backup(string entityName, params string[] keys)
         {
             // ==================================
@@ -76,6 +76,6 @@ namespace Tds.Engine
 
             return result;
         }
-        #endregion
+        #endregion*/
     }
 }
