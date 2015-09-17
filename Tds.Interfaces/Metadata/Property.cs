@@ -3,24 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tds.Interfaces.Metadata;
 using Tds.Types;
 using YAXLib;
 
-namespace Tds.StructureProviders.Xml
+namespace Tds.Interfaces.Metadata
 {
-    [YAXSerializeAs("Property")]
-    public class XmlProperty : IProperty
+    public class Property
     {
+        [YAXAttributeForClass()]
         public string Name { get; set; }
 
-        [YAXAttributeForClass(), YAXSerializeAs("Type")]
+        [YAXAttributeForClass()]
         public DataType Type { get; set; }
 
-        public XmlProperty()
+        public Property()
         {
             Name = string.Empty;
             Type = DataType.Undefined;
+        }
+
+        public Property(string name, DataType type)
+        {
+            Name = name;
+            Type = type;
         }
     }
 }

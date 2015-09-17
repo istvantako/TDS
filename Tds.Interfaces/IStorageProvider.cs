@@ -9,8 +9,8 @@ namespace Tds.Interfaces
     {
         IMetadataProvider MetadataProvider { get; set; }
 
-        IEnumerable<IEntity> Read(string entityName, IEnumerable<IEntityKey> keys);
+        IEnumerable<Entity> Read(string entityName, IEnumerable<EntityKey> keys);
 
-        void Write(IEntity entity, IEnumerable<IEntityKey> keys);
+        void Write(Entity entity, IEnumerable<EntityKey> keys);
     }
 }

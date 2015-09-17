@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tds.Interfaces.Model
+﻿namespace Tds.Interfaces.Model
 {
-    public class EntityKey : IEntityKey
+    public class EntityKey
     {
         public string Name { get; set; }
 

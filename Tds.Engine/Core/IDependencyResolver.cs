@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tds.Engine
+namespace Tds.Engine.Core
 {
     /// <summary>
     /// This interface is implemented by any object that can resolve a dependency,

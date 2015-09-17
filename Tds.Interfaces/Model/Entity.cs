@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Tds.Interfaces.Model
 {
-    public class Entity : IEntity
+    public class Entity
     {
         public string Name { get; set; }
-
-        public IDictionary<string, object> Properties { get; set; }
+        
+        public Dictionary<string, object> Properties { get; set; }
     }
 }

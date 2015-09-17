@@ -40,10 +40,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api.cs" />
+    <Compile Include="Core\BackupTask.cs" />
+    <Compile Include="Core\ITaskFactory.cs" />
+    <Compile Include="Core\RestoreTask.cs" />
+    <Compile Include="Core\TaskFactory.cs" />
     <Compile Include="Exceptions\EntityNotFoundInDatabaseException.cs" />
     <Compile Include="Exceptions\EntityStructureNotFoundException.cs" />
-    <Compile Include="IDependencyResolver.cs" />
-    <Compile Include="IMaintenanceTask.cs" />
+    <Compile Include="Core\IDependencyResolver.cs" />
+    <Compile Include="Core\IMaintenanceTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

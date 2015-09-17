@@ -37,25 +37,32 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="YAXLib, Version=2.13.0.0, Culture=neutral, PublicKeyToken=7cc39f8266ad1835, processorArchitecture=MSIL">
+      <HintPath>..\packages\YAXLib.2.13\lib\YAXLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IMetadataWorkspace.cs" />
     <Compile Include="IStorageProvider.cs" />
+    <Compile Include="Metadata\MetadataWorkspace.cs" />
     <Compile Include="Model\Entity.cs" />
     <Compile Include="Model\EntityKey.cs" />
-    <Compile Include="Model\IEntity.cs" />
-    <Compile Include="Model\IEntityKey.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IMetadataProvider.cs" />
-    <Compile Include="Metadata\IAssociation.cs" />
-    <Compile Include="Metadata\IEntityType.cs" />
-    <Compile Include="Metadata\IKeyMember.cs" />
-    <Compile Include="Metadata\IProperty.cs" />
+    <Compile Include="Metadata\Association.cs" />
+    <Compile Include="Metadata\EntityType.cs" />
+    <Compile Include="Metadata\KeyMember.cs" />
+    <Compile Include="Metadata\Property.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tds.Types\Tds.Types.csproj">
       <Project>{dbb10a77-aeec-4c64-87e1-e5996e372028}</Project>
       <Name>Tds.Types</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
