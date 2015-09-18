@@ -2,9 +2,9 @@
 
 namespace Tds.Engine.Exceptions
 {
-    public class EntityStructureNotFoundException : Exception
+    public class EntityTypeNotFoundException : Exception
     {
-        public EntityStructureNotFoundException(string entityName)
+        public EntityTypeNotFoundException(string entityName)
             : base(string.Format("No structure found for entity: {0}.", entityName))
         { }
     }

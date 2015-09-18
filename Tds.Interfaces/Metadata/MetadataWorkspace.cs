@@ -16,11 +16,17 @@ namespace Tds.Interfaces.Metadata
         [YAXCollection(YAXCollectionSerializationTypes.Recursive)]
         public List<Association> Associations { get; set; }
 
+        public MetadataWorkspace()
+        {
+            EntityTypes = new List<EntityType>();
+            Associations = new List<Association>();
+        }
+
         public EntityType GetEntityType(string entityName)
         {
             TestEntityNameIsNull(entityName);
 
-            return EntityTypes.Where(structure => structure.Name.Equals(entityName)).First();
+            return EntityTypes.Where(entityType => entityType.Name.Equals(entityName)).First();
         }
 
         public IEnumerable<Association> GetAssociationsWhereEntityIsPrincipal(string entityName)

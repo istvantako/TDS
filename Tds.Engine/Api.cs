@@ -11,18 +11,18 @@ namespace Tds.Engine
     public class Api
     {
         #region Private fields
-        private IMetadataProvider _structureProvider;
+        private IMetadataProvider _metadataProvider;
         private IStorageProvider _productionStorageProvider;
         private IStorageProvider _backupStorageProvider;
         #endregion
 
         #region Constructurs
-        public Api(IMetadataProvider structureProvider = null, 
-            IStorageProvider productionStorageProvide = null,
+        public Api(IMetadataProvider metadataProvider = null, 
+            IStorageProvider productionStorageProvider = null,
             IStorageProvider backupStorageProvider = null)
         {
-            _structureProvider = structureProvider;
-            _productionStorageProvider = productionStorageProvide;
+            _metadataProvider = metadataProvider;
+            _productionStorageProvider = productionStorageProvider;
             _backupStorageProvider = backupStorageProvider;
         }
         #endregion
@@ -33,7 +33,7 @@ namespace Tds.Engine
             // ==================================
             // Get entity structure
             // ==================================
-            var entityStructure = _structureProvider.GetEntityStructure(entityName);
+            var entityStructure = _metadataProvider.GetEntityStructure(entityName);
             if (entityStructure == null)
             {
                 throw new EntityStructureNotFoundException(entityName);

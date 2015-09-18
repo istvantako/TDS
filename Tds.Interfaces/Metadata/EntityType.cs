@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Tds.Types;
 using YAXLib;
 namespace Tds.Interfaces.Metadata
 {
@@ -11,14 +12,16 @@ namespace Tds.Interfaces.Metadata
         [YAXCollection(YAXCollectionSerializationTypes.Recursive)]
         public List<KeyMember> PrimaryKey { get; set; }
 
-        [YAXCollection(YAXCollectionSerializationTypes.Recursive)]
-        public List<Property> Properties { get; set; }
+        [YAXDictionary(EachPairName = "Property", KeyName = "Name", ValueName = "Type",
+                SerializeKeyAs = YAXNodeTypes.Attribute,
+                SerializeValueAs = YAXNodeTypes.Attribute)]
+        public Dictionary<string, DataType> Properties { get; set; }
 
         public EntityType()
         {
             Name = string.Empty;
             PrimaryKey = new List<KeyMember>();
-            Properties = new List<Property>();
+            Properties = new Dictionary<string, DataType>();
         }
     }
 }

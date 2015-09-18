@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<Metadata>
+  <Entities>
+    <Entity Type="Drawings">
+      <PrimaryKey>
+        <KeyMember Order="0" Name="Id" />
+      </PrimaryKey>
+      <Properties>
+        <Property Name="Id" Type="Integer" />
+        <Property Name="Title" Type="String" />
+        <Property Name="Width" Type="Integer" />
+        <Property Name="Height" Type="Integer" />
+        <Property Name="BgColour" Type="Integer" />
+      </Properties>
+    </Entity>
+    <Entity Type="SubDrawings">
+      <PrimaryKey>
+        <KeyMember Order="0" Name="MainDrawing" />
+        <KeyMember Order="1" Name="SubDrawing" />
+        <KeyMember Order="2" Name="X" />
+        <KeyMember Order="3" Name="Y" />
+        <KeyMember Order="4" Name="Z" />
+      </PrimaryKey>
+      <Properties>
+        <Property Name="MainDrawing" Type="Integer" />
+        <Property Name="SubDrawing" Type="Integer" />
+        <Property Name="X" Type="Integer" />
+        <Property Name="Y" Type="Integer" />
+        <Property Name="Z" Type="Integer" />
+      </Properties>
+    </Entity>
+  </Entities>
+  <Associations>
+    <Association Name="SubDrawings_Drawings_Main">
+      <Principal>Drawings</Principal>
+      <Dependent>SubDrawings</Dependent>
+      <PropertyMappings>
+        <PropertyRef OnPrincipal="Id" OnDependent="MainDrawing" />
+      </PropertyMappings>
+    </Association>
+    <Association Name="SubDrawings_Drawings_Sub">
+      <Principal>Drawings</Principal>
+      <Dependent>SubDrawings</Dependent>
+      <PropertyMappings>
+        <PropertyRef OnPrincipal="Id" OnDependent="SubDrawing" />
+      </PropertyMappings>
+    </Association>
+  </Associations>
+</Metadata>

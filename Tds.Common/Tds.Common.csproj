@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5C4BA125-6F2F-42D4-992A-8DDBE07F95D7}</ProjectGuid>
+    <ProjectGuid>{3845BF38-6456-4A19-8E92-BE0A7EB290D1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tds.Engine</RootNamespace>
-    <AssemblyName>Tds.Engine</AssemblyName>
+    <RootNamespace>Tds.Common</RootNamespace>
+    <AssemblyName>Tds.Common</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -37,24 +37,17 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="YAXLib, Version=2.13.0.0, Culture=neutral, PublicKeyToken=7cc39f8266ad1835, processorArchitecture=MSIL">
+      <HintPath>..\packages\YAXLib.2.13\lib\YAXLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Api.cs" />
-    <Compile Include="Core\MaintenanceTask.cs" />
-    <Compile Include="Exceptions\EntityNotFoundInDatabaseException.cs" />
-    <Compile Include="Exceptions\EntityTypeNotFoundException.cs" />
-    <Compile Include="Core\IDependencyResolver.cs" />
+    <Compile Include="XmlSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tds.Interfaces\Tds.Interfaces.csproj">
-      <Project>{f8cb8e0b-a695-4368-8e22-838d3a5aa0ec}</Project>
-      <Name>Tds.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tds.Types\Tds.Types.csproj">
-      <Project>{dbb10a77-aeec-4c64-87e1-e5996e372028}</Project>
-      <Name>Tds.Types</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

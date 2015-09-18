@@ -44,16 +44,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IMetadataWorkspace.cs" />
+    <Compile Include="IRepository.cs" />
     <Compile Include="IStorageProvider.cs" />
     <Compile Include="Metadata\MetadataWorkspace.cs" />
     <Compile Include="Model\Entity.cs" />
     <Compile Include="Model\EntityKey.cs" />
+    <Compile Include="Model\EntityStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IMetadataProvider.cs" />
     <Compile Include="Metadata\Association.cs" />
     <Compile Include="Metadata\EntityType.cs" />
     <Compile Include="Metadata\KeyMember.cs" />
-    <Compile Include="Metadata\Property.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tds.Types\Tds.Types.csproj">
