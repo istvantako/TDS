@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api.cs" />
+    <Compile Include="Core\DependencyResolver.cs" />
     <Compile Include="Core\MaintenanceTask.cs" />
     <Compile Include="Exceptions\EntityNotFoundInDatabaseException.cs" />
     <Compile Include="Exceptions\EntityTypeNotFoundException.cs" />

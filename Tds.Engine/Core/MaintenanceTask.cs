@@ -33,7 +33,7 @@ namespace Tds.Engine.Core
             }
         }
 
-        protected void Save(Entity sourceEntity)
+        private void Save(Entity sourceEntity)
         {
             SaveEntitiesWhereCurrentEntityIsDependent(sourceEntity);
 
@@ -42,7 +42,7 @@ namespace Tds.Engine.Core
             SaveEntitiesWhereCurrentEntityIsPrincipal(sourceEntity);
         }
 
-        /*protected IEnumerable<EntityKey> GetEntityPrimaryKey(Entity entity)
+        private IEnumerable<EntityKey> GetEntityPrimaryKey(Entity entity)
         {
             var entityType = MetadataWorkspace.GetEntityType(entity.Name);
             var result = new EntityKey[entityType.PrimaryKey.Count];
@@ -60,26 +60,27 @@ namespace Tds.Engine.Core
             }
 
             return result;
-        }*/
+        }
 
-        protected void SaveCurrentEntity(Entity sourceEntity)
+        private void SaveCurrentEntity(Entity sourceEntity)
         {
-            var targetEntity = TargetRepository.Read(sourceEntity.Name, null);
+            var primaryKey = GetEntityPrimaryKey(sourceEntity);
+            var targetEntity = TargetRepository.Read(sourceEntity.Name, primaryKey);
 
             if (targetEntity != null)
             {
                 if (!sourceEntity.Equals(targetEntity))
                 {
-                    TargetRepository.Write(sourceEntity, null, EntityStatus.Modified);
+                    TargetRepository.Write(sourceEntity, primaryKey, EntityStatus.Modified);
                 }
             }
             else
             {
-                TargetRepository.Write(sourceEntity, null);
+                TargetRepository.Write(sourceEntity, primaryKey);
             }
         }
 
-        protected void SaveEntitiesWhereCurrentEntityIsDependent(Entity sourceEntity)
+        private void SaveEntitiesWhereCurrentEntityIsDependent(Entity sourceEntity)
         {
             foreach (var association in MetadataWorkspace.GetAssociationsWhereEntityIsDependent(sourceEntity.Name))
             {
@@ -90,7 +91,7 @@ namespace Tds.Engine.Core
             }
         }
 
-        protected void SaveEntitiesWhereCurrentEntityIsPrincipal(Entity sourceEntity)
+        private void SaveEntitiesWhereCurrentEntityIsPrincipal(Entity sourceEntity)
         {
             foreach (var association in MetadataWorkspace.GetAssociationsWhereEntityIsPrincipal(sourceEntity.Name))
             {
