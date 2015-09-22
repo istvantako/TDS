@@ -5,8 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tds.Engine.Tests;
 
-namespace Tds.MetadataProviders.Test.Xml
+namespace Tds.MetadataProviders.Tests.Xml
 {
     [TestClass]
     public abstract class XmlMetadataProviderTestBase

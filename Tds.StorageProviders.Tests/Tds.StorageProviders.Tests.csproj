@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{940AE95A-DB69-49F3-BD40-6D4404524957}</ProjectGuid>
+    <ProjectGuid>{513F2728-E111-4804-B290-C579DCB863F1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tds.Engine.Tests</RootNamespace>
-    <AssemblyName>Tds.Engine.Tests</AssemblyName>
+    <RootNamespace>Tds.StorageProviders.Tests</RootNamespace>
+    <AssemblyName>Tds.StorageProviders.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -16,8 +16,6 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,10 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NSubstitute">
-      <HintPath>..\packages\NSubstitute.1.8.1.0\lib\net45\NSubstitute.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -55,21 +51,30 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ApiTests.cs" />
+    <Compile Include="SqlServerStorageProviderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestSettings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tds.Engine\Tds.Engine.csproj">
-      <Project>{5c4ba125-6f2f-42d4-992a-8ddbe07f95d7}</Project>
-      <Name>Tds.Engine</Name>
+    <ProjectReference Include="..\Tds.Engine.Tests\Tds.Engine.Tests.csproj">
+      <Project>{940ae95a-db69-49f3-bd40-6d4404524957}</Project>
+      <Name>Tds.Engine.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tds.Interfaces\Tds.Interfaces.csproj">
       <Project>{f8cb8e0b-a695-4368-8e22-838d3a5aa0ec}</Project>
       <Name>Tds.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tds.MetadataProviders\Tds.MetadataProviders.csproj">
+      <Project>{86b3695e-eb3e-4939-933d-c5ef81067f84}</Project>
+      <Name>Tds.MetadataProviders</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tds.StorageProviders\Tds.StorageProviders.csproj">
+      <Project>{b0a41a2e-de73-4ade-88db-41167245d605}</Project>
+      <Name>Tds.StorageProviders</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tds.Types\Tds.Types.csproj">
       <Project>{dbb10a77-aeec-4c64-87e1-e5996e372028}</Project>

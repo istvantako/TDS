@@ -1,28 +1,31 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Tds.MetadataProviders.Test.Xml;
+using Tds.Engine.Tests;
+using Tds.MetadataProviders.Tests.Xml;
 using Tds.Interfaces.Metadata;
 using Tds.MetadataProviders.Xml;
 using Tds.Types;
 using Tds.Interfaces;
+using System.IO;
 
-namespace Tds.MetadataProviders.Test.Data
+namespace Tds.MetadataProviders.Tests.Data
 {
     [TestClass]
     public class XmlMetadataProviderTest : XmlMetadataProviderTestBase
     {
         [TestMethod]
-        public void SerializeMetadataProvider_Drawings_SubDrawings_Serialized()
+        public void SerializeMetadataWorkspace_Drawings_SubDrawings_Serialized()
         {
             // Arrange
             MetadataWorkspace metadataWorkspace = CreateDrawingsAndSubdrawingsXmlMetadata();
+            string xmlMetadataPath = TestSettings.Storage.XmlMetadataGeneratedLocation + @"\Drawings_SubDrawings_Metadata_Generated.xml";
+            XmlMetadataProvider metadataProvider = new XmlMetadataProvider(xmlMetadataPath);
 
             // Act
-            string baseLocation = TestSettings.Storage.XmlMetadataGeneratedLocation;
-            XmlMetadataProvider metadataProvider = new XmlMetadataProvider(baseLocation + @"\Drawings_Metadata_Generated_1.xml");
             metadataProvider.SaveMetadataWorkspace(metadataWorkspace);
 
             // Assert
+            Assert.IsTrue(File.Exists(xmlMetadataPath), "Drawings_SubDrawings XML metadata is not serialized.");
         }
 
         private MetadataWorkspace CreateDrawingsAndSubdrawingsXmlMetadata()

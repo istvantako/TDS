@@ -5,70 +5,74 @@ using Tds.Interfaces;
 using Tds.Interfaces.Model;
 using Tds.Interfaces.Metadata;
 using Tds.Types;
+using Tds.Engine.Core;
+using System.Collections.Generic;
 
 namespace Tds.Engine
 {
     public class Api
     {
         #region Private fields
-        private IMetadataProvider _metadataProvider;
-        private IStorageProvider _productionStorageProvider;
-        private IStorageProvider _backupStorageProvider;
+        private IMetadataWorkspace metadataWorkspace;
+        private IRepository productionRepository;
+        private IRepository backupRepository;
         #endregion
 
         #region Constructurs
-        public Api(IMetadataProvider metadataProvider = null, 
-            IStorageProvider productionStorageProvider = null,
-            IStorageProvider backupStorageProvider = null)
+        public Api(IMetadataProvider metadataProvider, IStorageProvider productionStorageProvider, IStorageProvider backupStorageProvider)
         {
-            _metadataProvider = metadataProvider;
-            _productionStorageProvider = productionStorageProvider;
-            _backupStorageProvider = backupStorageProvider;
+            this.metadataWorkspace = metadataProvider.GetMetadataWorkspace();
+
+            this.productionRepository = productionStorageProvider.GetRepository(metadataProvider);
+            this.backupRepository = backupStorageProvider.GetRepository(metadataProvider);
         }
         #endregion
 
-        /*#region Public methods
+        #region Public methods
         public void Backup(string entityName, params string[] keys)
         {
-            // ==================================
-            // Get entity structure
-            // ==================================
-            var entityStructure = _metadataProvider.GetEntityStructure(entityName);
-            if (entityStructure == null)
+            var entityType = metadataWorkspace.GetEntityType(entityName);
+            if (entityType == null)
             {
-                throw new EntityStructureNotFoundException(entityName);
+                throw new EntityTypeNotFoundException(entityName);
             }
 
-            // ==================================
-            // Get entity from database
-            // ==================================
-            var entityKeys = GetEntityKeys(entityStructure.Keys, keys);
-            var entityFromDatabase = _productionStorageProvider.Read(entityName, entityKeys, entityStructure);
-            if (entityFromDatabase == null) 
+            var backupTask = new MaintenanceTask(metadataWorkspace, productionRepository, backupRepository, new DependencyResolver());
+            var entityKeyMembers = GetEntityKeys(entityType, keys);
+
+            backupTask.Save(entityName, entityKeyMembers);
+        }
+
+        public void Restore(string entityName, params string[] keys)
+        {
+            var entityType = metadataWorkspace.GetEntityType(entityName);
+            if (entityType == null)
             {
-                throw new EntityNotFoundInDatabaseException(entityName, 
-                    entityKeys.ToDictionary(x => x.Name, x => x.Value.ToString()));
+                throw new EntityTypeNotFoundException(entityName);
             }
 
-            // ==================================
-            // Save entity into a file
-            // ==================================
-            _backupStorageProvider.Write(entityFromDatabase, entityKeys, entityStructure);
+            var backupTask = new MaintenanceTask(metadataWorkspace, backupRepository, productionRepository, new DependencyResolver());
+            var entityKeyMembers = GetEntityKeys(entityType, keys);
+
+            backupTask.Save(entityName, entityKeyMembers);
         }
         #endregion
 
         #region Private fields
-        private IEntityKey[] GetEntityKeys(IKeyStructure[] keysStructure, string[] keys)
+        private ICollection<EntityKey> GetEntityKeys(EntityType entityType, string[] keys)
         {
-            var result = new IEntityKey[keysStructure.Length];
+            var keyMembers = entityType.PrimaryKey;
+            var properties = entityType.Properties;
+
+            var result = new EntityKey[keyMembers.Count];
             
             var index = 0;
-            foreach (var item in keysStructure.OrderBy(x => x.Sequence))
+            foreach (var item in keyMembers.OrderBy(x => x.Sequence))
 	        {
-                result[index] = new IEntityKey() 
+                result[index] = new EntityKey() 
                 { 
                     Name = item.Name,
-                    Value = Converter.ConvertFromString(item.Type, keys[index])
+                    Value = Converter.ConvertFromString(properties[item.Name], keys[index])
                 };
 
                 index++;
@@ -76,6 +80,6 @@ namespace Tds.Engine
 
             return result;
         }
-        #endregion*/
+        #endregion
     }
 }

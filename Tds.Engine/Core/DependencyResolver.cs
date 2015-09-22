@@ -11,18 +11,40 @@ namespace Tds.Engine.Core
 {
     class DependencyResolver : IDependencyResolver
     {
-        public IMetadataWorkspace MetadataWorkspace { get; set; }
-
         public IRepository SourceRepository { get; set; }
 
         public IEnumerable<Entity> GetEntitiesWhereEntityIsDependent(Entity entity, Association association)
         {
-            throw new NotImplementedException();
+            var keyMembers = new List<EntityKey>();
+
+            foreach (var propertyMapping in association.PropertyMappings)
+            {
+                var keyMember = new EntityKey()
+                {
+                    Name = propertyMapping.Key,
+                    Value = entity.Properties[propertyMapping.Value]
+                };
+                keyMembers.Add(keyMember);
+            }
+
+            return SourceRepository.Read(association.Principal, keyMembers);
         }
 
         public IEnumerable<Entity> GetEntitiesWhereEntityIsPrincipal(Entity entity, Association association)
         {
-            throw new NotImplementedException();
+            var keyMembers = new List<EntityKey>();
+
+            foreach (var propertyMapping in association.PropertyMappings)
+            {
+                var keyMember = new EntityKey()
+                {
+                    Name = propertyMapping.Value,
+                    Value = entity.Properties[propertyMapping.Key]
+                };
+                keyMembers.Add(keyMember);
+            }
+
+            return SourceRepository.Read(association.Dependent, keyMembers);
         }
     }
 }

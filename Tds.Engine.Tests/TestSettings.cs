@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tds.MetadataProviders.Test
+namespace Tds.Engine.Tests
 {
-    internal class TestSettings
+    public class TestSettings
     {
-        internal class Storage
+        public class Storage
         {
             public static readonly string Location = @"..\..\..\TestData";
             public static readonly string XmlMetadataLocation = Location + @"\Metadata\Xml";

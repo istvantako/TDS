@@ -28,8 +28,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.MetadataProviders", "Td
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.StorageProviders", "Tds.StorageProviders\Tds.StorageProviders.csproj", "{B0A41A2E-DE73-4ADE-88DB-41167245D605}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DBB10A77-AEEC-4C64-87E1-E5996E372028} = {DBB10A77-AEEC-4C64-87E1-E5996E372028}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.MetadataProviders.Test", "Tds.MetadataProviders.Test\Tds.MetadataProviders.Test.csproj", "{84673F15-B9F6-4DBF-B633-D6EDB9FD2B91}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.MetadataProviders.Tests", "Tds.MetadataProviders.Tests\Tds.MetadataProviders.Tests.csproj", "{84673F15-B9F6-4DBF-B633-D6EDB9FD2B91}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F8CB8E0B-A695-4368-8E22-838D3A5AA0EC} = {F8CB8E0B-A695-4368-8E22-838D3A5AA0EC}
 		{86B3695E-EB3E-4939-933D-C5EF81067F84} = {86B3695E-EB3E-4939-933D-C5EF81067F84}
@@ -37,6 +40,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.MetadataProviders.Test"
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.Common", "Tds.Common\Tds.Common.csproj", "{3845BF38-6456-4A19-8E92-BE0A7EB290D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tds.StorageProviders.Tests", "Tds.StorageProviders.Tests\Tds.StorageProviders.Tests.csproj", "{513F2728-E111-4804-B290-C579DCB863F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -92,6 +97,10 @@ Global
 		{3845BF38-6456-4A19-8E92-BE0A7EB290D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3845BF38-6456-4A19-8E92-BE0A7EB290D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3845BF38-6456-4A19-8E92-BE0A7EB290D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{513F2728-E111-4804-B290-C579DCB863F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{513F2728-E111-4804-B290-C579DCB863F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{513F2728-E111-4804-B290-C579DCB863F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{513F2728-E111-4804-B290-C579DCB863F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,5 +111,6 @@ Global
 		{940AE95A-DB69-49F3-BD40-6D4404524957} = {F5BE648A-029F-48F1-A602-73581593F678}
 		{36A3DC93-EE89-420D-970F-FAAFEC4D04A9} = {F5BE648A-029F-48F1-A602-73581593F678}
 		{84673F15-B9F6-4DBF-B633-D6EDB9FD2B91} = {F5BE648A-029F-48F1-A602-73581593F678}
+		{513F2728-E111-4804-B290-C579DCB863F1} = {F5BE648A-029F-48F1-A602-73581593F678}
 	EndGlobalSection
 EndGlobal

@@ -11,17 +11,26 @@ namespace Tds.Engine.Core
 {
     class MaintenanceTask
     {
-        public IRepository SourceRepository { get; set; }
+        private IRepository sourceRepository { get; set; }
 
-        public IRepository TargetRepository { get; set; }
+        private IRepository targetRepository { get; set; }
 
-        public IMetadataWorkspace MetadataWorkspace { get; set; }
+        private IMetadataWorkspace metadataWorkspace { get; set; }
 
-        public IDependencyResolver DependencyResolver { get; set; }
+        private IDependencyResolver dependencyResolver { get; set; }
 
-        public void Save(string entityName, IEnumerable<EntityKey> keyMembers)
+        public MaintenanceTask(IMetadataWorkspace metadataWorkspace, IRepository sourceRepository, IRepository targetRepository,
+            IDependencyResolver dependencyResolver)
         {
-            Entity entity = SourceRepository.Read(entityName, keyMembers).First();
+            this.metadataWorkspace = metadataWorkspace;
+            this.sourceRepository = sourceRepository;
+            this.targetRepository = targetRepository;
+            this.dependencyResolver = dependencyResolver;
+        }
+
+        public void Save(string entityName, ICollection<EntityKey> keyMembers)
+        {
+            Entity entity = sourceRepository.Read(entityName, keyMembers).First();
 
             if (entity != null)
             {
@@ -29,8 +38,10 @@ namespace Tds.Engine.Core
             }
             else
             {
-                throw new EntityNotFoundInDatabaseException(entity.Name, keyMembers, MetadataWorkspace.GetEntityType(entity.Name));
+                throw new EntityNotFoundInDatabaseException(entity.Name, keyMembers, metadataWorkspace.GetEntityType(entity.Name));
             }
+
+            targetRepository.SaveChanges();
         }
 
         private void Save(Entity sourceEntity)
@@ -42,9 +53,14 @@ namespace Tds.Engine.Core
             SaveEntitiesWhereCurrentEntityIsPrincipal(sourceEntity);
         }
 
-        private IEnumerable<EntityKey> GetEntityPrimaryKey(Entity entity)
+        private ICollection<EntityKey> GetEntityPrimaryKey(Entity entity)
         {
-            var entityType = MetadataWorkspace.GetEntityType(entity.Name);
+            var entityType = metadataWorkspace.GetEntityType(entity.Name);
+            if (entityType == null)
+            {
+                throw new EntityTypeNotFoundException(entity.Name);
+            }
+
             var result = new EntityKey[entityType.PrimaryKey.Count];
 
             int index = 0;
@@ -65,26 +81,26 @@ namespace Tds.Engine.Core
         private void SaveCurrentEntity(Entity sourceEntity)
         {
             var primaryKey = GetEntityPrimaryKey(sourceEntity);
-            var targetEntity = TargetRepository.Read(sourceEntity.Name, primaryKey);
+            var targetEntity = targetRepository.Read(sourceEntity.Name, primaryKey);
 
             if (targetEntity != null)
             {
                 if (!sourceEntity.Equals(targetEntity))
                 {
-                    TargetRepository.Write(sourceEntity, primaryKey, EntityStatus.Modified);
+                    targetRepository.Write(sourceEntity, primaryKey, EntityStatus.Modified);
                 }
             }
             else
             {
-                TargetRepository.Write(sourceEntity, primaryKey);
+                targetRepository.Write(sourceEntity, primaryKey);
             }
         }
 
         private void SaveEntitiesWhereCurrentEntityIsDependent(Entity sourceEntity)
         {
-            foreach (var association in MetadataWorkspace.GetAssociationsWhereEntityIsDependent(sourceEntity.Name))
+            foreach (var association in metadataWorkspace.GetAssociationsWhereEntityIsDependent(sourceEntity.Name))
             {
-                foreach (var entity in DependencyResolver.GetEntitiesWhereEntityIsDependent(sourceEntity, association))
+                foreach (var entity in dependencyResolver.GetEntitiesWhereEntityIsDependent(sourceEntity, association))
                 {
                     Save(entity);
                 }
@@ -93,9 +109,9 @@ namespace Tds.Engine.Core
 
         private void SaveEntitiesWhereCurrentEntityIsPrincipal(Entity sourceEntity)
         {
-            foreach (var association in MetadataWorkspace.GetAssociationsWhereEntityIsPrincipal(sourceEntity.Name))
+            foreach (var association in metadataWorkspace.GetAssociationsWhereEntityIsPrincipal(sourceEntity.Name))
             {
-                foreach (var entity in DependencyResolver.GetEntitiesWhereEntityIsPrincipal(sourceEntity, association))
+                foreach (var entity in dependencyResolver.GetEntitiesWhereEntityIsPrincipal(sourceEntity, association))
                 {
                     Save(entity);
                 }

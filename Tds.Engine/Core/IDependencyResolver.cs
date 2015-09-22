@@ -15,8 +15,6 @@ namespace Tds.Engine.Core
     /// </summary>
     interface IDependencyResolver
     {
-        IMetadataWorkspace MetadataWorkspace { get; set; }
-
         IRepository SourceRepository { get; set; }
 
         IEnumerable<Entity> GetEntitiesWhereEntityIsDependent(Entity entity, Association association);

@@ -11,8 +11,10 @@ namespace Tds.Interfaces
     {
         IMetadataWorkspace MetadataWorkspace { get; set; }
 
-        IEnumerable<Entity> Read(string entityName, IEnumerable<EntityKey> keys);
+        IEnumerable<Entity> Read(string entityName, ICollection<EntityKey> keys);
 
-        void Write(Entity entity, IEnumerable<EntityKey> keys, EntityStatus status = EntityStatus.Added);
+        void Write(Entity entity, ICollection<EntityKey> keys, EntityStatus status = EntityStatus.Added);
+
+        void SaveChanges();
     }
 }
