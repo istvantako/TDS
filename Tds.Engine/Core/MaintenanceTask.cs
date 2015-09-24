@@ -30,18 +30,16 @@ namespace Tds.Engine.Core
 
         public void Save(string entityName, ICollection<EntityKey> keyMembers)
         {
-            Entity entity = sourceRepository.Read(entityName, keyMembers).First();
-
-            if (entity != null)
+            try
             {
+                Entity entity = sourceRepository.Read(entityName, keyMembers).First();
                 Save(entity);
+                targetRepository.SaveChanges();
             }
-            else
+            catch (InvalidOperationException)
             {
-                throw new EntityNotFoundInDatabaseException(entity.Name, keyMembers, metadataWorkspace.GetEntityType(entity.Name));
+                throw new EntityNotFoundInDatabaseException(entityName, keyMembers, metadataWorkspace.GetEntityType(entityName));
             }
-
-            targetRepository.SaveChanges();
         }
 
         private void Save(Entity sourceEntity)

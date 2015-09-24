@@ -13,8 +13,8 @@ namespace Tds.MetadataProviders.Tests.Xml
     public abstract class XmlMetadataProviderTestBase
     {
         #region Test initialization -----------------------
-        [TestInitialize]
-        public void InitializeTest()
+        [ClassInitialize]
+        public void Initialize()
         {
             // We need to make sure the directories used for testing.
             if (!Directory.Exists(TestSettings.Storage.XmlMetadataManualLocation))

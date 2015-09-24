@@ -41,6 +41,7 @@
       <HintPath>..\packages\NSubstitute.1.8.1.0\lib\net45\NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -60,6 +61,7 @@
     <Compile Include="TestSettings.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +72,14 @@
     <ProjectReference Include="..\Tds.Interfaces\Tds.Interfaces.csproj">
       <Project>{f8cb8e0b-a695-4368-8e22-838d3a5aa0ec}</Project>
       <Name>Tds.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tds.MetadataProviders\Tds.MetadataProviders.csproj">
+      <Project>{86b3695e-eb3e-4939-933d-c5ef81067f84}</Project>
+      <Name>Tds.MetadataProviders</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tds.StorageProviders\Tds.StorageProviders.csproj">
+      <Project>{b0a41a2e-de73-4ade-88db-41167245d605}</Project>
+      <Name>Tds.StorageProviders</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tds.Types\Tds.Types.csproj">
       <Project>{dbb10a77-aeec-4c64-87e1-e5996e372028}</Project>

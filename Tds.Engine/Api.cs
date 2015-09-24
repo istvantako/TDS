@@ -29,7 +29,7 @@ namespace Tds.Engine
         #endregion
 
         #region Public methods
-        public void Backup(string entityName, params string[] keys)
+        public void Backup(string entityName, IEnumerable<string> keys)
         {
             var entityType = metadataWorkspace.GetEntityType(entityName);
             if (entityType == null)
@@ -38,12 +38,12 @@ namespace Tds.Engine
             }
 
             var backupTask = new MaintenanceTask(metadataWorkspace, productionRepository, backupRepository, new DependencyResolver());
-            var entityKeyMembers = GetEntityKeys(entityType, keys);
+            var entityKeyMembers = GetEntityKeys(entityType, keys.ToArray());
 
             backupTask.Save(entityName, entityKeyMembers);
         }
 
-        public void Restore(string entityName, params string[] keys)
+        public void Restore(string entityName, IEnumerable<string> keys)
         {
             var entityType = metadataWorkspace.GetEntityType(entityName);
             if (entityType == null)
@@ -52,7 +52,7 @@ namespace Tds.Engine
             }
 
             var backupTask = new MaintenanceTask(metadataWorkspace, backupRepository, productionRepository, new DependencyResolver());
-            var entityKeyMembers = GetEntityKeys(entityType, keys);
+            var entityKeyMembers = GetEntityKeys(entityType, keys.ToArray());
 
             backupTask.Save(entityName, entityKeyMembers);
         }

@@ -26,7 +26,15 @@ namespace Tds.Interfaces.Metadata
         {
             TestEntityNameIsNull(entityName);
 
-            return EntityTypes.Where(entityType => entityType.Name.Equals(entityName)).First();
+            try
+            {
+                return EntityTypes.Where(entityType => entityType.Name.Equals(entityName)).First();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            
         }
 
         public IEnumerable<Association> GetAssociationsWhereEntityIsPrincipal(string entityName)

@@ -52,7 +52,31 @@ namespace Tds.StorageProviders.SqlServer
 
         public void SaveChanges()
         {
-            
+            using (var connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (var transaction = connection.BeginTransaction())
+                    {
+                        using (var command = new SqlCommand("", connection, transaction))
+                        {
+                            foreach (var query in queries)
+                            {
+                                command.CommandText = query;
+                                command.ExecuteNonQuery();
+                            }
+                        }
+
+                        transaction.Commit();
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            }
         }
 
         private IEnumerable<Entity> Get(string entityName, ICollection<EntityKey> keys)
