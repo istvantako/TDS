@@ -42,7 +42,7 @@ namespace Tds.StorageProviders.SqlServer
             switch (status)
             {
                 case EntityStatus.Added:
-                    Insert(entity, keys);
+                    Insert(entity);
                     break;
                 case EntityStatus.Modified:
                     Update(entity, keys);
@@ -127,22 +127,26 @@ namespace Tds.StorageProviders.SqlServer
             return entities;
         }
 
-        private void Insert(Entity entity, ICollection<EntityKey> keys)
+        private void Insert(Entity entity)
         {
             //Func<string, string> key = value => String.Concat("@", value);
 
-            var fields = from pair in entity.Properties
-                         orderby pair.Key ascending
-                         select pair.Key;
+            var properties = new string[entity.Properties.Count];
+            var header = new string[entity.Properties.Count];
+            var entityType = MetadataWorkspace.GetEntityType(entity.Name);
 
-            var values = from pair in entity.Properties
-                         orderby pair.Key ascending
-                         select pair.Value;
+            int index = 0;
+            foreach (var property in entity.Properties)
+            {
+                properties[index] = Converter.ConvertToString(entityType.Properties[property.Key], property.Value);
+                header[index] = property.Key;
+                index++;
+            }
 
-            var query = string.Format("INSERT INTO {0} ({1}) VALUES ({1});",
+            var query = string.Format("INSERT INTO {0} ({1}) VALUES ({2});",
                 entity.Name,
-                string.Join(", ", fields.ToArray()),
-                string.Join(", ", values.ToArray()));
+                string.Join(", ", header),
+                string.Join(", ", properties));
 
             queries.Add(query);
             log.Info(query);

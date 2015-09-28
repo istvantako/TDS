@@ -19,18 +19,18 @@ namespace Tds.Engine.Tests
     {
         #region Private fields ----------------------------
 
-        private string productionConnectionString;
+        private static string productionConnectionString;
 
-        private string backupConnectionString;
+        private static string backupConnectionString;
 
-        private string drawingsXmlMetadataLocation;
+        private static string drawingsXmlMetadataLocation;
 
         #endregion ----------------------------------------
 
         #region Test initialization -----------------------
 
         [ClassInitialize]
-        public void Initialize()
+        public static void Initialize(TestContext context)
         {
             productionConnectionString = ConfigurationManager.ConnectionStrings["DrawingsProductionContext"].ConnectionString;
             backupConnectionString = ConfigurationManager.ConnectionStrings["DrawingsBackupContext"].ConnectionString;
@@ -40,7 +40,18 @@ namespace Tds.Engine.Tests
         [TestInitialize]
         public void TestInitialize()
         {
+            var entities = new List<string>()
+            {
+                "Drawings",
+                "Images",
+                "DrawingsImages",
+                "SubDrawings",
+                "Pixels",
+                "Lines"
+            };
 
+            SqlServerOperations.TruncateDatabase(productionConnectionString, entities);
+            SqlServerOperations.TruncateDatabase(backupConnectionString, entities);
         }
 
         [TestCleanup]
@@ -103,8 +114,12 @@ namespace Tds.Engine.Tests
             var metadataProvider = new XmlMetadataProvider(drawingsXmlMetadataLocation);
 
             // Act
+            var d = new Entity();
+
+            SqlServerOperations.InsertEntityInDatabase(productionConnectionString, metadataProvider.GetMetadataWorkspace(), d);
 
             // Assert
+            Assert.IsTrue(SqlServerOperations.CheckEntityExistsInDatabase(productionConnectionString, metadataProvider.GetMetadataWorkspace(), d), "Entity not saved!");
         }
 
         [TestMethod]

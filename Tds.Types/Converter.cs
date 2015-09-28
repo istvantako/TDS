@@ -17,13 +17,10 @@ namespace Tds.Types
             {
                 case DataType.Integer:
                     return int.Parse(value, CultureInfo.InvariantCulture);
-                    break;
                 case DataType.Decimal:
                     return Decimal.Parse(value, CultureInfo.InvariantCulture);
-                    break;
                 case DataType.String:
                     return value;
-                    break;
                 default:
                     throw new ConverterException(dataType, value, "Unsupported data type.");
             }
@@ -43,13 +40,10 @@ namespace Tds.Types
             {
                 case DataType.Integer:
                     return Convert.ToInt32(value).ToString(CultureInfo.InvariantCulture);
-                    break;
                 case DataType.Decimal:
                     return Convert.ToDecimal(value).ToString(CultureInfo.InvariantCulture);
-                    break;
                 case DataType.String:
-                    return value.ToString();
-                    break;
+                    return string.Format("'{0}'", value.ToString());
                 default:
                     throw new ConverterException(dataType, value, "Unsupported data type.");
             }
