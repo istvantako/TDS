@@ -7,13 +7,13 @@ using Tds.Interfaces;
 using Tds.Interfaces.Metadata;
 using Tds.Interfaces.Model;
 
-namespace Tds.Engine.Core
+namespace Tds.Interfaces
 {
     /// <summary>
     /// This interface is implemented by any object that can resolve a dependency,
     /// either directly or through use of an external container.
     /// </summary>
-    interface IDependencyResolver
+    public interface IDependencyResolver
     {
         IRepository SourceRepository { get; set; }
 

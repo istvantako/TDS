@@ -37,14 +37,14 @@ namespace Tds.Interfaces.Metadata
             
         }
 
-        public IEnumerable<Association> GetAssociationsWhereEntityIsPrincipal(string entityName)
+        public IEnumerable<Association> GetAssociationsWhereEntityIsPrincipal(string entityName, IEntityTypeFilter filter)
         {
             TestEntityNameIsNull(entityName);
 
             return Associations.Where(association => association.Principal.Equals(entityName));
         }
 
-        public IEnumerable<Association> GetAssociationsWhereEntityIsDependent(string entityName)
+        public IEnumerable<Association> GetAssociationsWhereEntityIsDependent(string entityName, IEntityTypeFilter filter)
         {
             TestEntityNameIsNull(entityName);
 

@@ -1,12 +1,11 @@
-﻿using System.Linq;
-
+﻿using System.Collections.Generic;
+using System.Linq;
 using Tds.Engine.Exceptions;
 using Tds.Interfaces;
 using Tds.Interfaces.Model;
 using Tds.Interfaces.Metadata;
 using Tds.Types;
 using Tds.Engine.Core;
-using System.Collections.Generic;
 
 namespace Tds.Engine
 {
@@ -37,7 +36,7 @@ namespace Tds.Engine
                 throw new EntityTypeNotFoundException(entityName);
             }
 
-            var backupTask = new MaintenanceTask(metadataWorkspace, productionRepository, backupRepository, new DependencyResolver());
+            var backupTask = new MaintenanceTask(metadataWorkspace, productionRepository, backupRepository, new DependencyResolver(), null);
             var entityKeyMembers = GetEntityKeys(entityType, keys.ToArray());
 
             backupTask.Save(entityName, entityKeyMembers);
@@ -51,7 +50,7 @@ namespace Tds.Engine
                 throw new EntityTypeNotFoundException(entityName);
             }
 
-            var backupTask = new MaintenanceTask(metadataWorkspace, backupRepository, productionRepository, new DependencyResolver());
+            var backupTask = new MaintenanceTask(metadataWorkspace, backupRepository, productionRepository, new DependencyResolver(), null);
             var entityKeyMembers = GetEntityKeys(entityType, keys.ToArray());
 
             backupTask.Save(entityName, entityKeyMembers);

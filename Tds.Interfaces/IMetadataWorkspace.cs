@@ -11,8 +11,8 @@ namespace Tds.Interfaces
     {
         EntityType GetEntityType(string entityName);
 
-        IEnumerable<Association> GetAssociationsWhereEntityIsPrincipal(string entityName);
+        IEnumerable<Association> GetAssociationsWhereEntityIsPrincipal(string entityName, IEntityTypeFilter filter);
 
-        IEnumerable<Association> GetAssociationsWhereEntityIsDependent(string entityName);
+        IEnumerable<Association> GetAssociationsWhereEntityIsDependent(string entityName, IEntityTypeFilter filter);
     }
 }

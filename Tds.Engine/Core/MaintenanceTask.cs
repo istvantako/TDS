@@ -6,26 +6,36 @@ using System.Threading.Tasks;
 using Tds.Engine.Exceptions;
 using Tds.Interfaces;
 using Tds.Interfaces.Model;
+using Tds.Types;
 
 namespace Tds.Engine.Core
 {
     class MaintenanceTask
     {
-        private IRepository sourceRepository { get; set; }
+        private IRepository sourceRepository;
 
-        private IRepository targetRepository { get; set; }
+        private IRepository targetRepository;
 
-        private IMetadataWorkspace metadataWorkspace { get; set; }
+        private IMetadataWorkspace metadataWorkspace;
 
-        private IDependencyResolver dependencyResolver { get; set; }
+        private IDependencyResolver dependencyResolver;
+
+        private IEntityTypeFilter filter;
+
+        private ICollection<Entity> visited;
+
+        private EntityComparer entityComparer;
 
         public MaintenanceTask(IMetadataWorkspace metadataWorkspace, IRepository sourceRepository, IRepository targetRepository,
-            IDependencyResolver dependencyResolver)
+            IDependencyResolver dependencyResolver, IEntityTypeFilter filter)
         {
             this.metadataWorkspace = metadataWorkspace;
             this.sourceRepository = sourceRepository;
             this.targetRepository = targetRepository;
             this.dependencyResolver = dependencyResolver;
+            this.filter = filter;
+            this.visited = new List<Entity>();
+            this.entityComparer = new EntityComparer(metadataWorkspace);
         }
 
         public void Save(string entityName, ICollection<EntityKey> keyMembers)
@@ -42,8 +52,86 @@ namespace Tds.Engine.Core
             }
         }
 
+        private class EntityComparer : IEqualityComparer<Entity>
+        {
+            private IMetadataWorkspace metadataWorkspace;
+
+            public EntityComparer(IMetadataWorkspace metadataWorkspace)
+            {
+                this.metadataWorkspace = metadataWorkspace;
+            }
+
+            public bool Equals(Entity entity, Entity other)
+            {
+                var entityType = metadataWorkspace.GetEntityType(entity.Name);
+                if (entityType == null)
+                {
+                    throw new EntityTypeNotFoundException(entity.Name);
+                }
+
+                if (entity == null || other == null)
+                {
+                    return false;
+                }
+
+                if (string.IsNullOrEmpty(entity.Name) || string.IsNullOrEmpty(other.Name) || (!entity.Name.Equals(other.Name)))
+                {
+                    return false;
+                }
+
+                if (entity.Properties.Count != other.Properties.Count)
+                {
+                    return false;
+                }
+
+                foreach (var property in entity.Properties)
+                {
+                    var value = Converter.ConvertToString(entityType.Properties[property.Key], property.Value);
+                    var otherValue = Converter.ConvertToString(entityType.Properties[property.Key], other.Properties[property.Key]);
+
+                    if (string.IsNullOrEmpty(value) || string.IsNullOrEmpty(otherValue) || (!value.Equals(otherValue)))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            public int GetHashCode(Entity obj)
+            {
+                var entityType = metadataWorkspace.GetEntityType(obj.Name);
+                if (entityType == null)
+                {
+                    throw new EntityTypeNotFoundException(obj.Name);
+                }
+
+                unchecked
+                {
+                    int hash = 269;
+                    int collectionHash = 0;
+
+                    foreach (var property in obj.Properties.OrderBy(p => p.Key))
+                    {
+                        collectionHash ^= Converter.ConvertToString(entityType.Properties[property.Key], property.Value).GetHashCode();
+                    }
+
+                    hash = (hash * 47) + obj.Name.GetHashCode();
+                    hash = (hash * 47) + collectionHash;
+
+                    return hash;
+                }
+            }
+        }
+
         private void Save(Entity sourceEntity)
         {
+            if (visited.Contains(sourceEntity, entityComparer))
+            {
+                return;
+            }
+            visited.Add(sourceEntity);
+
             SaveEntitiesWhereCurrentEntityIsDependent(sourceEntity);
 
             SaveCurrentEntity(sourceEntity);
@@ -96,7 +184,7 @@ namespace Tds.Engine.Core
 
         private void SaveEntitiesWhereCurrentEntityIsDependent(Entity sourceEntity)
         {
-            foreach (var association in metadataWorkspace.GetAssociationsWhereEntityIsDependent(sourceEntity.Name))
+            foreach (var association in metadataWorkspace.GetAssociationsWhereEntityIsDependent(sourceEntity.Name, filter))
             {
                 foreach (var entity in dependencyResolver.GetEntitiesWhereEntityIsDependent(sourceEntity, association))
                 {
@@ -107,7 +195,7 @@ namespace Tds.Engine.Core
 
         private void SaveEntitiesWhereCurrentEntityIsPrincipal(Entity sourceEntity)
         {
-            foreach (var association in metadataWorkspace.GetAssociationsWhereEntityIsPrincipal(sourceEntity.Name))
+            foreach (var association in metadataWorkspace.GetAssociationsWhereEntityIsPrincipal(sourceEntity.Name, filter))
             {
                 foreach (var entity in dependencyResolver.GetEntitiesWhereEntityIsPrincipal(sourceEntity, association))
                 {

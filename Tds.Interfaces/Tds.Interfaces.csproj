@@ -43,6 +43,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IDependencyResolver.cs" />
+    <Compile Include="IEntityTypeFilter.cs" />
     <Compile Include="IMetadataWorkspace.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="IStorageProvider.cs" />
