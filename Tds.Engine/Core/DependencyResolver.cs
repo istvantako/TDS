@@ -13,6 +13,15 @@ namespace Tds.Engine.Core
     {
         public IRepository SourceRepository { get; set; }
 
+        public DependencyResolver()
+        {
+        }
+
+        public DependencyResolver(IRepository sourceRepository)
+        {
+            SourceRepository = sourceRepository;
+        }
+
         public IEnumerable<Entity> GetEntitiesWhereEntityIsDependent(Entity entity, Association association)
         {
             var keyMembers = new List<EntityKey>();

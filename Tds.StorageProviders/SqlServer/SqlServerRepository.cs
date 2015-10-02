@@ -101,27 +101,31 @@ namespace Tds.StorageProviders.SqlServer
 
             using (var connection = new SqlConnection(connectionString))
             {
-                try
-                {
+                //try
+                //{
                     connection.Open();
                     using (var command = new SqlCommand(query, connection))
                     {
                         using (var reader = command.ExecuteReader())
                         {
-                            var entity = new Entity();
-                            foreach (var property in entityType.Properties)
+                            if (reader.Read())
                             {
-                                entity.Properties[property.Key] = Converter.ConvertFromString(property.Value, reader[property.Key].ToString());
+                                var entity = new Entity();
+                                entity.Name = entityName;
+                                foreach (var property in entityType.Properties)
+                                {
+                                    entity.Properties[property.Key] = Converter.ConvertFromString(property.Value, reader[property.Key].ToString());
+                                }
+                                entities.Add(entity);
                             }
-                            entities.Add(entity);
                         }
 
                     }
-                }
-                catch (Exception)
-                {
-
-                }
+                //}
+                //catch (Exception e)
+                //{
+                //    throw e;
+                //}
             }
 
             return entities;

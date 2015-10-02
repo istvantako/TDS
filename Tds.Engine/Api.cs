@@ -32,8 +32,9 @@ namespace Tds.Engine
         {
             EntityType entityType = GetEntityType(entityName);
             IEntityTypeFilter filter = SetUpFilter(entitiesToSkip);
+            IDependencyResolver dependencyResolver = new DependencyResolver(productionRepository);
 
-            var backupTask = new MaintenanceTask(metadataWorkspace, productionRepository, backupRepository, new DependencyResolver(), filter);
+            var backupTask = new MaintenanceTask(metadataWorkspace, productionRepository, backupRepository, dependencyResolver, filter);
             var entityKeyMembers = GetEntityKeys(entityType, keys.ToArray());
 
             backupTask.Save(entityName, entityKeyMembers);
@@ -43,8 +44,9 @@ namespace Tds.Engine
         {
             EntityType entityType = GetEntityType(entityName);
             IEntityTypeFilter filter = SetUpFilter(entitiesToSkip);
+            IDependencyResolver dependencyResolver = new DependencyResolver(backupRepository);
 
-            var restoreTask = new MaintenanceTask(metadataWorkspace, backupRepository, productionRepository, new DependencyResolver(), filter);
+            var restoreTask = new MaintenanceTask(metadataWorkspace, backupRepository, productionRepository, dependencyResolver, filter);
             var entityKeyMembers = GetEntityKeys(entityType, keys.ToArray());
 
             restoreTask.Save(entityName, entityKeyMembers);

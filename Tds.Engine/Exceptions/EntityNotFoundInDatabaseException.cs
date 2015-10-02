@@ -9,10 +9,24 @@ namespace Tds.Engine.Exceptions
 {
     public class EntityNotFoundInDatabaseException : Exception
     {
-        public EntityNotFoundInDatabaseException(string entityName, IEnumerable<EntityKey> keys, EntityType entityType)
-            : base(string.Format("Entity '{0}' with keys [{1}] not found in the database.",
-                    entityName, 
-                    string.Join(", ", keys.Select(x => string.Format("{0}: {1}", x.Name, Converter.ConvertToString(entityType.Properties[x.Name], x.Value)).ToArray()))))
-        { }
+        public EntityNotFoundInDatabaseException(string entityName, IEnumerable<EntityKey> keys, EntityType entityType, Exception innerException)
+            : base (FormatMessage(entityName, keys, entityType), innerException)
+        {
+        }
+
+        private static string FormatMessage(string entityName, IEnumerable<EntityKey> keys, EntityType entityType)
+        {
+            int index = 0;
+            var formatKeyMembers = new string[keys.Count()];
+            foreach (var key in keys)
+            {
+                formatKeyMembers[index] = string.Format("{0}: {1}", key.Name, Converter.ConvertToString(entityType.Properties[key.Name], key.Value));
+                index++;
+            }
+
+            string message = string.Format("Entity '{0}' with keys [{1}] not found in the database.", entityName, string.Join(", ", formatKeyMembers));
+
+            return message;
+        }
     }
 }

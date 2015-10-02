@@ -46,9 +46,9 @@ namespace Tds.Engine.Core
                 Save(entity);
                 targetRepository.SaveChanges();
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException exception)
             {
-                throw new EntityNotFoundInDatabaseException(entityName, keyMembers, metadataWorkspace.GetEntityType(entityName));
+                throw new EntityNotFoundInDatabaseException(entityName, keyMembers, metadataWorkspace.GetEntityType(entityName), exception);
             }
         }
 
@@ -169,7 +169,7 @@ namespace Tds.Engine.Core
             var primaryKey = GetEntityPrimaryKey(sourceEntity);
             var targetEntity = targetRepository.Read(sourceEntity.Name, primaryKey);
 
-            if (targetEntity != null)
+            if (targetEntity.Count() == 1)
             {
                 if (!sourceEntity.Equals(targetEntity))
                 {

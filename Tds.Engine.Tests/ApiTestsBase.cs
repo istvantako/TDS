@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,21 @@ namespace Tds.Engine.Tests
     [TestClass]
     public abstract class ApiTestsBase
     {
+        #region Protected fields --------------------------
+        protected static string productionConnectionString;
+
+        protected static string backupConnectionString;
+
+        protected static string drawingsXmlMetadataLocation;
+
+        protected List<string> queries;
+        #endregion ----------------------------------------
+
+        public ApiTestsBase()
+        {
+            queries = new List<string>();
+        }
+
         #region Helper methods ----------------------------
         protected Entity GetDrawing(int id, string title, int w, int h, int c)
         {
@@ -54,7 +70,7 @@ namespace Tds.Engine.Tests
             return entity;
         }
 
-        protected Entity GetImage(int id, int url)
+        protected Entity GetImage(int id, string url)
         {
             Entity entity = new Entity();
             entity.Name = "Images";
