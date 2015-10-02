@@ -28,36 +28,60 @@ namespace Tds.Engine
         #endregion
 
         #region Public methods
-        public void Backup(string entityName, IEnumerable<string> keys)
+        public void Backup(string entityName, IEnumerable<string> keys, IEnumerable<string> entitiesToSkip = null)
         {
-            var entityType = metadataWorkspace.GetEntityType(entityName);
-            if (entityType == null)
-            {
-                throw new EntityTypeNotFoundException(entityName);
-            }
+            EntityType entityType = GetEntityType(entityName);
+            IEntityTypeFilter filter = SetUpFilter(entitiesToSkip);
 
-            var backupTask = new MaintenanceTask(metadataWorkspace, productionRepository, backupRepository, new DependencyResolver(), null);
+            var backupTask = new MaintenanceTask(metadataWorkspace, productionRepository, backupRepository, new DependencyResolver(), filter);
             var entityKeyMembers = GetEntityKeys(entityType, keys.ToArray());
 
             backupTask.Save(entityName, entityKeyMembers);
         }
 
-        public void Restore(string entityName, IEnumerable<string> keys)
+        public void Restore(string entityName, IEnumerable<string> keys, IEnumerable<string> entitiesToSkip = null)
         {
-            var entityType = metadataWorkspace.GetEntityType(entityName);
-            if (entityType == null)
-            {
-                throw new EntityTypeNotFoundException(entityName);
-            }
+            EntityType entityType = GetEntityType(entityName);
+            IEntityTypeFilter filter = SetUpFilter(entitiesToSkip);
 
-            var backupTask = new MaintenanceTask(metadataWorkspace, backupRepository, productionRepository, new DependencyResolver(), null);
+            var restoreTask = new MaintenanceTask(metadataWorkspace, backupRepository, productionRepository, new DependencyResolver(), filter);
             var entityKeyMembers = GetEntityKeys(entityType, keys.ToArray());
 
-            backupTask.Save(entityName, entityKeyMembers);
+            restoreTask.Save(entityName, entityKeyMembers);
         }
         #endregion
 
-        #region Private fields
+        #region Private methods
+        private EntityType GetEntityType(string entityName)
+        {
+            EntityType entityType = metadataWorkspace.GetEntityType(entityName);
+            if (entityType == null)
+            {
+                throw new EntityTypeNotFoundException(entityName);
+            }
+
+            return entityType;
+        }
+
+        private IEntityTypeFilter SetUpFilter(IEnumerable<string> entitiesToSkip)
+        {
+            EntityTypeFilter filter = new EntityTypeFilter();
+            if (entitiesToSkip != null)
+            {
+                foreach (var entityToSkip in entitiesToSkip)
+                {
+                    if (metadataWorkspace.GetEntityType(entityToSkip) == null)
+                    {
+                        throw new EntityTypeNotFoundException(entityToSkip + " [in filter]");
+                    }
+                }
+
+                filter.EntitiesToSkip = entitiesToSkip;
+            }
+
+            return filter;
+        }
+
         private ICollection<EntityKey> GetEntityKeys(EntityType entityType, string[] keys)
         {
             var keyMembers = entityType.PrimaryKey;

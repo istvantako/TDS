@@ -15,7 +15,7 @@ using System.IO;
 namespace Tds.Engine.Tests
 {
     [TestClass]
-    public class ApiTests
+    public class ApiTests : ApiTestsBase
     {
         #region Private fields ----------------------------
 
@@ -50,8 +50,8 @@ namespace Tds.Engine.Tests
                 "Lines"
             };
 
-            SqlServerOperations.TruncateDatabase(productionConnectionString, entities);
-            SqlServerOperations.TruncateDatabase(backupConnectionString, entities);
+            TruncateSqlServerDb(productionConnectionString, entities);
+            TruncateSqlServerDb(backupConnectionString, entities);
         }
 
         [TestCleanup]
@@ -114,12 +114,12 @@ namespace Tds.Engine.Tests
             var metadataProvider = new XmlMetadataProvider(drawingsXmlMetadataLocation);
 
             // Act
-            var d = new Entity();
-
-            SqlServerOperations.InsertEntityInDatabase(productionConnectionString, metadataProvider.GetMetadataWorkspace(), d);
+            var drawing = GetDrawing(1, "First", 800, 600, 10);
+            InsertEntityIntoSqlServerDb(productionConnectionString, metadataProvider.GetMetadataWorkspace(), drawing);
+            DeleteEntityFromSqlServerDb(productionConnectionString, metadataProvider.GetMetadataWorkspace(), drawing);
 
             // Assert
-            Assert.IsTrue(SqlServerOperations.CheckEntityExistsInDatabase(productionConnectionString, metadataProvider.GetMetadataWorkspace(), d), "Entity not saved!");
+            Assert.IsTrue(!CheckEntityExistsInSqlServerDb(productionConnectionString, metadataProvider.GetMetadataWorkspace(), drawing), "Entity not saved!");
         }
 
         [TestMethod]

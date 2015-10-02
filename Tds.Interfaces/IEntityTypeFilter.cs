@@ -8,5 +8,6 @@ namespace Tds.Interfaces
 {
     public interface IEntityTypeFilter
     {
+        bool IsSkipped(string entityName);
     }
 }

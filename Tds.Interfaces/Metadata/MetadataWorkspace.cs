@@ -41,14 +41,16 @@ namespace Tds.Interfaces.Metadata
         {
             TestEntityNameIsNull(entityName);
 
-            return Associations.Where(association => association.Principal.Equals(entityName));
+            return Associations.Where(association => association.Principal.Equals(entityName))
+                               .Where(association => !filter.IsSkipped(association.Dependent));
         }
 
         public IEnumerable<Association> GetAssociationsWhereEntityIsDependent(string entityName, IEntityTypeFilter filter)
         {
             TestEntityNameIsNull(entityName);
 
-            return Associations.Where(association => association.Dependent.Equals(entityName));
+            return Associations.Where(association => association.Dependent.Equals(entityName))
+                               .Where(association => !filter.IsSkipped(association.Principal));
         }
 
         private void TestEntityNameIsNull(string entityName)
