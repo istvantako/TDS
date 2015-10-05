@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,8 @@ namespace Tds.Engine.Core
 
         private EntityComparer entityComparer;
 
+        private ILog log;
+
         public MaintenanceTask(IMetadataWorkspace metadataWorkspace, IRepository sourceRepository, IRepository targetRepository,
             IDependencyResolver dependencyResolver, IEntityTypeFilter filter)
         {
@@ -36,6 +39,9 @@ namespace Tds.Engine.Core
             this.filter = filter;
             this.visited = new List<Entity>();
             this.entityComparer = new EntityComparer(metadataWorkspace);
+
+            log4net.Config.XmlConfigurator.Configure();
+            this.log = LogManager.GetLogger(typeof(MaintenanceTask));
         }
 
         public void Save(string entityName, ICollection<EntityKey> keyMembers)
@@ -167,18 +173,23 @@ namespace Tds.Engine.Core
         private void SaveCurrentEntity(Entity sourceEntity)
         {
             var primaryKey = GetEntityPrimaryKey(sourceEntity);
-            var targetEntity = targetRepository.Read(sourceEntity.Name, primaryKey);
+            var targetEntities = targetRepository.Read(sourceEntity.Name, primaryKey);
 
-            if (targetEntity.Count() == 1)
+            switch (targetEntities.Count())
             {
-                if (!sourceEntity.Equals(targetEntity))
-                {
-                    targetRepository.Write(sourceEntity, primaryKey, EntityStatus.Modified);
-                }
-            }
-            else
-            {
-                targetRepository.Write(sourceEntity, primaryKey);
+                case 0:
+                    targetRepository.Write(sourceEntity, primaryKey);
+                    break;
+                case 1:
+                    var targetEntity = targetEntities.First();
+                    
+                    if (!sourceEntity.Equals(targetEntity))
+                    {
+                        targetRepository.Write(sourceEntity, primaryKey, EntityStatus.Modified);
+                    }
+                    break;
+                default:
+                    break;
             }
         }
 

@@ -108,7 +108,7 @@ namespace Tds.StorageProviders.SqlServer
                     {
                         using (var reader = command.ExecuteReader())
                         {
-                            if (reader.Read())
+                            while (reader.Read())
                             {
                                 var entity = new Entity();
                                 entity.Name = entityName;
@@ -160,18 +160,19 @@ namespace Tds.StorageProviders.SqlServer
         {
             var properties = new string[entity.Properties.Count];
             var keyMembers = new string[keys.Count];
+            var entityType = MetadataWorkspace.GetEntityType(entity.Name);
 
             int index = 0;
             foreach (var property in entity.Properties)
             {
-                properties[index] = string.Format("{0} = {1}", property.Key, property.Value);
+                properties[index] = string.Format("{0} = {1}", property.Key, Converter.ConvertToString(entityType.Properties[property.Key], property.Value));
                 index++;
             }
 
             index = 0;
             foreach (var keyMember in keys)
             {
-                keyMembers[index] = string.Format("{0} = {1}", keyMember.Name, keyMember.Value);
+                keyMembers[index] = string.Format("{0} = {1}", keyMember.Name, Converter.ConvertToString(entityType.Properties[keyMember.Name], keyMember.Value));
                 index++;
             }
 

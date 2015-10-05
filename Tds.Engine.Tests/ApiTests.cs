@@ -97,6 +97,30 @@ namespace Tds.Engine.Tests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(MissingKeyMemberException))]
+        public void Backup_SubDrawingsMissingKey_ThrowsException()
+        {
+            // Arrange
+            var productionStorageProvider = new SqlServerStorageProvider(productionConnectionString);
+            var backupStorageProvider = new SqlServerStorageProvider(backupConnectionString);
+            var metadataProvider = new XmlMetadataProvider(drawingsXmlMetadataLocation);
+            var metadataWorkspace = metadataProvider.GetMetadataWorkspace();
+            var entities = SetUpSourceDbContext(metadataWorkspace);
+
+            var entityName = "SubDrawings";
+            var keys = new List<string>()
+            {
+                "1",
+                "2"
+            };
+
+            var api = new Api(metadataProvider, productionStorageProvider, backupStorageProvider);
+
+            // Act
+            api.Backup(entityName, keys);
+        }
+
+        [TestMethod]
         public void Backup_DrawingsIsPrincipalWithAllDependencies_BackupAllEntities()
         {
             // Arrange
@@ -126,16 +150,70 @@ namespace Tds.Engine.Tests
         }
 
         [TestMethod]
+        public void Backup_DrawingsIsPrincipalWithFilter_BackupAllEntities()
+        {
+            // Arrange
+            var productionStorageProvider = new SqlServerStorageProvider(productionConnectionString);
+            var backupStorageProvider = new SqlServerStorageProvider(backupConnectionString);
+            var metadataProvider = new XmlMetadataProvider(drawingsXmlMetadataLocation);
+            var metadataWorkspace = metadataProvider.GetMetadataWorkspace();
+            var entities = SetUpSourceDbContext(metadataWorkspace);
+
+            var entityName = "Drawings";
+            var keys = new List<string>()
+            {
+                "1"
+            };
+            var entitiesToSkip = new List<string>()
+            {
+                "DrawingsImages"
+            };
+            entities = FilterDrawingsImages(entities);
+
+            var api = new Api(metadataProvider, productionStorageProvider, backupStorageProvider);
+
+            // Act
+            api.Backup(entityName, keys);
+
+            // Assert
+            foreach (var entity in entities)
+            {
+                string message = string.Format("Entity '{0}' could not be backed up.", entity.Name);
+                Assert.IsTrue(CheckEntityExistsInSqlServerDb(backupConnectionString, metadataWorkspace, entity), message);
+            }
+        }
+
+        [TestMethod]
         public void Backup_SubDrawingsIsDependentAllDependencies_BackupAllEntities()
         {
             // Arrange
             var productionStorageProvider = new SqlServerStorageProvider(productionConnectionString);
             var backupStorageProvider = new SqlServerStorageProvider(backupConnectionString);
             var metadataProvider = new XmlMetadataProvider(drawingsXmlMetadataLocation);
+            var metadataWorkspace = metadataProvider.GetMetadataWorkspace();
+            var entities = SetUpSourceDbContext(metadataWorkspace);
+
+            var entityName = "SubDrawings";
+            var keys = new List<string>()
+            {
+                "1",
+                "2",
+                "300",
+                "400",
+                "1"
+            };
+
+            var api = new Api(metadataProvider, productionStorageProvider, backupStorageProvider);
 
             // Act
+            api.Backup(entityName, keys);
 
             // Assert
+            foreach (var entity in entities)
+            {
+                string message = string.Format("Entity '{0}' could not be backed up.", entity.Name);
+                Assert.IsTrue(CheckEntityExistsInSqlServerDb(backupConnectionString, metadataWorkspace, entity), message);
+            }
         }
 
         [TestMethod]
@@ -238,6 +316,11 @@ namespace Tds.Engine.Tests
             }
 
             return entities;
+        }
+
+        private IEnumerable<Entity> FilterDrawingsImages(IEnumerable<Entity> entities)
+        {
+            return entities.Where(entity => !entity.Name.Equals("DrawingsImages") || !entity.Name.Equals("Images"));
         }
         #endregion
     }

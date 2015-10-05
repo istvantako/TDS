@@ -6,6 +6,7 @@ using Tds.Interfaces.Model;
 using Tds.Interfaces.Metadata;
 using Tds.Types;
 using Tds.Engine.Core;
+using System;
 
 namespace Tds.Engine
 {
@@ -94,11 +95,18 @@ namespace Tds.Engine
             var index = 0;
             foreach (var item in keyMembers.OrderBy(x => x.Sequence))
 	        {
-                result[index] = new EntityKey() 
-                { 
-                    Name = item.Name,
-                    Value = Converter.ConvertFromString(properties[item.Name], keys[index])
-                };
+                try
+                {
+                    result[index] = new EntityKey()
+                    {
+                        Name = item.Name,
+                        Value = Converter.ConvertFromString(properties[item.Name], keys[index])
+                    };
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    throw new MissingKeyMemberException();
+                }
 
                 index++;
 	        }
