@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using log4net;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -23,11 +24,16 @@ namespace Tds.Engine.Tests
         protected static string drawingsXmlMetadataLocation;
 
         protected List<string> queries;
+
+        protected ILog log;
         #endregion ----------------------------------------
 
         public ApiTestsBase()
         {
             queries = new List<string>();
+
+            log4net.Config.XmlConfigurator.Configure();
+            this.log = LogManager.GetLogger(typeof(ApiTests));
         }
 
         #region Helper methods ----------------------------

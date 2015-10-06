@@ -1,55 +1,13 @@
-TDS
+Test Data Seeding
 ===
 
-Test Data Seeding
+*Updated October 2015*
 
-###SQL Data type compatibility:
+## Introduction
 
-Exact Numerics:
+This framework ensures the existence of the required entities (records) and its dependencies in the database for each test case.
+The provided API contains two methods, a method to back up the entities and a second one for restoring the backed up entities.
 
-	bit			        compatible,PK
-	tinyint			    compatible,PK
-	smallint		    compatible,PK
-	int			        compatible,PK
-	bigint			    compatible,PK
-	decimal			    compatible,PK
-	numeric			    compatible,PK
-	smallmoney		    compatible,PK
-	money			    compatible,PK
-Approximate Numerics:
+## Guide
 
-	real			    compatible,PK
-	float			    compatible,PK
-Date and Time:
-
-	date			    compatible,PK
-	time			    compatible,PK
-	smalldatetime	    compatible,PK
-	datetime		    compatible,PK
-	datetime2		    compatible,PK
-	datetimeoffset	    compatible,PK
-Character Strings:
-
-	char			    compatible,PK
-	varchar			    compatible,PK
-	text			    compatible	
-Unicode Character Strings:
-
-	nchar			    compatible,PK
-	nvarchar		    compatible,PK
-	ntext			    compatible
-Binary Strings:
-
-	binary 			    compatible,PK
-	varbinary		    compatible,PK
-	image			    compatible
-Other Data Types:
-
-	uniqueidentifier	compatible	PK
-	hierarchyid		    compatible	PK
-	sql_variant		    compatible
-	xml			        compatbile
-	geography		    compatible
-	geometry		    compatible
-	timestamp		    compatible
 

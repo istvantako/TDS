@@ -14,7 +14,7 @@ namespace Tds.StorageProviders.Tests
     [TestClass]
     public class SqlServerStorageProviderTest
     {
-        [TestMethod]
+        /*[TestMethod]
         public void GetSubDrawingEntityWithCompositeKeyFromDatabase_EntityExists_AssertsTrue()
         {
             // Arrange
@@ -40,7 +40,7 @@ namespace Tds.StorageProviders.Tests
             sqlServerRepository.Read("SubDrawings", keys);
 
             // Assert
-        }
+        }*/
 
         [TestMethod]
         public void GetDrawingEntityWithSimpleKeyFromDatabase_EntityExists_AssertsTrue()
